@@ -513,16 +513,30 @@ Later connected to index.html
 */
 
 
-let patient={
+let patient = JSON.parse(
+    sessionStorage.getItem("patientData")
+);
 
-weight:72,
 
-ibw:70,
+if(patient){
 
-lbw:60
+document.getElementById("weight").innerHTML =
+patient.weight + " kg";
 
-};
 
+document.getElementById("ibw").innerHTML =
+patient.ibw.toFixed(1)+" kg";
+
+
+document.getElementById("pbw").innerHTML =
+patient.pbw.toFixed(1)+" kg";
+
+
+document.getElementById("age").innerHTML =
+patient.age+" yr";
+
+
+}
 
 
 
