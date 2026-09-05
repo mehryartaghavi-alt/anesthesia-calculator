@@ -1,670 +1,517 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Anesthesia Calculator</title>
+<title>Anesthesia Calculator</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<style>
 
-        body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f4f7fb;
-            color: #1f2937;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 30px 20px 50px;
-        }
-
-        /* ================= HEADER ================= */
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 32px;
-            color: #17324d;
-        }
-
-        .header p {
-            margin-top: 8px;
-            color: #667085;
-            font-size: 15px;
-        }
-
-        /* ================= CARD ================= */
-
-        .card {
-            background: white;
-            border-radius: 18px;
-            padding: 25px;
-            margin-bottom: 22px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-        }
-
-        .card-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #17324d;
-        }
-
-        .card-subtitle {
-            color: #7a8699;
-            font-size: 14px;
-            margin-bottom: 22px;
-        }
-
-        /* ================= PATIENT FORM ================= */
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 18px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 7px;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            height: 48px;
-            border: 1px solid #d5dce5;
-            border-radius: 10px;
-            padding: 0 14px;
-            font-size: 16px;
-            background: white;
-            color: #1f2937;
-            outline: none;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
-        }
-
-        .input-wrapper {
-            position: relative;
-        }
-
-        .input-wrapper input {
-            padding-right: 55px;
-        }
-
-        .unit {
-            position: absolute;
-            right: 14px;
-            top: 15px;
-            color: #7a8699;
-            font-size: 13px;
-        }
-
-        /* ================= CALCULATED VALUES ================= */
-
-      .results-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-top: 22px;
+* {
+    box-sizing: border-box;
 }
 
-        .result-box {
-            background: #f7f9fc;
-            border: 1px solid #e3e8ef;
-            border-radius: 12px;
-            padding: 15px;
-        }
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f7fb;
+    color: #1f2937;
+}
 
-        .result-label {
-            display: block;
-            color: #7a8699;
-            font-size: 12px;
-            margin-bottom: 6px;
-        }
+/* =========================
+   HEADER
+========================= */
 
-        .result-value {
-            font-size: 18px;
-            font-weight: bold;
-            color: #17324d;
-        }
+.header {
+    background: #17365d;
+    color: white;
+    padding: 25px 20px;
+    text-align: center;
+}
 
-        /* ================= MODULES ================= */
+.header h1 {
+    margin: 0;
+    font-size: 30px;
+}
 
-        .modules-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-        }
+.header p {
+    margin: 8px 0 0;
+    font-size: 15px;
+    opacity: 0.9;
+}
 
-        .module-button {
-            min-height: 105px;
-            border: 1px solid #dce3eb;
-            border-radius: 14px;
-            background: #ffffff;
-            padding: 18px;
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
+/* =========================
+   MAIN CONTAINER
+========================= */
 
-        .module-button:hover {
-            transform: translateY(-2px);
-            border-color: #3b82f6;
-            box-shadow: 0 5px 14px rgba(0, 0, 0, 0.07);
-        }
+.container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 18px;
+}
 
-        .module-icon {
-            font-size: 25px;
-            margin-bottom: 8px;
-        }
+/* =========================
+   CARD
+========================= */
 
-        .module-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #17324d;
-        }
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
 
-        .module-description {
-            margin-top: 5px;
-            font-size: 12px;
-            color: #7a8699;
-            line-height: 1.4;
-        }
+.card h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 21px;
+    color: #17365d;
+}
 
-        /* ================= FOOTER ================= */
+/* =========================
+   PATIENT INPUTS
+========================= */
 
-        .footer {
-            text-align: center;
-            margin-top: 25px;
-            color: #8a94a6;
-            font-size: 12px;
-        }
+.patient-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
 
-        /* ================= MOBILE ================= */
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
 
-        @media (max-width: 650px) {
+.input-group label {
+    font-weight: bold;
+    margin-bottom: 7px;
+    font-size: 14px;
+}
 
-            .container {
-                padding: 20px 14px 40px;
-            }
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccd5e0;
+    border-radius: 8px;
+    font-size: 16px;
+    background: white;
+}
 
-            .header h1 {
-                font-size: 27px;
-            }
+.input-group input:focus,
+.input-group select:focus {
+    outline: none;
+    border-color: #17365d;
+}
 
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
+/* =========================
+   CALCULATE BUTTON
+========================= */
 
-            .results-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+.calculate-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px;
+    border: none;
+    border-radius: 9px;
+    background: #17365d;
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
 
-            .modules-grid {
-                grid-template-columns: 1fr;
-            }
+.calculate-btn:hover {
+    background: #102945;
+}
 
-            .card {
-                padding: 20px 16px;
-            }
-        }
-    </style>
+/* =========================
+   RESULTS
+========================= */
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.result-box {
+    background: #f5f8fc;
+    border: 1px solid #dce4ee;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+}
+
+.result-title {
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 7px;
+}
+
+.result-value {
+    font-size: 22px;
+    font-weight: bold;
+    color: #17365d;
+}
+
+/* =========================
+   CALCULATOR MODULES
+========================= */
+
+.module-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.module-btn {
+    border: none;
+    border-radius: 10px;
+    padding: 17px 10px;
+    background: #eaf0f7;
+    color: #17365d;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.module-btn:hover {
+    background: #d8e4f1;
+    transform: translateY(-1px);
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer {
+    text-align: center;
+    color: #64748b;
+    font-size: 13px;
+    padding: 10px 20px 30px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    .header h1 {
+        font-size: 25px;
+    }
+
+    .container {
+        margin-top: 20px;
+    }
+
+    .card {
+        padding: 18px;
+    }
+
+    .patient-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .results-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .module-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .module-btn {
+        font-size: 14px;
+        padding: 15px 5px;
+    }
+}
+
+@media (max-width: 380px) {
+
+    .patient-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .module-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+</style>
 </head>
+
 
 <body>
 
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<div class="header">
+
+    <h1>Anesthesia Calculator</h1>
+
+    <p>
+        Clinical calculation tools for anesthesiology
+    </p>
+
+</div>
+
+
+
 <div class="container">
 
-    <!-- ================= HEADER ================= -->
 
-    <header class="header">
+<!-- =========================
+     PATIENT PROFILE
+========================= -->
 
-        <h1>Anesthesia Calculator</h1>
+<div class="card">
 
-        <p>
-            Clinical calculation tools for anesthesiology
-        </p>
-
-    </header>
+    <h2>Patient Profile</h2>
 
 
-    <!-- ================= PATIENT PROFILE ================= -->
-
-    <section class="card">
-
-        <div class="card-title">
-            Patient Profile
-        </div>
-
-        <div class="card-subtitle">
-            Enter patient information used by the anesthesia calculators.
-        </div>
+    <div class="patient-grid">
 
 
-        <div class="form-grid">
+        <!-- AGE -->
 
-            <!-- AGE -->
+        <div class="input-group">
 
-            <div class="form-group">
+            <label for="age">
+                Age (years)
+            </label>
 
-                <label for="age">
-                    Age
-                </label>
-
-                <div class="input-wrapper">
-
-                    <input
-                        type="number"
-                        id="age"
-                        min="0"
-                        max="120"
-                        placeholder="e.g. 58"
-                    >
-
-                    <span class="unit">
-                        yr
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <!-- SEX -->
-
-            <div class="form-group">
-
-                <label for="sex">
-                    Sex
-                </label>
-
-                <select id="sex">
-
-                    <option value="">
-                        Select
-                    </option>
-
-                    <option value="male">
-                        Male
-                    </option>
-
-                    <option value="female">
-                        Female
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- WEIGHT -->
-
-            <div class="form-group">
-
-                <label for="weight">
-                    Weight
-                </label>
-
-                <div class="input-wrapper">
-
-                    <input
-                        type="number"
-                        id="weight"
-                        min="0"
-                        max="500"
-                        step="0.1"
-                        placeholder="e.g. 72"
-                    >
-
-                    <span class="unit">
-                        kg
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <!-- HEIGHT -->
-
-            <div class="form-group">
-
-                <label for="height">
-                    Height
-                </label>
-
-                <div class="input-wrapper">
-
-                    <input
-                        type="number"
-                        id="height"
-                        min="0"
-                        max="250"
-                        step="0.1"
-                        placeholder="e.g. 175"
-                    >
-
-                    <span class="unit">
-                        cm
-                    </span>
-
-                </div>
-
-            </div>
+            <input
+                type="number"
+                id="age"
+                min="0"
+                max="120"
+                placeholder="Age"
+            >
 
         </div>
 
 
-        <!-- ================= AUTOMATIC CALCULATIONS ================= -->
 
-        <div class="results-grid">
+        <!-- SEX -->
 
-            <div class="result-box">
+        <div class="input-group">
 
-                <span class="result-label">
-                    BMI
-                </span>
+            <label for="sex">
+                Sex
+            </label>
 
-                <span
-                    class="result-value"
-                    id="bmi"
-                >
-                    —
-                </span>
+            <select id="sex">
 
+                <option value="">
+                    Select
+                </option>
+
+                <option value="male">
+                    Male
+                </option>
+
+                <option value="female">
+                    Female
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- WEIGHT -->
+
+        <div class="input-group">
+
+            <label for="weight">
+                Weight (kg)
+            </label>
+
+            <input
+                type="number"
+                id="weight"
+                min="1"
+                step="0.1"
+                placeholder="Weight"
+            >
+
+        </div>
+
+
+
+        <!-- HEIGHT -->
+
+        <div class="input-group">
+
+            <label for="height">
+                Height (cm)
+            </label>
+
+            <input
+                type="number"
+                id="height"
+                min="30"
+                max="250"
+                step="0.1"
+                placeholder="Height"
+            >
+
+        </div>
+
+
+    </div>
+
+
+    <!-- CALCULATE -->
+
+    <button
+        class="calculate-btn"
+        onclick="calculatePatientValues()"
+    >
+        Calculate
+    </button>
+
+</div>
+
+
+
+<!-- =========================
+     CALCULATED VALUES
+========================= -->
+
+<div class="card">
+
+    <h2>Patient Calculations</h2>
+
+
+    <div class="results-grid">
+
+
+        <!-- BMI -->
+
+        <div class="result-box">
+
+            <div class="result-title">
+                BMI
             </div>
 
-
-            <div class="result-box">
-
-                <span class="result-label">
-                    IBW
-                </span>
-
-                <span
-                    class="result-value"
-                    id="ibw"
-                >
-                    —
-                </span>
-
-            </div>
-
-
-            <div class="result-box">
-
-                <span class="result-label">
-                    PBW
-                </span>
-
-                <span
-                    class="result-value"
-                    id="pbw"
-                >
-                    —
-                </span>
-
-            </div>
-
-
-            <div class="result-box">
-
-                <span class="result-label">
-                    BSA
-                </span>
-
-                <span
-                    class="result-value"
-                    id="bsa"
-                >
-                    —
-                </span>
-
+            <div
+                class="result-value"
+                id="bmi"
+            >
+                —
             </div>
 
         </div>
 
-    </section>
 
 
+        <!-- IBW -->
 
-    <!-- ================= CALCULATOR MODULES ================= -->
+        <div class="result-box">
 
-    <section class="card">
+            <div class="result-title">
+                IBW
+            </div>
 
-        <div class="card-title">
-            Anesthesia Calculators
-        </div>
-
-        <div class="card-subtitle">
-            Select a calculation module.
-        </div>
-
-
-        <div class="modules-grid">
-
-
-            <!-- DRUGS -->
-
-          <button
-class="module-button"
-type="button"
-onclick="openDrugDose()">
-
-                <div class="module-icon">
-                    💉
-                </div>
-
-                <div class="module-title">
-                    Drug Dosing
-                </div>
-
-                <div class="module-description">
-                    Induction drugs, opioids, muscle relaxants,
-                    infusions and vasoactive drugs.
-                </div>
-
-            </button>
-
-
-            <!-- VENTILATOR -->
-
-            <button
-                class="module-button"
-                type="button"
-                data-module="ventilator"
+            <div
+                class="result-value"
+                id="ibw"
             >
-
-                <div class="module-icon">
-                    🫁
-                </div>
-
-                <div class="module-title">
-                    Ventilator
-                </div>
-
-                <div class="module-description">
-                    PBW, tidal volume, minute ventilation,
-                    respiratory calculations and oxygenation.
-                </div>
-
-            </button>
-
-
-            <!-- FLUID -->
-
-            <button
-                class="module-button"
-                type="button"
-                data-module="fluids"
-            >
-
-                <div class="module-icon">
-                    💧
-                </div>
-
-                <div class="module-title">
-                    Fluids & Blood
-                </div>
-
-                <div class="module-description">
-                    Maintenance fluid, deficit, MABL,
-                    blood loss and transfusion calculations.
-                </div>
-
-            </button>
-
-
-            <!-- ACID BASE -->
-
-            <button
-                class="module-button"
-                type="button"
-                data-module="acidbase"
-            >
-
-                <div class="module-icon">
-                    🧪
-                </div>
-
-                <div class="module-title">
-                    Acid–Base
-                </div>
-
-                <div class="module-description">
-                    Anion gap, compensation, Winter's formula,
-                    osmolar gap and ABG calculations.
-                </div>
-
-            </button>
-
-
-            <!-- HEMODYNAMICS -->
-
-            <button
-                class="module-button"
-                type="button"
-                data-module="hemodynamics"
-            >
-
-                <div class="module-icon">
-                    ❤️
-                </div>
-
-                <div class="module-title">
-                    Hemodynamics
-                </div>
-
-                <div class="module-description">
-                    MAP, cardiac output, cardiac index,
-                    SVR, PVR and related calculations.
-                </div>
-
-            </button>
-
-
-            <!-- REGIONAL -->
-
-            <button
-                class="module-button"
-                type="button"
-                data-module="regional"
-            >
-
-                <div class="module-icon">
-                    💉
-                </div>
-
-                <div class="module-title">
-                    Regional Anesthesia
-                </div>
-
-                <div class="module-description">
-                    Maximum local anesthetic doses and
-                    toxicity safety calculations.
-                </div>
-
-            </button>
-
-
-            <!-- PEDIATRIC -->
-
-            <button
-                class="module-button"
-                type="button"
-                data-module="pediatric"
-            >
-
-                <div class="module-icon">
-                    👶
-                </div>
-
-                <div class="module-title">
-                    Pediatric
-                </div>
-
-                <div class="module-description">
-                    Pediatric drug doses, fluids,
-                    airway and resuscitation calculations.
-                </div>
-
-            </button>
-
-
-            <!-- EMERGENCY -->
-
-            <button
-                class="module-button"
-                type="button"
-                data-module="emergency"
-            >
-
-                <div class="module-icon">
-                    🚑
-                </div>
-
-                <div class="module-title">
-                    Emergency & CPR
-                </div>
-
-                <div class="module-description">
-                    Resuscitation drugs, defibrillation,
-                    cardioversion and emergency calculations.
-                </div>
-
-            </button>
+                —
+            </div>
 
         </div>
 
-    </section>
 
 
-    <!-- ================= FOOTER ================= -->
+        <!-- LBW -->
 
-    <div class="footer">
+        <div class="result-box">
 
-        Mehryar Taghavi, MD – Anesthesiology
+            <div class="result-title">
+                LBW
+            </div>
+
+            <div
+                class="result-value"
+                id="lbw"
+            >
+                —
+            </div>
+
+        </div>
+
+
+
+        <!-- ADJBW -->
+
+        <div class="result-box">
+
+            <div class="result-title">
+                AdjBW
+            </div>
+
+            <div
+                class="result-value"
+                id="adjbw"
+            >
+                —
+            </div>
+
+        </div>
+
+
+
+        <!-- PBW -->
+
+        <div class="result-box">
+
+            <div class="result-title">
+                PBW
+            </div>
+
+            <div
+                class="result-value"
+                id="pbw"
+            >
+                —
+            </div>
+
+        </div>
+
+
+
+        <!-- BSA -->
+
+        <div class="result-box">
+
+            <div class="result-title">
+                BSA
+            </div>
+
+            <div
+                class="result-value"
+                id="bsa"
+            >
+                —
+            </div>
+
+        </div>
+
 
     </div>
 
@@ -672,211 +519,429 @@ onclick="openDrugDose()">
 
 
 
+<!-- =========================
+     CALCULATOR MODULES
+========================= -->
+
+<div class="card">
+
+    <h2>Calculators</h2>
+
+
+    <div class="module-grid">
+
+
+        <button
+            class="module-btn"
+            onclick="openDrugDose()"
+        >
+            💊 Drug Dosing
+        </button>
+
+
+
+        <button
+            class="module-btn"
+            onclick="openVentilator()"
+        >
+            🫁 Ventilator
+        </button>
+
+
+
+        <button
+            class="module-btn"
+            onclick="openFluid()"
+        >
+            💧 Fluids & Blood
+        </button>
+
+
+
+        <button
+            class="module-btn"
+            onclick="openAcidBase()"
+        >
+            ⚗️ Acid–Base
+        </button>
+
+
+
+        <button
+            class="module-btn"
+            onclick="openHemodynamics()"
+        >
+            ❤️ Hemodynamics
+        </button>
+
+
+
+        <button
+            class="module-btn"
+            onclick="openRegional()"
+        >
+            💉 Regional Anesthesia
+        </button>
+
+
+
+        <button
+            class="module-btn"
+            onclick="openPediatric()"
+        >
+            👶 Pediatric
+        </button>
+
+
+
+        <button
+            class="module-btn"
+            onclick="openEmergency()"
+        >
+            🚨 Emergency & CPR
+        </button>
+
+
+    </div>
+
+</div>
+
+
+</div>
+
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<div class="footer">
+
+    Mehryar Taghavi, MD – Anesthesiology
+
+</div>
+
+
+
 <script>
 
-    /* =========================================================
-       PATIENT CALCULATIONS
-    ========================================================= */
+/* =====================================================
+   CALCULATE PATIENT VALUES
+===================================================== */
 
-    const ageInput = document.getElementById("age");
-    const sexInput = document.getElementById("sex");
-    const weightInput = document.getElementById("weight");
-    const heightInput = document.getElementById("height");
+function calculatePatientValues() {
 
 
-    function calculatePatientValues() {
+    /* -------------------------
+       GET INPUTS
+    ------------------------- */
 
-        const weight = parseFloat(weightInput.value);
-        const height = parseFloat(heightInput.value);
-        const sex = sexInput.value;
-// Save patient data for calculators
+    const age =
+        parseFloat(
+            document.getElementById("age").value
+        );
 
-const patientData = {
+    const sex =
+        document.getElementById("sex").value;
 
-    age: ageInput.value,
+    const weight =
+        parseFloat(
+            document.getElementById("weight").value
+        );
 
-    sex: sexInput.value,
-
-    weight: weight,
-
-    height: height,
-
-    bmi: bmi,
-
-    ibw: ibw,
-
-    pbw: pbw,
-
-    bsa: bsa
-
-};
+    const height =
+        parseFloat(
+            document.getElementById("height").value
+        );
 
 
-sessionStorage.setItem(
-    "patientData",
-    JSON.stringify(patientData)
-);
+    /* -------------------------
+       BASIC VALIDATION
+    ------------------------- */
 
-        /* ---------- Reset ---------- */
+    if (!weight || !height || !sex) {
 
-        document.getElementById("bmi").textContent = "—";
-        document.getElementById("ibw").textContent = "—";
-        document.getElementById("pbw").textContent = "—";
-        document.getElementById("bsa").textContent = "—";
+        alert(
+            "Please enter Sex, Weight and Height."
+        );
 
-
-        if (
-            !Number.isFinite(weight) ||
-            !Number.isFinite(height) ||
-            weight <= 0 ||
-            height <= 0
-        ) {
-            return;
-        }
+        return;
+    }
 
 
-        /* ---------- BMI ---------- */
+    /* =================================================
+       BMI
+    ================================================= */
 
-        const heightMeters = height / 100;
+    const heightMeter =
+        height / 100;
 
-        const bmi =
-            weight /
-            (heightMeters * heightMeters);
-
-
-        document.getElementById("bmi").textContent =
-            bmi.toFixed(1);
+    const bmi =
+        weight /
+        (heightMeter * heightMeter);
 
 
-        /* ---------- BSA ---------- */
+    /* =================================================
+       IBW
+       Devine Formula
+    ================================================= */
 
-        const bsa =
-            Math.sqrt(
-                (height * weight) / 3600
+    let ibw;
+
+    if (sex === "male") {
+
+        ibw =
+            50 +
+            2.3 *
+            Math.max(
+                0,
+                (height - 152.4) / 2.54
             );
 
+    } else {
 
-        document.getElementById("bsa").textContent =
-            bsa.toFixed(2) + " m²";
-
-
-        /* ---------- IBW / PBW ---------- */
-
-        if (sex === "male") {
-
-            const ibw =
-                50 +
-                2.3 *
-                Math.max(
-                    0,
-                    (height - 152.4) / 2.54
-                );
-
-
-            const pbw =
-                50 +
-                0.91 *
-                (height - 152.4);
-
-
-            document.getElementById("ibw").textContent =
-                ibw.toFixed(1) + " kg";
-
-
-            document.getElementById("pbw").textContent =
-                pbw.toFixed(1) + " kg";
-
-        }
-
-
-        if (sex === "female") {
-
-            const ibw =
-                45.5 +
-                2.3 *
-                Math.max(
-                    0,
-                    (height - 152.4) / 2.54
-                );
-
-
-            const pbw =
-                45.5 +
-                0.91 *
-                (height - 152.4);
-
-
-            document.getElementById("ibw").textContent =
-                ibw.toFixed(1) + " kg";
-
-
-            document.getElementById("pbw").textContent =
-                pbw.toFixed(1) + " kg";
-
-        }
+        ibw =
+            45.5 +
+            2.3 *
+            Math.max(
+                0,
+                (height - 152.4) / 2.54
+            );
 
     }
 
 
-    /* =========================================================
-       INPUT EVENTS
-    ========================================================= */
+    /* =================================================
+       PBW
+       ARDSNet Formula
+    ================================================= */
 
-    ageInput.addEventListener(
-        "input",
-        calculatePatientValues
+    let pbw;
+
+    if (sex === "male") {
+
+        pbw =
+            50 +
+            0.91 *
+            (height - 152.4);
+
+    } else {
+
+        pbw =
+            45.5 +
+            0.91 *
+            (height - 152.4);
+
+    }
+
+
+    /* =================================================
+       LBW
+       Janmahasatian Formula
+    ================================================= */
+
+    let lbw;
+
+    if (sex === "male") {
+
+        lbw =
+            (9270 * weight) /
+            (6680 + (216 * bmi));
+
+    } else {
+
+        lbw =
+            (9270 * weight) /
+            (8780 + (244 * bmi));
+
+    }
+
+
+    /* =================================================
+       AdjBW
+    ================================================= */
+
+    const adjbw =
+        ibw +
+        0.4 *
+        (weight - ibw);
+
+
+    /* =================================================
+       BSA
+       Mosteller Formula
+    ================================================= */
+
+    const bsa =
+        Math.sqrt(
+            (height * weight) / 3600
+        );
+
+
+    /* =================================================
+       DISPLAY RESULTS
+    ================================================= */
+
+    document.getElementById("bmi").innerText =
+        bmi.toFixed(1);
+
+    document.getElementById("ibw").innerText =
+        ibw.toFixed(1) + " kg";
+
+    document.getElementById("lbw").innerText =
+        lbw.toFixed(1) + " kg";
+
+    document.getElementById("adjbw").innerText =
+        adjbw.toFixed(1) + " kg";
+
+    document.getElementById("pbw").innerText =
+        pbw.toFixed(1) + " kg";
+
+    document.getElementById("bsa").innerText =
+        bsa.toFixed(2) + " m²";
+
+
+    /* =================================================
+       SAVE PATIENT DATA
+       Temporary session only
+    ================================================= */
+
+    const patientData = {
+
+        age: age || null,
+
+        sex: sex,
+
+        weight: weight,
+
+        height: height,
+
+        bmi: Number(
+            bmi.toFixed(1)
+        ),
+
+        ibw: Number(
+            ibw.toFixed(1)
+        ),
+
+        lbw: Number(
+            lbw.toFixed(1)
+        ),
+
+        adjbw: Number(
+            adjbw.toFixed(1)
+        ),
+
+        pbw: Number(
+            pbw.toFixed(1)
+        ),
+
+        bsa: Number(
+            bsa.toFixed(2)
+        )
+
+    };
+
+
+    sessionStorage.setItem(
+        "patientData",
+        JSON.stringify(patientData)
     );
 
-    sexInput.addEventListener(
-        "change",
-        calculatePatientValues
+
+    console.log(
+        "Patient data saved:",
+        patientData
     );
-
-    weightInput.addEventListener(
-        "input",
-        calculatePatientValues
-    );
-
-    heightInput.addEventListener(
-        "input",
-        calculatePatientValues
-    );
-
-
-    /* =========================================================
-       MODULE BUTTONS
-    ========================================================= */
-
-    const moduleButtons =
-        document.querySelectorAll(".module-button");
-
-
-    moduleButtons.forEach(button => {
-
-        button.addEventListener("click", () => {
-
-            const module =
-                button.dataset.module;
-
-
-            /*
-             * صفحات واقعی را بعداً اینجا وصل می‌کنیم.
-             */
-
-            console.log(
-                "Selected module:",
-                module
-            );
-
-        });
-
-    });
-function openDrugDose(){
-
-    window.location.href="drug-dose.html";
 
 }
+
+
+/* =====================================================
+   PAGE NAVIGATION
+===================================================== */
+
+function openDrugDose() {
+
+    calculatePatientValues();
+
+    window.location.href =
+        "drug-dose.html";
+
+}
+
+
+function openVentilator() {
+
+    calculatePatientValues();
+
+    window.location.href =
+        "ventilator.html";
+
+}
+
+
+function openFluid() {
+
+    calculatePatientValues();
+
+    window.location.href =
+        "fluid.html";
+
+}
+
+
+function openAcidBase() {
+
+    calculatePatientValues();
+
+    window.location.href =
+        "acid-base.html";
+
+}
+
+
+function openHemodynamics() {
+
+    calculatePatientValues();
+
+    window.location.href =
+        "hemodynamics.html";
+
+}
+
+
+function openRegional() {
+
+    calculatePatientValues();
+
+    window.location.href =
+        "regional.html";
+
+}
+
+
+function openPediatric() {
+
+    calculatePatientValues();
+
+    window.location.href =
+        "pediatric.html";
+
+}
+
+
+function openEmergency() {
+
+    calculatePatientValues();
+
+    window.location.href =
+        "emergency.html";
+
+}
+
 </script>
+
 
 </body>
 </html>
