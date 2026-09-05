@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Drug Dosing | Anesthesia Calculator</title>
+
+
+<style>
+
+/* =====================================================
+   GENERAL
+===================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+
+    margin: 0;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: #f4f7fb;
+
+    color: #1f2937;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.header {
+
+    background: #17365d;
+
+    color: white;
+
+    padding: 22px 20px;
+
+    text-align: center;
+}
+
+.header h1 {
+
+    margin: 0;
+
+    font-size: 28px;
+}
+
+.header p {
+
+    margin: 7px 0 0;
+
+    font-size: 14px;
+
+    opacity: 0.9;
+}
+
+
+/* =====================================================
+   CONTAINER
+===================================================== */
+
+.container {
+
+    max-width: 900px;
+
+    margin: 25px auto;
+
+    padding: 0 18px;
+}
+
+
+/* =====================================================
+   CARD
+===================================================== */
+
+.card {
+
+    background: white;
+
+    border-radius: 14px;
+
+    padding: 23px;
+
+    margin-bottom: 22px;
+
+    box-shadow:
+        0 4px 15px rgba(0,0,0,0.08);
+}
+
+.card h2 {
+
+    margin-top: 0;
+
+    margin-bottom: 18px;
+
+    color: #17365d;
+
+    font-size: 21px;
+}
+
+
+/* =====================================================
+   PATIENT SUMMARY
+===================================================== */
+
+.patient-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 12px;
+}
+
+.patient-box {
+
+    background: #f5f8fc;
+
+    border: 1px solid #dce4ee;
+
+    border-radius: 9px;
+
+    padding: 12px;
+
+    text-align: center;
+}
+
+.patient-label {
+
+    font-size: 12px;
+
+    color: #64748b;
+
+    margin-bottom: 5px;
+}
+
+.patient-value {
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    color: #17365d;
+}
+
+
+/* =====================================================
+   FORM
+===================================================== */
+
+.form-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 18px;
+}
+
+.input-group {
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+.input-group label {
+
+    font-weight: bold;
+
+    font-size: 14px;
+
+    margin-bottom: 7px;
+}
+
+.input-group select,
+.input-group input {
+
+    width: 100%;
+
+    padding: 12px;
+
+    border: 1px solid #ccd5e0;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+
+    background: white;
+}
+
+.input-group select:focus,
+.input-group input:focus {
+
+    outline: none;
+
+    border-color: #17365d;
+}
+
+
+/* =====================================================
+   FULL WIDTH
+===================================================== */
+
+.full-width {
+
+    grid-column: 1 / -1;
+}
+
+
+/* =====================================================
+   DOSE TYPE
+===================================================== */
+
+.dose-type {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 10px;
+
+    margin-top: 5px;
+}
+
+.dose-type button {
+
+    padding: 12px;
+
+    border: 1px solid #ccd5e0;
+
+    border-radius: 8px;
+
+    background: #f5f8fc;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    color: #17365d;
+}
+
+.dose-type button.active {
+
+    background: #17365d;
+
+    color: white;
+
+    border-color: #17365d;
+}
+
+
+/* =====================================================
+   CALCULATE BUTTON
+===================================================== */
+
+.calculate-btn {
+
+    width: 100%;
+
+    margin-top: 20px;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: #17365d;
+
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.calculate-btn:hover {
+
+    background: #102945;
+}
+
+
+/* =====================================================
+   RESULT
+===================================================== */
+
+.result-card {
+
+    display: none;
+
+    background: #f5f8fc;
+
+    border: 1px solid #dce4ee;
+
+    border-radius: 12px;
+
+    padding: 20px;
+
+    margin-top: 20px;
+
+    text-align: center;
+}
+
+.result-card.show {
+
+    display: block;
+}
+
+.result-title {
+
+    font-size: 14px;
+
+    color: #64748b;
+
+    margin-bottom: 8px;
+}
+
+.result-value {
+
+    font-size: 32px;
+
+    font-weight: bold;
+
+    color: #17365d;
+}
+
+.result-unit {
+
+    font-size: 16px;
+
+    color: #64748b;
+
+    margin-top: 5px;
+}
+
+
+/* =====================================================
+   NOTE
+===================================================== */
+
+.note {
+
+    margin-top: 15px;
+
+    padding: 12px;
+
+    background: #fff8e6;
+
+    border: 1px solid #f0d98c;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+}
+
+
+/* =====================================================
+   BACK BUTTON
+===================================================== */
+
+.back-btn {
+
+    width: 100%;
+
+    padding: 13px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: #eaf0f7;
+
+    color: #17365d;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.back-btn:hover {
+
+    background: #d8e4f1;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 600px) {
+
+    .patient-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .form-grid {
+
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+    .card {
+
+        padding: 18px;
+    }
+}
+
+
+@media (max-width: 380px) {
+
+    .patient-grid {
+
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+    .form-grid {
+
+        grid-template-columns:
+            1fr;
+    }
+
+    .full-width {
+
+        grid-column: auto;
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<div class="header">
+
+    <h1>
+        Drug Dosing
+    </h1>
+
+    <p>
+        Anesthesia Drug Dose Calculator
+    </p>
+
+</div>
+
+
+
+<div class="container">
+
+
+<!-- =====================================================
+     PATIENT SUMMARY
+===================================================== -->
+
+<div class="card">
+
+    <h2>
+        Patient Profile
+    </h2>
+
+
+    <div class="patient-grid">
+
+
+        <div class="patient-box">
+
+            <div class="patient-label">
+                Age
+            </div>
+
+            <div
+                class="patient-value"
+                id="patientAge"
+            >
+                —
+            </div>
+
+        </div>
+
+
+        <div class="patient-box">
+
+            <div class="patient-label">
+                Weight
+            </div>
+
+            <div
+                class="patient-value"
+                id="patientWeight"
+            >
+                —
+            </div>
+
+        </div>
+
+
+        <div class="patient-box">
+
+            <div class="patient-label">
+                Height
+            </div>
+
+            <div
+                class="patient-value"
+                id="patientHeight"
+            >
+                —
+            </div>
+
+        </div>
+
+
+        <div class="patient-box">
+
+            <div class="patient-label">
+                IBW
+            </div>
+
+            <div
+                class="patient-value"
+                id="patientIBW"
+            >
+                —
+            </div>
+
+        </div>
+
+
+        <div class="patient-box">
+
+            <div class="patient-label">
+                LBW
+            </div>
+
+            <div
+                class="patient-value"
+                id="patientLBW"
+            >
+                —
+            </div>
+
+        </div>
+
+
+        <div class="patient-box">
+
+            <div class="patient-label">
+                AdjBW
+            </div>
+
+            <div
+                class="patient-value"
+                id="patientAdjBW"
+            >
+                —
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     DRUG SELECTION
+===================================================== -->
+
+<div class="card">
+
+    <h2>
+        Drug Selection
+    </h2>
+
+
+    <div class="form-grid">
+
+
+        <!-- CATEGORY -->
+
+        <div class="input-group">
+
+            <label for="drugCategory">
+                Drug Category
+            </label>
+
+            <select
+                id="drugCategory"
+                onchange="loadDrugs()"
+            >
+
+                <option value="">
+                    Select Category
+                </option>
+
+                <option value="induction">
+                    Induction Agents
+                </option>
+
+                <option value="opioids">
+                    Opioids
+                </option>
+
+                <option value="muscle">
+                    Muscle Relaxants
+                </option>
+
+                <option value="sedation">
+                    Sedation
+                </option>
+
+                <option value="vasopressor">
+                    Vasopressors
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- DRUG -->
+
+        <div class="input-group">
+
+            <label for="drug">
+                Drug
+            </label>
+
+            <select
+                id="drug"
+                onchange="selectDrug()"
+            >
+
+                <option value="">
+                    Select Drug
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- WEIGHT -->
+
+        <div class="input-group">
+
+            <label for="weightBasis">
+                Dose Weight
+            </label>
+
+            <select id="weightBasis">
+
+                <option value="tbw">
+                    Total Body Weight
+                </option>
+
+                <option value="ibw">
+                    Ideal Body Weight
+                </option>
+
+                <option value="lbw">
+                    Lean Body Weight
+                </option>
+
+                <option value="adjbw">
+                    Adjusted Body Weight
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- DOSE -->
+
+        <div class="input-group">
+
+            <label for="dose">
+                Dose
+            </label>
+
+            <input
+                type="number"
+                id="dose"
+                min="0"
+                step="0.01"
+                placeholder="Dose per kg"
+            >
+
+        </div>
+
+
+
+        <!-- DOSE TYPE -->
+
+        <div class="input-group full-width">
+
+            <label>
+                Administration
+            </label>
+
+
+            <div class="dose-type">
+
+                <button
+                    type="button"
+                    id="bolusBtn"
+                    class="active"
+                    onclick="setAdministration('bolus')"
+                >
+                    Bolus
+                </button>
+
+
+                <button
+                    type="button"
+                    id="infusionBtn"
+                    onclick="setAdministration('infusion')"
+                >
+                    Infusion
+                </button>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- CALCULATE -->
+
+    <button
+        class="calculate-btn"
+        onclick="calculateDose()"
+    >
+        Calculate Dose
+    </button>
+
+
+    <!-- RESULT -->
+
+    <div
+        class="result-card"
+        id="resultCard"
+    >
+
+        <div class="result-title">
+            Calculated Dose
+        </div>
+
+        <div
+            class="result-value"
+            id="resultValue"
+        >
+            —
+        </div>
+
+        <div
+            class="result-unit"
+            id="resultUnit"
+        >
+            —
+        </div>
+
+    </div>
+
+
+    <div class="note">
+
+        <strong>Clinical note:</strong>
+        The calculated dose is a mathematical result based on
+        the selected dose weight and entered dose.
+        Final dosing should be individualized according to
+        patient characteristics, clinical indication,
+        organ function, hemodynamics and institutional protocol.
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     BACK
+===================================================== -->
+
+<div class="card">
+
+    <button
+        class="back-btn"
+        onclick="goBack()"
+    >
+        ← Back to Patient Profile
+    </button>
+
+</div>
+
+
+</div>
+
+
+
+<script>
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+let patient = null;
+
+let administration = "bolus";
+
+
+/* =====================================================
+   DRUG DATABASE
+===================================================== */
+
+const drugs = {
+
+    induction: [
+
+        {
+            name: "Propofol",
+            value: "propofol",
+            unit: "mg/kg"
+        },
+
+        {
+            name: "Etomidate",
+            value: "etomidate",
+            unit: "mg/kg"
+        },
+
+        {
+            name: "Ketamine",
+            value: "ketamine",
+            unit: "mg/kg"
+        }
+
+    ],
+
+
+    opioids: [
+
+        {
+            name: "Fentanyl",
+            value: "fentanyl",
+            unit: "mcg/kg"
+        },
+
+        {
+            name: "Morphine",
+            value: "morphine",
+            unit: "mg/kg"
+        }
+
+    ],
+
+
+    muscle: [
+
+        {
+            name: "Rocuronium",
+            value: "rocuronium",
+            unit: "mg/kg"
+        },
+
+        {
+            name: "Vecuronium",
+            value: "vecuronium",
+            unit: "mg/kg"
+        },
+
+        {
+            name: "Succinylcholine",
+            value: "succinylcholine",
+            unit: "mg/kg"
+        }
+
+    ],
+
+
+    sedation: [
+
+        {
+            name: "Midazolam",
+            value: "midazolam",
+            unit: "mg/kg"
+        },
+
+        {
+            name: "Dexmedetomidine",
+            value: "dexmedetomidine",
+            unit: "mcg/kg"
+        }
+
+    ],
+
+
+    vasopressor: [
+
+        {
+            name: "Norepinephrine",
+            value: "norepinephrine",
+            unit: "mcg/kg/min"
+        }
+
+    ]
+
+};
+
+
+/* =====================================================
+   LOAD PATIENT
+===================================================== */
+
+function loadPatient() {
+
+
+    const storedData =
+        sessionStorage.getItem(
+            "patientData"
+        );
+
+
+    if (!storedData) {
+
+        alert(
+            "No patient data found. Please enter patient information first."
+        );
+
+        return;
+
+    }
+
+
+    patient =
+        JSON.parse(storedData);
+
+
+    document.getElementById(
+        "patientAge"
+    ).innerText =
+        patient.age !== null
+            ? patient.age + " yr"
+            : "—";
+
+
+    document.getElementById(
+        "patientWeight"
+    ).innerText =
+        patient.weight + " kg";
+
+
+    document.getElementById(
+        "patientHeight"
+    ).innerText =
+        patient.height + " cm";
+
+
+    document.getElementById(
+        "patientIBW"
+    ).innerText =
+        patient.ibw + " kg";
+
+
+    document.getElementById(
+        "patientLBW"
+    ).innerText =
+        patient.lbw + " kg";
+
+
+    document.getElementById(
+        "patientAdjBW"
+    ).innerText =
+        patient.adjbw + " kg";
+
+}
+
+
+/* =====================================================
+   LOAD DRUGS
+===================================================== */
+
+function loadDrugs() {
+
+
+    const category =
+        document.getElementById(
+            "drugCategory"
+        ).value;
+
+
+    const drugSelect =
+        document.getElementById(
+            "drug"
+        );
+
+
+    drugSelect.innerHTML =
+        '<option value="">Select Drug</option>';
+
+
+    if (!category) {
+
+        return;
+
+    }
+
+
+    drugs[category].forEach(
+        function(drug) {
+
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                drug.value;
+
+
+            option.textContent =
+                drug.name;
+
+
+            option.dataset.unit =
+                drug.unit;
+
+
+            drugSelect.appendChild(
+                option
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   SELECT DRUG
+===================================================== */
+
+function selectDrug() {
+
+
+    const drugSelect =
+        document.getElementById(
+            "drug"
+        );
+
+
+    const selectedOption =
+        drugSelect.options[
+            drugSelect.selectedIndex
+        ];
+
+
+    if (!selectedOption.value) {
+
+        return;
+
+    }
+
+
+    const unit =
+        selectedOption.dataset.unit;
+
+
+    const doseInput =
+        document.getElementById(
+            "dose"
+        );
+
+
+    doseInput.placeholder =
+        "Dose (" + unit + ")";
+
+
+}
+
+
+/* =====================================================
+   ADMINISTRATION
+===================================================== */
+
+function setAdministration(type) {
+
+
+    administration = type;
+
+
+    const bolusBtn =
+        document.getElementById(
+            "bolusBtn"
+        );
+
+
+    const infusionBtn =
+        document.getElementById(
+            "infusionBtn"
+        );
+
+
+    bolusBtn.classList.remove(
+        "active"
+    );
+
+    infusionBtn.classList.remove(
+        "active"
+    );
+
+
+    if (type === "bolus") {
+
+        bolusBtn.classList.add(
+            "active"
+        );
+
+    } else {
+
+        infusionBtn.classList.add(
+            "active"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   GET SELECTED WEIGHT
+===================================================== */
+
+function getSelectedWeight() {
+
+
+    const basis =
+        document.getElementById(
+            "weightBasis"
+        ).value;
+
+
+    if (!patient) {
+
+        return null;
+
+    }
+
+
+    switch (basis) {
+
+
+        case "tbw":
+
+            return patient.weight;
+
+
+        case "ibw":
+
+            return patient.ibw;
+
+
+        case "lbw":
+
+            return patient.lbw;
+
+
+        case "adjbw":
+
+            return patient.adjbw;
+
+
+        default:
+
+            return patient.weight;
+
+    }
+
+}
+
+
+/* =====================================================
+   CALCULATE DOSE
+===================================================== */
+
+function calculateDose() {
+
+
+    if (!patient) {
+
+        alert(
+            "Patient data not available."
+        );
+
+        return;
+
+    }
+
+
+    const drug =
+        document.getElementById(
+            "drug"
+        ).value;
+
+
+    const dose =
+        parseFloat(
+            document.getElementById(
+                "dose"
+            ).value
+        );
+
+
+    if (!drug) {
+
+        alert(
+            "Please select a drug."
+        );
+
+        return;
+
+    }
+
+
+    if (!dose || dose <= 0) {
+
+        alert(
+            "Please enter a valid dose."
+        );
+
+        return;
+
+    }
+
+
+    const selectedWeight =
+        getSelectedWeight();
+
+
+    if (!selectedWeight) {
+
+        alert(
+            "Unable to determine dose weight."
+        );
+
+        return;
+
+    }
+
+
+    /* -----------------------------------------
+       CALCULATION
+    ----------------------------------------- */
+
+    const totalDose =
+        dose *
+        selectedWeight;
+
+
+    /* -----------------------------------------
+       UNIT
+    ----------------------------------------- */
+
+    const drugSelect =
+        document.getElementById(
+            "drug"
+        );
+
+
+    const selectedOption =
+        drugSelect.options[
+            drugSelect.selectedIndex
+        ];
+
+
+    const unit =
+        selectedOption.dataset.unit;
+
+
+    /* -----------------------------------------
+       DISPLAY
+    ----------------------------------------- */
+
+    document.getElementById(
+        "resultValue"
+    ).innerText =
+        totalDose.toFixed(2);
+
+
+    document.getElementById(
+        "resultUnit"
+    ).innerText =
+        unit.replace(
+            "/kg",
+            ""
+        );
+
+
+    document.getElementById(
+        "resultCard"
+    ).classList.add(
+        "show"
+    );
+
+}
+
+
+/* =====================================================
+   BACK
+===================================================== */
+
+function goBack() {
+
+    window.location.href =
+        "index.html";
+
+}
+
+
+/* =====================================================
+   INITIALIZE
+===================================================== */
+
+window.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        loadPatient();
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
