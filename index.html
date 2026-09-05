@@ -690,7 +690,33 @@
         const weight = parseFloat(weightInput.value);
         const height = parseFloat(heightInput.value);
         const sex = sexInput.value;
+// Save patient data for calculators
 
+const patientData = {
+
+    age: ageInput.value,
+
+    sex: sexInput.value,
+
+    weight: weight,
+
+    height: height,
+
+    bmi: bmi,
+
+    ibw: ibw,
+
+    pbw: pbw,
+
+    bsa: bsa
+
+};
+
+
+sessionStorage.setItem(
+    "patientData",
+    JSON.stringify(patientData)
+);
 
         /* ---------- Reset ---------- */
 
