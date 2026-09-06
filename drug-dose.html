@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -958,11 +959,8 @@ const drugs = {
 
 function loadPatient() {
 
-
     const storedData =
-        sessionStorage.getItem(
-            "patientData"
-        );
+        sessionStorage.getItem("patientData");
 
 
     if (!storedData) {
@@ -976,14 +974,32 @@ function loadPatient() {
     }
 
 
-    patient =
-        JSON.parse(storedData);
+    try {
+
+        patient =
+            JSON.parse(storedData);
+
+    } catch (error) {
+
+        console.error(
+            "Invalid patient data:",
+            error
+        );
+
+        alert(
+            "Patient data is invalid. Please return to the Patient Profile."
+        );
+
+        return;
+
+    }
 
 
     document.getElementById(
         "patientAge"
     ).innerText =
-        patient.age !== null
+        patient.age !== null &&
+        patient.age !== undefined
             ? patient.age + " yr"
             : "—";
 
@@ -1026,7 +1042,6 @@ function loadPatient() {
 
 function loadDrugs() {
 
-
     const category =
         document.getElementById(
             "drugCategory"
@@ -1052,7 +1067,6 @@ function loadDrugs() {
 
     drugs[category].forEach(
         function(drug) {
-
 
             const option =
                 document.createElement(
@@ -1088,7 +1102,6 @@ function loadDrugs() {
 
 function selectDrug() {
 
-
     const drugSelect =
         document.getElementById(
             "drug"
@@ -1101,7 +1114,8 @@ function selectDrug() {
         ];
 
 
-    if (!selectedOption.value) {
+    if (!selectedOption ||
+        !selectedOption.value) {
 
         return;
 
@@ -1121,7 +1135,6 @@ function selectDrug() {
     doseInput.placeholder =
         "Dose (" + unit + ")";
 
-
 }
 
 
@@ -1130,7 +1143,6 @@ function selectDrug() {
 ===================================================== */
 
 function setAdministration(type) {
-
 
     administration = type;
 
@@ -1179,7 +1191,6 @@ function setAdministration(type) {
 
 function getSelectedWeight() {
 
-
     const basis =
         document.getElementById(
             "weightBasis"
@@ -1194,7 +1205,6 @@ function getSelectedWeight() {
 
 
     switch (basis) {
-
 
         case "tbw":
 
@@ -1230,7 +1240,6 @@ function getSelectedWeight() {
 ===================================================== */
 
 function calculateDose() {
-
 
     if (!patient) {
 
@@ -1268,7 +1277,7 @@ function calculateDose() {
     }
 
 
-    if (!dose || dose <= 0) {
+    if (!Number.isFinite(dose) || dose <= 0) {
 
         alert(
             "Please enter a valid dose."
@@ -1283,7 +1292,8 @@ function calculateDose() {
         getSelectedWeight();
 
 
-    if (!selectedWeight) {
+    if (!selectedWeight ||
+        !Number.isFinite(selectedWeight)) {
 
         alert(
             "Unable to determine dose weight."
@@ -1319,8 +1329,15 @@ function calculateDose() {
         ];
 
 
+    if (!selectedOption) {
+
+        return;
+
+    }
+
+
     const unit =
-        selectedOption.dataset.unit;
+        selectedOption.dataset.unit || "";
 
 
     /* -----------------------------------------
@@ -1376,11 +1393,9 @@ window.addEventListener(
     }
 );
 
-
-<script src="drugs.js"></script>
-<script>
-    // کدهای مربوط به drug-dose.html
 </script>
-</body>
 
+
+</body>
 </html>
+```
