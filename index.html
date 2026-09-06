@@ -863,11 +863,25 @@ function calculatePatientValues() {
 
 function openDrugDose() {
 
+    const weight =
+        parseFloat(document.getElementById("weight").value);
+
+    const height =
+        parseFloat(document.getElementById("height").value);
+
+    const sex =
+        document.getElementById("sex").value;
+
+    if (!weight || !height || !sex) {
+
+        alert("Please enter Sex, Weight and Height.");
+
+        return;
+    }
+
     calculatePatientValues();
 
-    window.location.href =
-        "drug-dose.html";
-
+    window.location.href = "drug-dose.html";
 }
 
 
