@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -191,8 +190,7 @@ body {
     margin-bottom: 7px;
 }
 
-.input-group select,
-.input-group input {
+.input-group select {
 
     width: 100%;
 
@@ -207,8 +205,7 @@ body {
     background: white;
 }
 
-.input-group select:focus,
-.input-group input:focus {
+.input-group select:focus {
 
     outline: none;
 
@@ -272,39 +269,6 @@ body {
 
 
 /* =====================================================
-   CALCULATE BUTTON
-===================================================== */
-
-.calculate-btn {
-
-    width: 100%;
-
-    margin-top: 20px;
-
-    padding: 14px;
-
-    border: none;
-
-    border-radius: 9px;
-
-    background: #17365d;
-
-    color: white;
-
-    font-size: 17px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-}
-
-.calculate-btn:hover {
-
-    background: #102945;
-}
-
-
-/* =====================================================
    RESULT
 ===================================================== */
 
@@ -359,7 +323,63 @@ body {
 
 
 /* =====================================================
-   NOTE
+   AUTOMATIC DOSE
+===================================================== */
+
+.auto-dose-box {
+
+    width: 100%;
+
+    padding: 13px 14px;
+
+    background: #f5f8fc;
+
+    border: 1px solid #dce4ee;
+
+    border-radius: 8px;
+
+    color: #17365d;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    min-height: 48px;
+
+    display: flex;
+
+    align-items: center;
+}
+
+
+/* =====================================================
+   AUTOMATIC CALCULATION NOTE
+===================================================== */
+
+.auto-calc-note {
+
+    margin-top: 18px;
+
+    padding: 12px;
+
+    background: #eef5ff;
+
+    border: 1px solid #cddff5;
+
+    border-radius: 8px;
+
+    color: #17365d;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+    text-align: center;
+}
+
+
+/* =====================================================
+   CLINICAL NOTE
 ===================================================== */
 
 .note {
@@ -632,26 +652,6 @@ body {
                     Select Category
                 </option>
 
-                <option value="induction">
-                    Induction Agents
-                </option>
-
-                <option value="opioids">
-                    Opioids
-                </option>
-
-                <option value="muscle">
-                    Muscle Relaxants
-                </option>
-
-                <option value="sedation">
-                    Sedation
-                </option>
-
-                <option value="vasopressor">
-                    Vasopressors
-                </option>
-
             </select>
 
         </div>
@@ -681,7 +681,7 @@ body {
 
 
 
-        <!-- WEIGHT -->
+        <!-- DOSE WEIGHT -->
 
         <div class="input-group">
 
@@ -689,7 +689,10 @@ body {
                 Dose Weight
             </label>
 
-            <select id="weightBasis">
+            <select
+                id="weightBasis"
+                onchange="calculateDose()"
+            >
 
                 <option value="tbw">
                     Total Body Weight
@@ -713,27 +716,26 @@ body {
 
 
 
-        <!-- DOSE -->
+        <!-- RECOMMENDED DOSE -->
 
         <div class="input-group">
 
-            <label for="dose">
-                Dose
+            <label>
+                Recommended Dose
             </label>
 
-            <input
-                type="number"
-                id="dose"
-                min="0"
-                step="0.01"
-                placeholder="Dose per kg"
+            <div
+                class="auto-dose-box"
+                id="autoDoseBox"
             >
+                Select a drug to see the recommended dose
+            </div>
 
         </div>
 
 
 
-        <!-- DOSE TYPE -->
+        <!-- ADMINISTRATION -->
 
         <div class="input-group full-width">
 
@@ -770,14 +772,16 @@ body {
     </div>
 
 
-    <!-- CALCULATE -->
 
-    <button
-        class="calculate-btn"
-        onclick="calculateDose()"
-    >
-        Calculate Dose
-    </button>
+    <!-- AUTOMATIC CALCULATION -->
+
+    <div class="auto-calc-note">
+
+        Dose is calculated automatically from the
+        recommended dose range and the selected dose weight.
+
+    </div>
+
 
 
     <!-- RESULT -->
@@ -791,12 +795,14 @@ body {
             Calculated Dose
         </div>
 
+
         <div
             class="result-value"
             id="resultValue"
         >
             —
         </div>
+
 
         <div
             class="result-unit"
@@ -808,16 +814,23 @@ body {
     </div>
 
 
+
+    <!-- CLINICAL NOTE -->
+
     <div class="note">
 
         <strong>Clinical note:</strong>
-        The calculated dose is a mathematical result based on
-        the selected dose weight and entered dose.
+
+        The calculated dose is based on the recommended
+        dose range stored for the selected drug and the
+        selected dose weight.
+
         Final dosing should be individualized according to
         patient characteristics, clinical indication,
         organ function, hemodynamics and institutional protocol.
 
     </div>
+
 
 </div>
 
@@ -843,6 +856,13 @@ body {
 
 
 
+<!-- =====================================================
+     DRUG DATABASE
+===================================================== -->
+
+<script src="drugs.js"></script>
+
+
 <script>
 
 /* =====================================================
@@ -852,105 +872,6 @@ body {
 let patient = null;
 
 let administration = "bolus";
-
-
-/* =====================================================
-   DRUG DATABASE
-===================================================== */
-
-const drugs = {
-
-    induction: [
-
-        {
-            name: "Propofol",
-            value: "propofol",
-            unit: "mg/kg"
-        },
-
-        {
-            name: "Etomidate",
-            value: "etomidate",
-            unit: "mg/kg"
-        },
-
-        {
-            name: "Ketamine",
-            value: "ketamine",
-            unit: "mg/kg"
-        }
-
-    ],
-
-
-    opioids: [
-
-        {
-            name: "Fentanyl",
-            value: "fentanyl",
-            unit: "mcg/kg"
-        },
-
-        {
-            name: "Morphine",
-            value: "morphine",
-            unit: "mg/kg"
-        }
-
-    ],
-
-
-    muscle: [
-
-        {
-            name: "Rocuronium",
-            value: "rocuronium",
-            unit: "mg/kg"
-        },
-
-        {
-            name: "Vecuronium",
-            value: "vecuronium",
-            unit: "mg/kg"
-        },
-
-        {
-            name: "Succinylcholine",
-            value: "succinylcholine",
-            unit: "mg/kg"
-        }
-
-    ],
-
-
-    sedation: [
-
-        {
-            name: "Midazolam",
-            value: "midazolam",
-            unit: "mg/kg"
-        },
-
-        {
-            name: "Dexmedetomidine",
-            value: "dexmedetomidine",
-            unit: "mcg/kg"
-        }
-
-    ],
-
-
-    vasopressor: [
-
-        {
-            name: "Norepinephrine",
-            value: "norepinephrine",
-            unit: "mcg/kg/min"
-        }
-
-    ]
-
-};
 
 
 /* =====================================================
@@ -981,13 +902,8 @@ function loadPatient() {
 
     } catch (error) {
 
-        console.error(
-            "Invalid patient data:",
-            error
-        );
-
         alert(
-            "Patient data is invalid. Please return to the Patient Profile."
+            "Patient data could not be loaded."
         );
 
         return;
@@ -1007,31 +923,46 @@ function loadPatient() {
     document.getElementById(
         "patientWeight"
     ).innerText =
-        patient.weight + " kg";
+        patient.weight !== null &&
+        patient.weight !== undefined
+            ? patient.weight + " kg"
+            : "—";
 
 
     document.getElementById(
         "patientHeight"
     ).innerText =
-        patient.height + " cm";
+        patient.height !== null &&
+        patient.height !== undefined
+            ? patient.height + " cm"
+            : "—";
 
 
     document.getElementById(
         "patientIBW"
     ).innerText =
-        patient.ibw + " kg";
+        patient.ibw !== null &&
+        patient.ibw !== undefined
+            ? Number(patient.ibw).toFixed(1) + " kg"
+            : "—";
 
 
     document.getElementById(
         "patientLBW"
     ).innerText =
-        patient.lbw + " kg";
+        patient.lbw !== null &&
+        patient.lbw !== undefined
+            ? Number(patient.lbw).toFixed(1) + " kg"
+            : "—";
 
 
     document.getElementById(
         "patientAdjBW"
     ).innerText =
-        patient.adjbw + " kg";
+        patient.adjbw !== null &&
+        patient.adjbw !== undefined
+            ? Number(patient.adjbw).toFixed(1) + " kg"
+            : "—";
 
 }
 
@@ -1058,40 +989,52 @@ function loadDrugs() {
         '<option value="">Select Drug</option>';
 
 
-    if (!category) {
+    document.getElementById(
+        "autoDoseBox"
+    ).innerText =
+        "Select a drug to see the recommended dose";
+
+
+    document.getElementById(
+        "resultCard"
+    ).classList.remove("show");
+
+
+    if (
+        !category ||
+        typeof DRUG_DATABASE === "undefined"
+    ) {
 
         return;
 
     }
 
 
-    drugs[category].forEach(
-        function(drug) {
+    Object.values(DRUG_DATABASE)
+
+        .filter(function(drug) {
+
+            return drug.category === category;
+
+        })
+
+        .forEach(function(drug) {
 
             const option =
-                document.createElement(
-                    "option"
-                );
+                document.createElement("option");
 
 
             option.value =
-                drug.value;
+                drug.id;
 
 
             option.textContent =
                 drug.name;
 
 
-            option.dataset.unit =
-                drug.unit;
+            drugSelect.appendChild(option);
 
-
-            drugSelect.appendChild(
-                option
-            );
-
-        }
-    );
+        });
 
 }
 
@@ -1102,38 +1045,146 @@ function loadDrugs() {
 
 function selectDrug() {
 
-    const drugSelect =
+    const drugId =
         document.getElementById(
             "drug"
+        ).value;
+
+
+    const autoDoseBox =
+        document.getElementById(
+            "autoDoseBox"
         );
 
 
-    const selectedOption =
-        drugSelect.options[
-            drugSelect.selectedIndex
-        ];
+    const weightBasis =
+        document.getElementById(
+            "weightBasis"
+        );
 
 
-    if (!selectedOption ||
-        !selectedOption.value) {
+    const resultCard =
+        document.getElementById(
+            "resultCard"
+        );
+
+
+    if (
+        !drugId ||
+        typeof DRUG_DATABASE === "undefined"
+    ) {
+
+        autoDoseBox.innerText =
+            "Select a drug to see the recommended dose";
+
+        resultCard.classList.remove(
+            "show"
+        );
 
         return;
 
     }
 
 
-    const unit =
-        selectedOption.dataset.unit;
+    const drug =
+        DRUG_DATABASE[drugId];
 
 
-    const doseInput =
-        document.getElementById(
-            "dose"
+    if (!drug) {
+
+        autoDoseBox.innerText =
+            "Dose information unavailable";
+
+        resultCard.classList.remove(
+            "show"
         );
 
+        return;
 
-    doseInput.placeholder =
-        "Dose (" + unit + ")";
+    }
+
+
+    const definition =
+        administration === "infusion"
+            ? drug.infusion
+            : drug.bolus;
+
+
+    if (
+        !definition ||
+        definition.doseMin == null ||
+        definition.doseMax == null
+    ) {
+
+        autoDoseBox.innerText =
+            "No standard " +
+            administration +
+            " dose is currently defined for this drug.";
+
+        resultCard.classList.remove(
+            "show"
+        );
+
+        return;
+
+    }
+
+
+    /* ================================================
+       AUTOMATIC WEIGHT BASIS
+    ================================================ */
+
+    if (definition.weightBasis) {
+
+        const basisMap = {
+
+            TBW: "tbw",
+
+            IBW: "ibw",
+
+            LBW: "lbw",
+
+            AdjBW: "adjbw",
+
+            ADJBW: "adjbw"
+
+        };
+
+
+        const basisValue =
+            basisMap[
+                definition.weightBasis
+            ];
+
+
+        if (basisValue) {
+
+            weightBasis.value =
+                basisValue;
+
+        }
+
+    }
+
+
+    /* ================================================
+       SHOW RECOMMENDED DOSE
+    ================================================ */
+
+    autoDoseBox.innerText =
+
+        definition.doseMin +
+
+        "–" +
+
+        definition.doseMax +
+
+        " " +
+
+        definition.unit;
+
+
+    calculateDose();
 
 }
 
@@ -1144,7 +1195,8 @@ function selectDrug() {
 
 function setAdministration(type) {
 
-    administration = type;
+    administration =
+        type;
 
 
     const bolusBtn =
@@ -1163,6 +1215,7 @@ function setAdministration(type) {
         "active"
     );
 
+
     infusionBtn.classList.remove(
         "active"
     );
@@ -1174,13 +1227,23 @@ function setAdministration(type) {
             "active"
         );
 
-    } else {
+    }
+
+    else {
 
         infusionBtn.classList.add(
             "active"
         );
 
     }
+
+
+    /*
+       Recalculate immediately when
+       Bolus / Infusion changes.
+    */
+
+    selectDrug();
 
 }
 
@@ -1208,27 +1271,37 @@ function getSelectedWeight() {
 
         case "tbw":
 
-            return patient.weight;
+            return Number(
+                patient.weight
+            );
 
 
         case "ibw":
 
-            return patient.ibw;
+            return Number(
+                patient.ibw
+            );
 
 
         case "lbw":
 
-            return patient.lbw;
+            return Number(
+                patient.lbw
+            );
 
 
         case "adjbw":
 
-            return patient.adjbw;
+            return Number(
+                patient.adjbw
+            );
 
 
         default:
 
-            return patient.weight;
+            return Number(
+                patient.weight
+            );
 
     }
 
@@ -1243,8 +1316,30 @@ function calculateDose() {
 
     if (!patient) {
 
-        alert(
-            "Patient data not available."
+        return;
+
+    }
+
+
+    const drugId =
+        document.getElementById(
+            "drug"
+        ).value;
+
+
+    const resultCard =
+        document.getElementById(
+            "resultCard"
+        );
+
+
+    if (
+        !drugId ||
+        typeof DRUG_DATABASE === "undefined"
+    ) {
+
+        resultCard.classList.remove(
+            "show"
         );
 
         return;
@@ -1253,23 +1348,13 @@ function calculateDose() {
 
 
     const drug =
-        document.getElementById(
-            "drug"
-        ).value;
-
-
-    const dose =
-        parseFloat(
-            document.getElementById(
-                "dose"
-            ).value
-        );
+        DRUG_DATABASE[drugId];
 
 
     if (!drug) {
 
-        alert(
-            "Please select a drug."
+        resultCard.classList.remove(
+            "show"
         );
 
         return;
@@ -1277,10 +1362,20 @@ function calculateDose() {
     }
 
 
-    if (!Number.isFinite(dose) || dose <= 0) {
+    const definition =
+        administration === "infusion"
+            ? drug.infusion
+            : drug.bolus;
 
-        alert(
-            "Please enter a valid dose."
+
+    if (
+        !definition ||
+        definition.doseMin == null ||
+        definition.doseMax == null
+    ) {
+
+        resultCard.classList.remove(
+            "show"
         );
 
         return;
@@ -1292,11 +1387,13 @@ function calculateDose() {
         getSelectedWeight();
 
 
-    if (!selectedWeight ||
-        !Number.isFinite(selectedWeight)) {
+    if (
+        !selectedWeight ||
+        selectedWeight <= 0
+    ) {
 
-        alert(
-            "Unable to determine dose weight."
+        resultCard.classList.remove(
+            "show"
         );
 
         return;
@@ -1304,64 +1401,57 @@ function calculateDose() {
     }
 
 
-    /* -----------------------------------------
-       CALCULATION
-    ----------------------------------------- */
-
-    const totalDose =
-        dose *
+    const minDose =
+        Number(
+            definition.doseMin
+        ) *
         selectedWeight;
 
 
-    /* -----------------------------------------
-       UNIT
-    ----------------------------------------- */
+    const maxDose =
+        Number(
+            definition.doseMax
+        ) *
+        selectedWeight;
 
-    const drugSelect =
+
+    const resultValue =
         document.getElementById(
-            "drug"
+            "resultValue"
         );
 
 
-    const selectedOption =
-        drugSelect.options[
-            drugSelect.selectedIndex
-        ];
-
-
-    if (!selectedOption) {
-
-        return;
-
-    }
-
-
-    const unit =
-        selectedOption.dataset.unit || "";
-
-
-    /* -----------------------------------------
-       DISPLAY
-    ----------------------------------------- */
-
-    document.getElementById(
-        "resultValue"
-    ).innerText =
-        totalDose.toFixed(2);
-
-
-    document.getElementById(
-        "resultUnit"
-    ).innerText =
-        unit.replace(
-            "/kg",
-            ""
+    const resultUnit =
+        document.getElementById(
+            "resultUnit"
         );
 
 
-    document.getElementById(
-        "resultCard"
-    ).classList.add(
+    resultValue.innerText =
+
+        minDose.toFixed(2) +
+
+        "–" +
+
+        maxDose.toFixed(2);
+
+
+    /*
+       Convert:
+       mg/kg       → mg
+       mcg/kg      → mcg
+       mcg/kg/min  → mcg/min
+       mcg/kg/hr   → mcg/hr
+    */
+
+    resultUnit.innerText =
+        definition.unit
+            .replace("/kg/min", "/min")
+            .replace("/kg/hr", "/hr")
+            .replace("/kg", "");
+
+
+    resultCard.classList.add(
         "show"
     );
 
@@ -1388,7 +1478,83 @@ window.addEventListener(
     "DOMContentLoaded",
     function() {
 
+
+        /* =============================================
+           LOAD PATIENT DATA
+        ============================================= */
+
         loadPatient();
+
+
+
+        /* =============================================
+           LOAD CATEGORIES FROM DATABASE
+        ============================================= */
+
+        const categorySelect =
+            document.getElementById(
+                "drugCategory"
+            );
+
+
+        if (
+            typeof DRUG_DATABASE !== "undefined" &&
+            categorySelect
+        ) {
+
+
+            const categories =
+                [
+                    ...new Set(
+
+                        Object.values(
+                            DRUG_DATABASE
+                        )
+
+                        .map(function(drug) {
+
+                            return drug.category;
+
+                        })
+
+                        .filter(Boolean)
+
+                    )
+                ];
+
+
+            categorySelect.innerHTML =
+
+                '<option value="">' +
+                'Select Category' +
+                '</option>';
+
+
+            categories.forEach(
+                function(category) {
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+
+                    option.value =
+                        category;
+
+
+                    option.textContent =
+                        category;
+
+
+                    categorySelect.appendChild(
+                        option
+                    );
+
+                }
+            );
+
+        }
 
     }
 );
@@ -1397,5 +1563,5 @@ window.addEventListener(
 
 
 </body>
+
 </html>
-```
