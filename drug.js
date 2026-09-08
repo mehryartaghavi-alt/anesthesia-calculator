@@ -601,12 +601,14 @@ const DRUG_DATABASE = {
         notes:
             "Use only with appropriate spontaneous recovery and neuromuscular monitoring."
     }
+
 };
 
 
 /* =========================================================
    DATABASE HELPER FUNCTIONS
 ========================================================= */
+
 
 /**
  * Return a single drug by ID
@@ -690,6 +692,7 @@ function getDoseDefinition(drugId, administration) {
    WEIGHT BASIS HELPERS
 ========================================================= */
 
+
 /**
  * Convert database weight basis
  * to the values used in drug-dose.html
@@ -700,7 +703,7 @@ function normalizeWeightBasis(weightBasis) {
         return null;
     }
 
-    const basis = weightBasis.toUpperCase();
+    const basis = String(weightBasis).trim().toUpperCase();
 
     switch (basis) {
 
@@ -713,7 +716,6 @@ function normalizeWeightBasis(weightBasis) {
         case "LBW":
             return "lbw";
 
-        case "ADJBW":
         case "ADJBW":
         case "ADJUSTED BODY WEIGHT":
             return "adjbw";
@@ -730,6 +732,7 @@ function normalizeWeightBasis(weightBasis) {
 /* =========================================================
    DOSE VALIDATION
 ========================================================= */
+
 
 /**
  * Check whether a dose definition
