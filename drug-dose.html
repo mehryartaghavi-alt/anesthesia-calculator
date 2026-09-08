@@ -1040,14 +1040,20 @@ function loadDrugs() {
     ).classList.remove("show");
 
 
-    if (
-        !category ||
-        typeof DRUG_DATABASE === "undefined"
-    ) {
+    if (!category) {
+    return;
+}
 
-        return;
+if (typeof DRUG_DATABASE === "undefined") {
 
-    }
+    drugSelect.innerHTML =
+        '<option value="">ERROR: drugs.js not loaded</option>';
+
+    document.getElementById("autoDoseBox").innerText =
+        "Drug database could not be loaded.";
+
+    return;
+}
 
 
     Object.values(DRUG_DATABASE)
