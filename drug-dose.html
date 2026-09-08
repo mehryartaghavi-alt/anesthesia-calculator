@@ -861,9 +861,49 @@ body {
 ===================================================== -->
 
 
-<script src="drugs.js?v=2"></script>
+<script src="drugs.js?v=999" onerror="window.DRUG_DATABASE_LOAD_ERROR=true;"></script>
 
 <script>
+window.addEventListener("DOMContentLoaded", function () {
+
+    const categorySelect =
+        document.getElementById("drugCategory");
+
+    if (!categorySelect) {
+        return;
+    }
+
+    if (
+        window.DRUG_DATABASE_LOAD_ERROR === true ||
+        typeof DRUG_DATABASE === "undefined"
+    ) {
+
+        categorySelect.innerHTML =
+            '<option value="">ERROR: drugs.js not loaded</option>';
+
+        console.error(
+            "Anesthesia Calculator: drugs.js was not loaded or DRUG_DATABASE is unavailable."
+        );
+
+        const autoDoseBox =
+            document.getElementById("autoDoseBox");
+
+        if (autoDoseBox) {
+            autoDoseBox.innerText =
+                "Drug database could not be loaded. Make sure drugs.js is in the same folder as drug-dose.html.";
+        }
+
+        return;
+    }
+
+    console.log(
+        "Anesthesia Calculator: DRUG_DATABASE loaded successfully.",
+        Object.keys(DRUG_DATABASE).length,
+        "drugs"
+    );
+
+});
+</script>
 
 /* =====================================================
    VARIABLES
