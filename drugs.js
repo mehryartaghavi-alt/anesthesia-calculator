@@ -732,7 +732,7 @@ atropine: {
     renalAdjustment: false,
     hepaticAdjustment: false,
     notes: "Dose should be individualized according to clinical response."
-},
+}
 
 /* =========================================================
    DATABASE HELPER FUNCTIONS
