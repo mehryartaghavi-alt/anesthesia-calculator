@@ -572,42 +572,11 @@ sufentanil: {
     },
 
 
-    phenylephrine: {
-    id: "phenylephrine",
-    name: "Phenylephrine",
-    category: "Vasoconstrictors",
-    route: ["IV"],
-
-    bolus: {
-        doseMin: 40,
-        doseMax: 100,
-        unit: "µg",
-        weightBasis: null
-    },
-
-    infusion: null,
-
-    indications: [
-        "Treatment of hypotension",
-        "Vasopressor support"
-    ],
-
-    cautions: [
-        "Bradycardia",
-        "Hypertension",
-        "Reduced cardiac output"
-    ],
-
-    renalAdjustment: false,
-    hepaticAdjustment: false,
-
-    notes: "Fixed-dose IV bolus; do not calculate based on body weight."
-},  
-
+    
 phenylephrine: {
     id: "phenylephrine",
     name: "Phenylephrine",
-    category: "Vasoconstrictors",
+    category: "Vasopressors",
     route: ["IV"],
 
     bolus: {
@@ -643,7 +612,7 @@ phenylephrine: {
 nitroglycerin: {
     id: "nitroglycerin",
     name: "Nitroglycerin",
-    category: "Vasoconstrictors",
+    category: "Vasodilators",
     route: ["IV"],
 
     bolus: null,
@@ -676,7 +645,7 @@ nitroglycerin: {
 labetalol: {
     id: "labetalol",
     name: "Labetalol",
-    category: "Vasoconstrictors",
+    category: "Vasodilators",
     route: ["IV"],
 
     bolus: {
