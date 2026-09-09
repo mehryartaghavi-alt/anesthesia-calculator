@@ -677,74 +677,62 @@ labetalol: {
        REVERSAL AGENTS
     ===================================================== */
 
-    sugammadex: {
-        id: "sugammadex",
-        name: "Sugammadex",
-        category: "Reversal Agents",
-        route: ["IV"],
-
-        bolus: {
-            doseMin: null,
-            doseMax: null,
-            unit: "mg/kg",
-            weightBasis: "TBW"
-        },
-
-        infusion: null,
-
-        indications: [
-            "Reversal of rocuronium-induced neuromuscular blockade",
-            "Reversal of vecuronium-induced neuromuscular blockade"
-        ],
-
-        cautions: [
-            "Severe renal impairment",
-            "Bradycardia",
-            "Hypersensitivity"
-        ],
-
-        renalAdjustment: "avoid/severe impairment",
-        hepaticAdjustment: false,
-
-        notes:
-            "Dose should be selected according to the depth of neuromuscular blockade."
-    },
-
-
     neostigmine: {
-        id: "neostigmine",
-        name: "Neostigmine",
-        category: "Reversal Agents",
-        route: ["IV"],
+    id: "neostigmine",
+    name: "Neostigmine",
+    category: "Reversal",
+    route: ["IV"],
+    bolus: {
+        doseMin: 0.03,
+        doseMax: 0.07,
+        unit: "mg/kg",
+        weightBasis: "TBW"
+    },
+    infusion: null,
+    indications: ["Reversal of nondepolarizing neuromuscular blockade"],
+    cautions: ["Bradycardia", "Bronchospasm", "Increased secretions"],
+    renalAdjustment: "clinical",
+    hepaticAdjustment: false,
+    notes: "Administer with an appropriate antimuscarinic agent."
+},
 
-        bolus: {
-            doseMin: null,
-            doseMax: null,
-            unit: "mg/kg",
-            weightBasis: "TBW"
-        },
+sugammadex: {
+    id: "sugammadex",
+    name: "Sugammadex",
+    category: "Reversal",
+    route: ["IV"],
+    bolus: {
+        doseMin: 2,
+        doseMax: 16,
+        unit: "mg/kg",
+        weightBasis: "TBW"
+    },
+    infusion: null,
+    indications: ["Reversal of rocuronium- or vecuronium-induced neuromuscular blockade"],
+    cautions: ["Bradycardia", "Hypersensitivity", "Recurrence of neuromuscular blockade"],
+    renalAdjustment: "clinical",
+    hepaticAdjustment: false,
+    notes: "Dose should be selected according to the depth of neuromuscular blockade."
+},
 
-        infusion: null,
-
-        indications: [
-            "Reversal of nondepolarizing neuromuscular blockade"
-        ],
-
-        cautions: [
-            "Bradycardia",
-            "Bronchospasm",
-            "Cholinergic effects"
-        ],
-
-        renalAdjustment: "clinical",
-        hepaticAdjustment: false,
-
-        notes:
-            "Use only with appropriate spontaneous recovery and neuromuscular monitoring."
-    }
-
-};
-
+atropine: {
+    id: "atropine",
+    name: "Atropine",
+    category: "Reversal",
+    route: ["IV"],
+    bolus: {
+        doseMin: 0.01,
+        doseMax: 0.02,
+        unit: "mg/kg",
+        weightBasis: "TBW"
+    },
+    infusion: null,
+    indications: ["Prevention/treatment of muscarinic effects associated with neostigmine"],
+    cautions: ["Tachycardia", "Arrhythmia", "Urinary retention", "Dry mouth"],
+    renalAdjustment: false,
+    hepaticAdjustment: false,
+    notes: "Dose should be individualized according to clinical response."
+},
 
 /* =========================================================
    DATABASE HELPER FUNCTIONS
