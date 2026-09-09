@@ -49,7 +49,24 @@ const DRUG_DATABASE = {
             "Individualize dose according to age, hemodynamic status, clinical condition and anesthetic technique."
     },
 
-
+thiopental: {
+    id: "thiopental",
+    name: "Thiopental",
+    category: "Induction Agents",
+    route: ["IV"],
+    bolus: {
+        doseMin: 4,
+        doseMax: 6,
+        unit: "mg/kg",
+        weightBasis: "TBW"
+    },
+    infusion: null,
+    indications: ["Induction of general anesthesia"],
+    cautions: ["Hypotension", "Respiratory depression", "Porphyria"],
+    renalAdjustment: false,
+    hepaticAdjustment: "clinical",
+    notes: "Individualize dose according to age, hemodynamic status and clinical condition."
+},
     etomidate: {
         id: "etomidate",
         name: "Etomidate",
