@@ -286,6 +286,36 @@ sufentanil: {
        MUSCLE RELAXANTS
     ===================================================== */
 
+   atracurium: {
+    id: "atracurium",
+    name: "Atracurium",
+    category: "Muscle Relaxants",
+    route: ["IV"],
+
+    bolus: {
+        doseMin: 0.4,
+        doseMax: 0.6,
+        unit: "mg/kg",
+        weightBasis: "TBW"
+    },
+
+    infusion: null,
+
+    indications: [
+        "Neuromuscular blockade during general anesthesia"
+    ],
+
+    cautions: [
+        "Histamine release",
+        "Hypotension",
+        "Bronchospasm"
+    ],
+
+    renalAdjustment: false,
+    hepaticAdjustment: false,
+
+    notes: "Individualize dose according to clinical response and neuromuscular monitoring."
+},
     rocuronium: {
         id: "rocuronium",
         name: "Rocuronium",
