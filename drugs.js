@@ -182,7 +182,38 @@ thiopental: {
             "Titrate to clinical effect and monitor ventilation and hemodynamics."
     },
 
+sufentanil: {
+    id: "sufentanil",
+    name: "Sufentanil",
+    category: "Opioids",
+    route: ["IV"],
 
+    bolus: {
+        doseMin: 0.3,
+        doseMax: 1,
+        unit: "µg/kg",
+        weightBasis: "TBW"
+    },
+
+    infusion: null,
+
+    indications: [
+        "Analgesia",
+        "Anesthetic induction and maintenance"
+    ],
+
+    cautions: [
+        "Respiratory depression",
+        "Bradycardia",
+        "Hypotension",
+        "Chest wall rigidity with rapid/high-dose administration"
+    ],
+
+    renalAdjustment: "clinical",
+    hepaticAdjustment: "clinical",
+
+    notes: "Individualize dose according to age, clinical condition, concomitant anesthetic agents and hemodynamic status."
+},
     morphine: {
         id: "morphine",
         name: "Morphine",
