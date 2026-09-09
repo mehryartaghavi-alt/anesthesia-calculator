@@ -573,43 +573,137 @@ sufentanil: {
 
 
     phenylephrine: {
-        id: "phenylephrine",
-        name: "Phenylephrine",
-        category: "Vasopressors",
-        route: ["IV"],
+    id: "phenylephrine",
+    name: "Phenylephrine",
+    category: "Vasoconstrictors",
+    route: ["IV"],
 
-        bolus: {
-            doseMin: null,
-            doseMax: null,
-            unit: "mcg",
-            weightBasis: null
-        },
-
-        infusion: {
-            doseMin: null,
-            doseMax: null,
-            unit: "mcg/min",
-            weightBasis: null
-        },
-
-        indications: [
-            "Perioperative hypotension"
-        ],
-
-        cautions: [
-            "Bradycardia",
-            "Reduced cardiac output",
-            "Peripheral ischemia"
-        ],
-
-        renalAdjustment: false,
-        hepaticAdjustment: false,
-
-        notes:
-            "Bolus and infusion dosing are fixed-dose regimens and should not be calculated from body weight."
+    bolus: {
+        doseMin: 40,
+        doseMax: 100,
+        unit: "µg",
+        weightBasis: null
     },
 
+    infusion: null,
 
+    indications: [
+        "Treatment of hypotension",
+        "Vasopressor support"
+    ],
+
+    cautions: [
+        "Bradycardia",
+        "Hypertension",
+        "Reduced cardiac output"
+    ],
+
+    renalAdjustment: false,
+    hepaticAdjustment: false,
+
+    notes: "Fixed-dose IV bolus; do not calculate based on body weight."
+},  
+
+phenylephrine: {
+    id: "phenylephrine",
+    name: "Phenylephrine",
+    category: "Vasoconstrictors",
+    route: ["IV"],
+
+    bolus: {
+        doseMin: 40,
+        doseMax: 100,
+        unit: "µg",
+        weightBasis: null
+    },
+
+    infusion: null,
+
+    indications: [
+        "Treatment of hypotension",
+        "Vasopressor support"
+    ],
+
+    cautions: [
+        "Bradycardia",
+        "Hypertension",
+        "Reduced cardiac output"
+    ],
+
+    renalAdjustment: false,
+    hepaticAdjustment: false,
+
+    notes: "Fixed-dose IV bolus; do not calculate based on body weight."
+},
+
+    /* =====================================================
+       VASODILATORS
+    ===================================================== */
+
+nitroglycerin: {
+    id: "nitroglycerin",
+    name: "Nitroglycerin",
+    category: "Vasoconstrictors",
+    route: ["IV"],
+
+    bolus: null,
+
+    infusion: {
+        doseMin: 5,
+        doseMax: 10,
+        unit: "µg/min",
+        weightBasis: null
+    },
+
+    indications: [
+        "Control of hypertension",
+        "Myocardial ischemia",
+        "Vasodilation"
+    ],
+
+    cautions: [
+        "Hypotension",
+        "Headache",
+        "Reflex tachycardia"
+    ],
+
+    renalAdjustment: false,
+    hepaticAdjustment: false,
+
+    notes: "Fixed-rate IV infusion; do not calculate based on body weight."
+},
+
+labetalol: {
+    id: "labetalol",
+    name: "Labetalol",
+    category: "Vasoconstrictors",
+    route: ["IV"],
+
+    bolus: {
+        doseMin: 5,
+        doseMax: 10,
+        unit: "mg",
+        weightBasis: null
+    },
+
+    infusion: null,
+
+    indications: [
+        "Treatment of acute perioperative hypertension"
+    ],
+
+    cautions: [
+        "Bradycardia",
+        "Hypotension",
+        "Bronchospasm",
+        "Heart block"
+    ],
+
+    renalAdjustment: false,
+    hepaticAdjustment: "clinical",
+
+    notes: "Fixed-dose IV bolus; do not calculate based on body weight."
+},
     /* =====================================================
        REVERSAL AGENTS
     ===================================================== */
