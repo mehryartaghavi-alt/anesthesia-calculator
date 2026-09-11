@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ventilator Calculator</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f7fb;color:#1f2937}
+.header{background:#17365d;color:white;padding:25px 20px;text-align:center}
+.header h1{margin:0;font-size:30px}.header p{margin:8px 0 0;font-size:15px;opacity:.9}
+.container{max-width:900px;margin:30px auto;padding:0 18px}
+.card{background:white;border-radius:14px;padding:25px;margin-bottom:25px;box-shadow:0 4px 15px rgba(0,0,0,.08)}
+.card h2{margin-top:0;margin-bottom:20px;font-size:21px;color:#17365d}
+.patient-grid,.input-grid,.results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
+.patient-item,.input-group{display:flex;flex-direction:column}
+.patient-label,.input-group label{font-size:13px;color:#64748b;margin-bottom:5px;font-weight:bold}
+.patient-value{font-size:17px;font-weight:bold;color:#17365d;background:#f5f8fc;border:1px solid #dce4ee;border-radius:8px;padding:11px}
+.input-group input,.input-group select{width:100%;padding:12px;border:1px solid #ccd5e0;border-radius:8px;font-size:16px;background:white}
+.input-group input:focus,.input-group select:focus{outline:none;border-color:#17365d}
+.calculate-btn{width:100%;margin-top:0;padding:14px;border:none;border-radius:9px;background:#17365d;color:white;font-size:17px;font-weight:bold;cursor:pointer}
+.calculate-btn:hover{background:#102945}
+.result-box{background:#f5f8fc;border:1px solid #dce4ee;border-radius:10px;padding:15px;text-align:center}
+.result-title{font-size:13px;color:#64748b;margin-bottom:7px}
+.result-value{font-size:22px;font-weight:bold;color:#17365d}
+.result-note{margin-top:8px;font-size:12px;color:#64748b;line-height:1.4}
+.info-box{background:#f5f8fc;border:1px solid #dce4ee;border-radius:10px;padding:15px;margin-top:15px;font-size:14px;line-height:1.5}
+.footer{text-align:center;color:#64748b;font-size:13px;padding:10px 20px 30px}
+@media(max-width:600px){.header h1{font-size:25px}.container{margin-top:20px}.card{padding:18px}.patient-grid,.input-grid,.results-grid{grid-template-columns:1fr 1fr;gap:10px}.patient-value{font-size:15px;padding:10px 8px}.result-value{font-size:20px}}
+@media(max-width:380px){.patient-grid,.input-grid,.results-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>Ventilator Calculator</h1>
+<p>Clinical calculation tools for anesthesiology</p>
+</div>
+
+<div class="container">
+
+<div class="card">
+<h2>Patient Profile</h2>
+<div class="patient-grid">
+<div class="patient-item"><div class="patient-label">Age</div><div class="patient-value" id="patientAge">—</div></div>
+<div class="patient-item"><div class="patient-label">Sex</div><div class="patient-value" id="patientSex">—</div></div>
+<div class="patient-item"><div class="patient-label">Height</div><div class="patient-value" id="patientHeight">—</div></div>
+<div class="patient-item"><div class="patient-label">Weight</div><div class="patient-value" id="patientWeight">—</div></div>
+<div class="patient-item"><div class="patient-label">PBW</div><div class="patient-value" id="patientPBW">—</div></div>
+<div class="patient-item"><div class="patient-label">BMI</div><div class="patient-value" id="patientBMI">—</div></div>
+</div>
+</div>
+
+<div class="card">
+<h2>Tidal Volume</h2>
+<div class="input-grid">
+<div class="input-group">
+<label for="vtPerKg">VT (mL/kg PBW)</label>
+<select id="vtPerKg" onchange="calculateVentilator()">
+<option value="4">4 mL/kg</option>
+<option value="5">5 mL/kg</option>
+<option value="6" selected>6 mL/kg</option>
+<option value="7">7 mL/kg</option>
+<option value="8">8 mL/kg</option>
+</select>
+</div>
+<div class="result-box">
+<div class="result-title">Recommended Tidal Volume</div>
+<div class="result-value" id="tidalVolume">—</div>
+<div class="result-note">mL</div>
+</div>
+</div>
+<div class="info-box">Tidal volume is calculated from Predicted Body Weight (PBW), not actual body weight.</div>
+</div>
+
+<div class="card">
+<h2>Ventilation</h2>
+<div class="input-grid">
+<div class="input-group">
+<label for="vtInput">Tidal Volume (mL)</label>
+<input type="number" id="vtInput" min="1" step="1" placeholder="Tidal Volume" oninput="calculateVentilator()">
+</div>
+<div class="input-group">
+<label for="rrInput">Respiratory Rate (/min)</label>
+<input type="number" id="rrInput" min="1" step="1" value="12" placeholder="Respiratory Rate" oninput="calculateVentilator()">
+</div>
+</div>
+<div class="results-grid" style="margin-top:15px;">
+<div class="result-box"><div class="result-title">Minute Ventilation</div><div class="result-value" id="minuteVentilation">—</div><div class="result-note">L/min</div></div>
+<div class="result-box"><div class="result-title">VT / PBW</div><div class="result-value" id="actualVtPerKg">—</div><div class="result-note">mL/kg PBW</div></div>
+</div>
+</div>
+
+<div class="card">
+<h2>Pressures & Compliance</h2>
+<div class="input-grid">
+<div class="input-group">
+<label for="peepInput">PEEP (cmH₂O)</label>
+<input type="number" id="peepInput" min="0" step="0.1" placeholder="PEEP" oninput="calculateVentilator()">
+</div>
+<div class="input-group">
+<label for="plateauInput">Plateau Pressure (cmH₂O)</label>
+<input type="number" id="plateauInput" min="0" step="0.1" placeholder="Plateau Pressure" oninput="calculateVentilator()">
+</div>
+</div>
+<div class="results-grid" style="margin-top:15px;">
+<div class="result-box"><div class="result-title">Driving Pressure</div><div class="result-value" id="drivingPressure">—</div><div class="result-note">cmH₂O</div></div>
+<div class="result-box"><div class="result-title">Static Compliance</div><div class="result-value" id="staticCompliance">—</div><div class="result-note">mL/cmH₂O</div></div>
+</div>
+</div>
+
+<div class="card">
+<button class="calculate-btn" onclick="calculateVentilator()">Calculate</button>
+</div>
+</div>
+
+<div class="footer">Mehryar Taghavi, MD – Anesthesiology</div>
+
+<script>
+let patient = null;
+
+function loadPatientData(){
+    const savedData = sessionStorage.getItem("patientData");
+    if(!savedData){
+        alert("Patient data not found. Please return to Patient Profile.");
+        return false;
+    }
+    try{ patient = JSON.parse(savedData); }
+    catch(error){
+        alert("Unable to read patient data.");
+        return false;
+    }
+    if(!patient || !patient.height || !patient.sex || !patient.pbw){
+        alert("Incomplete patient data. Please return to Patient Profile.");
+        return false;
+    }
+
+    document.getElementById("patientAge").innerText = patient.age != null ? patient.age+" years" : "—";
+    document.getElementById("patientSex").innerText = patient.sex === "male" ? "Male" : patient.sex === "female" ? "Female" : "—";
+    document.getElementById("patientHeight").innerText = patient.height+" cm";
+    document.getElementById("patientWeight").innerText = patient.weight+" kg";
+    document.getElementById("patientPBW").innerText = Number(patient.pbw).toFixed(1)+" kg";
+    document.getElementById("patientBMI").innerText = patient.bmi != null ? Number(patient.bmi).toFixed(1) : "—";
+    return true;
+}
+
+function calculateVentilator(){
+    if(!patient || !patient.pbw) return;
+
+    const pbw = Number(patient.pbw);
+    const vtPerKg = Number(document.getElementById("vtPerKg").value);
+    const recommendedVT = pbw * vtPerKg;
+
+    document.getElementById("tidalVolume").innerText = Math.round(recommendedVT);
+
+    const vtInput = document.getElementById("vtInput");
+    if(!vtInput.value || Number(vtInput.value) <= 0){
+        vtInput.value = Math.round(recommendedVT);
+    }
+
+    const vt = Number(vtInput.value);
+    const rr = Number(document.getElementById("rrInput").value);
+
+    if(vt > 0 && rr > 0){
+        document.getElementById("minuteVentilation").innerText = ((vt*rr)/1000).toFixed(2);
+    }else{
+        document.getElementById("minuteVentilation").innerText = "—";
+    }
+
+    if(vt > 0){
+        document.getElementById("actualVtPerKg").innerText = (vt/pbw).toFixed(1);
+    }else{
+        document.getElementById("actualVtPerKg").innerText = "—";
+    }
+
+    const peepInput = document.getElementById("peepInput");
+    const plateauInput = document.getElementById("plateauInput");
+    const peep = Number(peepInput.value);
+    const plateau = Number(plateauInput.value);
+
+    if(peepInput.value !== "" && plateauInput.value !== "" && plateau >= peep){
+        const drivingPressure = plateau-peep;
+        document.getElementById("drivingPressure").innerText = drivingPressure.toFixed(1);
+
+        if(drivingPressure > 0 && vt > 0){
+            document.getElementById("staticCompliance").innerText = (vt/drivingPressure).toFixed(1);
+        }else{
+            document.getElementById("staticCompliance").innerText = "—";
+        }
+    }else{
+        document.getElementById("drivingPressure").innerText = "—";
+        document.getElementById("staticCompliance").innerText = "—";
+    }
+}
+
+window.addEventListener("DOMContentLoaded",function(){
+    if(loadPatientData()) calculateVentilator();
+});
+</script>
+</body>
+</html>
