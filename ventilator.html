@@ -109,6 +109,40 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f7fb;color:#1
 </div>
 
 <div class="card">
+<h2>Gas Exchange</h2>
+<div class="input-grid">
+<div class="input-group">
+<label for="fio2Input">FiO₂ (%)</label>
+<input type="number" id="fio2Input" min="21" max="100" step="1" value="21" placeholder="e.g. 40" oninput="calculateGasExchange()">
+</div>
+<div class="input-group">
+<label for="pao2Input">PaO₂ (mmHg)</label>
+<input type="number" id="pao2Input" min="0" step="1" placeholder="PaO₂" oninput="calculateGasExchange()">
+</div>
+<div class="input-group">
+<label for="paco2Input">PaCO₂ (mmHg)</label>
+<input type="number" id="paco2Input" min="1" step="1" placeholder="PaCO₂" oninput="calculateGasExchange()">
+</div>
+<div class="input-group">
+<label for="patmInput">Barometric Pressure (mmHg)</label>
+<input type="number" id="patmInput" min="300" max="800" step="1" value="760" oninput="calculateGasExchange()">
+</div>
+</div>
+
+<div class="results-grid" style="margin-top:15px;">
+<div class="result-box"><div class="result-title">P/F Ratio</div><div class="result-value" id="pfRatio">—</div><div class="result-note">PaO₂ / FiO₂</div></div>
+<div class="result-box"><div class="result-title">Alveolar PO₂ (PAO₂)</div><div class="result-value" id="pao2Alveolar">—</div><div class="result-note">mmHg</div></div>
+<div class="result-box"><div class="result-title">A–a Gradient</div><div class="result-value" id="aaGradient">—</div><div class="result-note">mmHg</div></div>
+<div class="result-box"><div class="result-title">Respiratory Quotient</div><div class="result-value">0.80</div><div class="result-note">assumed</div></div>
+</div>
+
+<div class="info-box">
+PAO₂ = FiO₂ × (P<sub>atm</sub> − 47) − PaCO₂ / 0.8.
+A–a gradient = PAO₂ − PaO₂.
+</div>
+</div>
+
+<div class="card">
 <button class="calculate-btn" onclick="calculateVentilator()">Calculate</button>
 </div>
 </div>
@@ -135,7 +169,8 @@ function loadPatientData(){
     }
 
     document.getElementById("patientAge").innerText = patient.age != null ? patient.age+" years" : "—";
-    document.getElementById("patientSex").innerText = patient.sex === "male" ? "Male" : patient.sex === "female" ? "Female" : "—";
+    const sex = String(patient.sex || "").toLowerCase();
+    document.getElementById("patientSex").innerText = sex === "male" ? "Male" : sex === "female" ? "Female" : "—";
     document.getElementById("patientHeight").innerText = patient.height+" cm";
     document.getElementById("patientWeight").innerText = patient.weight+" kg";
     document.getElementById("patientPBW").innerText = Number(patient.pbw).toFixed(1)+" kg";
@@ -166,11 +201,8 @@ function calculateVentilator(){
         document.getElementById("minuteVentilation").innerText = "—";
     }
 
-    if(vt > 0){
-        document.getElementById("actualVtPerKg").innerText = (vt/pbw).toFixed(1);
-    }else{
-        document.getElementById("actualVtPerKg").innerText = "—";
-    }
+    document.getElementById("actualVtPerKg").innerText =
+        vt > 0 ? (vt/pbw).toFixed(1) : "—";
 
     const peepInput = document.getElementById("peepInput");
     const plateauInput = document.getElementById("plateauInput");
@@ -181,19 +213,58 @@ function calculateVentilator(){
         const drivingPressure = plateau-peep;
         document.getElementById("drivingPressure").innerText = drivingPressure.toFixed(1);
 
-        if(drivingPressure > 0 && vt > 0){
-            document.getElementById("staticCompliance").innerText = (vt/drivingPressure).toFixed(1);
-        }else{
-            document.getElementById("staticCompliance").innerText = "—";
-        }
+        document.getElementById("staticCompliance").innerText =
+            drivingPressure > 0 && vt > 0
+                ? (vt/drivingPressure).toFixed(1)
+                : "—";
     }else{
         document.getElementById("drivingPressure").innerText = "—";
         document.getElementById("staticCompliance").innerText = "—";
     }
 }
 
+function calculateGasExchange(){
+    const fio2Percent = Number(document.getElementById("fio2Input").value);
+    const pao2 = Number(document.getElementById("pao2Input").value);
+    const paco2 = Number(document.getElementById("paco2Input").value);
+    const patm = Number(document.getElementById("patmInput").value);
+
+    if(fio2Percent > 0 && pao2 >= 0){
+        const fio2 = fio2Percent / 100;
+        document.getElementById("pfRatio").innerText =
+            (pao2 / fio2).toFixed(0);
+    }else{
+        document.getElementById("pfRatio").innerText = "—";
+    }
+
+    if(fio2Percent > 0 && paco2 > 0 && patm > 0){
+        const fio2 = fio2Percent / 100;
+        const PH2O = 47;
+        const R = 0.8;
+
+        const alveolarPO2 =
+            fio2 * (patm - PH2O) - (paco2 / R);
+
+        document.getElementById("pao2Alveolar").innerText =
+            alveolarPO2.toFixed(1);
+
+        if(pao2 >= 0){
+            document.getElementById("aaGradient").innerText =
+                (alveolarPO2 - pao2).toFixed(1);
+        }else{
+            document.getElementById("aaGradient").innerText = "—";
+        }
+    }else{
+        document.getElementById("pao2Alveolar").innerText = "—";
+        document.getElementById("aaGradient").innerText = "—";
+    }
+}
+
 window.addEventListener("DOMContentLoaded",function(){
-    if(loadPatientData()) calculateVentilator();
+    if(loadPatientData()) {
+        calculateVentilator();
+        calculateGasExchange();
+    }
 });
 </script>
 </body>
