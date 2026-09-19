@@ -199,9 +199,25 @@ let patient = null;
 
 function loadPatientData(){
 
-    const savedData =
-        sessionStorage.getItem("patientData") ||
-        localStorage.getItem("patientData");
+    /*
+       PRIMARY METHOD:
+       Patient data is passed directly in the URL from
+       Patient Profile to Ventilator. This avoids problems
+       with sessionStorage/localStorage when HTML files are
+       opened from different local paths or origins.
+    */
+
+    const params = new URLSearchParams(window.location.search);
+    const urlData = params.get("patientData");
+
+    let savedData = urlData;
+
+    /* Fallback for normal same-origin/PWA use */
+    if (!savedData) {
+        savedData =
+            sessionStorage.getItem("patientData") ||
+            localStorage.getItem("patientData");
+    }
 
     if(!savedData){
         alert("Patient data not found. Please return to Patient Profile.");
@@ -212,7 +228,7 @@ function loadPatientData(){
         patient = JSON.parse(savedData);
     }
     catch(error){
-        alert("Unable to read patient data.");
+        alert("Patient data could not be loaded.");
         return false;
     }
 
@@ -229,33 +245,21 @@ function loadPatientData(){
     patient.age =
         patient.age != null ? Number(patient.age) : null;
 
-    patient.height =
-        Number(patient.height);
+    patient.height = Number(patient.height);
 
     patient.weight =
         patient.weight != null
             ? Number(patient.weight)
             : null;
 
-    patient.pbw =
-        Number(patient.pbw);
+    patient.pbw = Number(patient.pbw);
 
     patient.bmi =
         patient.bmi != null
             ? Number(patient.bmi)
             : null;
 
-    document.getElementById("patientAge").innerText = patient.age != null ? patient.age+" years" : "—";
-    const sex = String(patient.sex || "").toLowerCase();
-    document.getElementById("patientSex").innerText = sex === "male" ? "Male" : sex === "female" ? "Female" : "—";
-    document.getElementById("patientHeight").innerText = patient.height+" cm";
-    document.getElementById("patientWeight").innerText = patient.weight+" kg";
-    document.getElementById("patientPBW").innerText = Number(patient.pbw).toFixed(1)+" kg";
-    document.getElementById("patientBMI").innerText =
-        patient.bmi != null
-            ? Number(patient.bmi).toFixed(1)
-            : "—";
-
+    /* Keep both storage methods synchronized when possible */
     try {
         sessionStorage.setItem(
             "patientData",
@@ -269,6 +273,32 @@ function loadPatientData(){
             JSON.stringify(patient)
         );
     } catch(e) {}
+
+    document.getElementById("patientAge").innerText =
+        patient.age != null ? patient.age + " years" : "—";
+
+    const sex = String(patient.sex || "").toLowerCase();
+
+    document.getElementById("patientSex").innerText =
+        sex === "male"
+            ? "Male"
+            : sex === "female"
+                ? "Female"
+                : "—";
+
+    document.getElementById("patientHeight").innerText =
+        patient.height + " cm";
+
+    document.getElementById("patientWeight").innerText =
+        patient.weight != null ? patient.weight + " kg" : "—";
+
+    document.getElementById("patientPBW").innerText =
+        Number(patient.pbw).toFixed(1) + " kg";
+
+    document.getElementById("patientBMI").innerText =
+        patient.bmi != null
+            ? Number(patient.bmi).toFixed(1)
+            : "—";
 
     return true;
 }
