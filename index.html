@@ -665,7 +665,7 @@ function calculatePatientValues() {
             "Please enter Sex, Weight and Height."
         );
 
-        return;
+        return false;
     }
 
 
@@ -843,16 +843,30 @@ function calculatePatientValues() {
     };
 
 
-    sessionStorage.setItem(
-        "patientData",
-        JSON.stringify(patientData)
-    );
+    const serializedPatientData =
+        JSON.stringify(patientData);
+
+    try {
+        sessionStorage.setItem(
+            "patientData",
+            serializedPatientData
+        );
+    } catch (e) {}
+
+    try {
+        localStorage.setItem(
+            "patientData",
+            serializedPatientData
+        );
+    } catch (e) {}
 
 
     console.log(
         "Patient data saved:",
         patientData
     );
+
+    return true;
 
 }
 
@@ -863,34 +877,44 @@ function calculatePatientValues() {
 
 function openDrugDose() {
 
-    const weight =
-        parseFloat(document.getElementById("weight").value);
+    const success = calculatePatientValues();
 
-    const height =
-        parseFloat(document.getElementById("height").value);
-
-    const sex =
-        document.getElementById("sex").value;
-
-    if (!weight || !height || !sex) {
-
-        alert("Please enter Sex, Weight and Height.");
-
+    if (!success) {
         return;
     }
 
-    calculatePatientValues();
+    window.location.href =
+        "drug-dose.html";
 
-    window.location.href = "drug-dose.html";
 }
 
 
 function openVentilator() {
 
-    calculatePatientValues();
+    const saved = calculatePatientValues();
+
+    if (saved === false) {
+        return;
+    }
+
+    const patientData = {
+        age: parseFloat(document.getElementById("age").value) || null,
+        sex: document.getElementById("sex").value,
+        weight: parseFloat(document.getElementById("weight").value),
+        height: parseFloat(document.getElementById("height").value),
+        bmi: parseFloat(document.getElementById("bmi").innerText) || null,
+        ibw: parseFloat(document.getElementById("ibw").innerText) || null,
+        lbw: parseFloat(document.getElementById("lbw").innerText) || null,
+        adjbw: parseFloat(document.getElementById("adjbw").innerText) || null,
+        pbw: parseFloat(document.getElementById("pbw").innerText) || null,
+        bsa: parseFloat(document.getElementById("bsa").innerText) || null
+    };
+
+    const encodedPatientData =
+        encodeURIComponent(JSON.stringify(patientData));
 
     window.location.href =
-        "ventilator.html";
+        "ventilator.html?patientData=" + encodedPatientData;
 
 }
 
