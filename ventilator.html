@@ -77,17 +77,30 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f7fb;color:#1
 <div class="input-grid">
 <div class="input-group">
 <label for="vtInput">Tidal Volume (mL)</label>
-<input type="number" id="vtInput" min="1" step="1" placeholder="Tidal Volume" oninput="calculateVentilator(); calculateRespiratoryMechanics()">
+<input type="number" id="vtInput" min="1" step="1" placeholder="Tidal Volume" oninput="calculateVentilationAdvanced(); calculateRespiratoryMechanics()">
 </div>
 <div class="input-group">
 <label for="rrInput">Respiratory Rate (/min)</label>
-<input type="number" id="rrInput" min="1" step="1" value="12" placeholder="Respiratory Rate" oninput="calculateVentilator(); calculateRespiratoryMechanics()">
+<input type="number" id="rrInput" min="1" step="1" value="12" placeholder="Respiratory Rate" oninput="calculateVentilator(); calculateVentilationAdvanced(); calculateRespiratoryMechanics(); calculateAdvanced()">
+</div>
+<div class="input-group">
+<label for="paco2VentInput">PaCO₂ (mmHg)</label>
+<input type="number" id="paco2VentInput" min="1" step="1" placeholder="PaCO₂" oninput="calculateVentilationAdvanced()">
+</div>
+<div class="input-group">
+<label for="etco2Input">ETCO₂ (mmHg)</label>
+<input type="number" id="etco2Input" min="1" step="1" placeholder="ETCO₂" oninput="calculateVentilationAdvanced()">
 </div>
 </div>
 <div class="results-grid" style="margin-top:15px;">
 <div class="result-box"><div class="result-title">Minute Ventilation</div><div class="result-value" id="minuteVentilation">—</div><div class="result-note">L/min</div></div>
 <div class="result-box"><div class="result-title">VT / PBW</div><div class="result-value" id="actualVtPerKg">—</div><div class="result-note">mL/kg PBW</div></div>
+<div class="result-box"><div class="result-title">Estimated Dead Space</div><div class="result-value" id="deadSpaceVolume">—</div><div class="result-note">mL</div></div>
+<div class="result-box"><div class="result-title">VD/VT (Enghoff)</div><div class="result-value" id="vdvt">—</div><div class="result-note">fraction / %</div></div>
+<div class="result-box"><div class="result-title">Alveolar Ventilation</div><div class="result-value" id="alveolarVentilation">—</div><div class="result-note">L/min</div></div>
+<div class="result-box"><div class="result-title">Effective Minute Ventilation</div><div class="result-value" id="effectiveMinuteVentilation">—</div><div class="result-note">L/min after estimated dead space</div></div>
 </div>
+<div class="info-box">Estimated VD/VT uses the Enghoff modification: (PaCO₂ − ETCO₂) / PaCO₂. Dead-space volume = VT × VD/VT. Alveolar ventilation = (VT − VD) × RR.</div>
 </div>
 
 <div class="card">
@@ -95,11 +108,11 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f7fb;color:#1
 <div class="input-grid">
 <div class="input-group">
 <label for="peepInput">PEEP (cmH₂O)</label>
-<input type="number" id="peepInput" min="0" step="0.1" placeholder="PEEP" oninput="calculateVentilator()">
+<input type="number" id="peepInput" min="0" step="0.1" placeholder="PEEP" oninput="calculateVentilator(); calculateAdvanced()">
 </div>
 <div class="input-group">
 <label for="plateauInput">Plateau Pressure (cmH₂O)</label>
-<input type="number" id="plateauInput" min="0" step="0.1" placeholder="Plateau Pressure" oninput="calculateVentilator(); calculateRespiratoryMechanics()">
+<input type="number" id="plateauInput" min="0" step="0.1" placeholder="Plateau Pressure" oninput="calculateVentilator(); calculateRespiratoryMechanics(); calculateVentilationAdvanced(); calculateAdvanced()">
 </div>
 </div>
 <div class="results-grid" style="margin-top:15px;">
@@ -185,6 +198,34 @@ Inspiratory flow is converted from L/min to L/s for the resistance calculation.
 PAO₂ = FiO₂ × (P<sub>atm</sub> − 47) − PaCO₂ / 0.8.
 A–a gradient = PAO₂ − PaO₂.
 </div>
+</div>
+
+<div class="card">
+<h2>Advanced</h2>
+<div class="input-grid">
+<div class="input-group">
+<label for="peepTotalInput">Total PEEP / End-expiratory Pressure (cmH₂O)</label>
+<input type="number" id="peepTotalInput" min="0" step="0.1" placeholder="For Auto-PEEP" oninput="calculateAdvanced()">
+</div>
+<div class="input-group">
+<label for="p01Input">P0.1 (cmH₂O)</label>
+<input type="number" id="p01Input" min="0" step="0.1" placeholder="If measured" oninput="calculateAdvanced()">
+</div>
+<div class="input-group">
+<label for="nifInput">NIF / MIP (cmH₂O)</label>
+<input type="number" id="nifInput" min="0" step="1" placeholder="Optional" oninput="calculateAdvanced()">
+</div>
+</div>
+<div class="results-grid" style="margin-top:15px;">
+<div class="result-box"><div class="result-title">Mechanical Power</div><div class="result-value" id="mechanicalPower">—</div><div class="result-note">J/min</div></div>
+<div class="result-box"><div class="result-title">Auto-PEEP</div><div class="result-value" id="autoPeep">—</div><div class="result-note">cmH₂O</div></div>
+<div class="result-box"><div class="result-title">P0.1</div><div class="result-value" id="p01Result">—</div><div class="result-note">cmH₂O</div></div>
+<div class="result-box"><div class="result-title">RSBI</div><div class="result-value" id="rsbi">—</div><div class="result-note">breaths/min/L</div></div>
+<div class="result-box"><div class="result-title">VT / PBW</div><div class="result-value" id="weaningVtKg">—</div><div class="result-note">mL/kg</div></div>
+<div class="result-box"><div class="result-title">Minute Ventilation</div><div class="result-value" id="weaningMinuteVent">—</div><div class="result-note">L/min</div></div>
+<div class="result-box"><div class="result-title">NIF / MIP</div><div class="result-value" id="nifResult">—</div><div class="result-note">cmH₂O</div></div>
+</div>
+<div class="info-box">Mechanical Power is estimated from VT, RR, PEEP, plateau and peak pressure. RSBI = RR / VT (L). Weaning indices are supportive measurements and should be interpreted with the clinical picture, gas exchange and spontaneous breathing trial.</div>
 </div>
 
 <div class="card">
@@ -408,6 +449,92 @@ function calculateRespiratoryMechanics(){
     }
 }
 
+
+function calculateVentilationAdvanced(){
+    if(!patient || !patient.pbw) return;
+
+    const vt = Number(document.getElementById("vtInput").value);
+    const rr = Number(document.getElementById("rrInput").value);
+    const paCO2 = Number(document.getElementById("paco2VentInput").value);
+    const etCO2 = Number(document.getElementById("etco2Input").value);
+
+    if(vt > 0 && rr > 0){
+        document.getElementById("minuteVentilation").innerText = ((vt * rr) / 1000).toFixed(2);
+        document.getElementById("actualVtPerKg").innerText = (vt / Number(patient.pbw)).toFixed(1);
+    }else{
+        document.getElementById("minuteVentilation").innerText = "—";
+        document.getElementById("actualVtPerKg").innerText = "—";
+    }
+
+    if(vt > 0 && paCO2 > 0 && etCO2 > 0 && paCO2 >= etCO2){
+        const vdvtValue = (paCO2 - etCO2) / paCO2;
+        const vd = vt * vdvtValue;
+        const va = ((vt - vd) * rr) / 1000;
+
+        document.getElementById("vdvt").innerText = vdvtValue.toFixed(2) + " / " + (vdvtValue * 100).toFixed(0) + "%";
+        document.getElementById("deadSpaceVolume").innerText = vd.toFixed(0);
+        document.getElementById("alveolarVentilation").innerText = va.toFixed(2);
+        document.getElementById("effectiveMinuteVentilation").innerText = va.toFixed(2);
+    }else{
+        document.getElementById("vdvt").innerText = "—";
+        document.getElementById("deadSpaceVolume").innerText = "—";
+        document.getElementById("alveolarVentilation").innerText = "—";
+        document.getElementById("effectiveMinuteVentilation").innerText = "—";
+    }
+}
+
+function calculateAdvanced(){
+    if(!patient || !patient.pbw) return;
+
+    const vt = Number(document.getElementById("vtInput").value);
+    const rr = Number(document.getElementById("rrInput").value);
+    const peep = document.getElementById("peepInput").value === "" ? null : Number(document.getElementById("peepInput").value);
+    const plateau = document.getElementById("plateauInput").value === "" ? null : Number(document.getElementById("plateauInput").value);
+    const ppeak = document.getElementById("peakPressureInput").value === "" ? null : Number(document.getElementById("peakPressureInput").value);
+    const totalPeep = document.getElementById("peepTotalInput").value === "" ? null : Number(document.getElementById("peepTotalInput").value);
+    const p01 = document.getElementById("p01Input").value === "" ? null : Number(document.getElementById("p01Input").value);
+    const nif = document.getElementById("nifInput").value === "" ? null : Number(document.getElementById("nifInput").value);
+
+    // Mechanical Power: simplified volume-controlled ventilation equation.
+    if(vt > 0 && rr > 0 && peep !== null && plateau !== null && ppeak !== null && ppeak >= plateau && plateau >= peep){
+        const vtLiters = vt / 1000;
+        const drivingPressure = plateau - peep;
+        const mp = 0.098 * rr * vtLiters * (ppeak - (drivingPressure / 2));
+        document.getElementById("mechanicalPower").innerText = mp.toFixed(1);
+    }else{
+        document.getElementById("mechanicalPower").innerText = "—";
+    }
+
+    if(totalPeep !== null && peep !== null && totalPeep >= peep){
+        document.getElementById("autoPeep").innerText = (totalPeep - peep).toFixed(1);
+    }else{
+        document.getElementById("autoPeep").innerText = "—";
+    }
+
+    if(p01 !== null && p01 >= 0){
+        document.getElementById("p01Result").innerText = p01.toFixed(1);
+    }else{
+        document.getElementById("p01Result").innerText = "—";
+    }
+
+    if(vt > 0 && rr > 0){
+        const vtLiters = vt / 1000;
+        document.getElementById("rsbi").innerText = (rr / vtLiters).toFixed(0);
+        document.getElementById("weaningVtKg").innerText = (vt / Number(patient.pbw)).toFixed(1);
+        document.getElementById("weaningMinuteVent").innerText = ((vt * rr) / 1000).toFixed(2);
+    }else{
+        document.getElementById("rsbi").innerText = "—";
+        document.getElementById("weaningVtKg").innerText = "—";
+        document.getElementById("weaningMinuteVent").innerText = "—";
+    }
+
+    if(nif !== null && nif >= 0){
+        document.getElementById("nifResult").innerText = nif.toFixed(0);
+    }else{
+        document.getElementById("nifResult").innerText = "—";
+    }
+}
+
 function calculateGasExchange(){
     const fio2Percent = Number(document.getElementById("fio2Input").value);
     const pao2 = Number(document.getElementById("pao2Input").value);
@@ -449,6 +576,8 @@ window.addEventListener("DOMContentLoaded",function(){
     if(loadPatientData()) {
         calculateVentilator();
         calculateRespiratoryMechanics();
+        calculateVentilationAdvanced();
+        calculateAdvanced();
         calculateGasExchange();
     }
 });
