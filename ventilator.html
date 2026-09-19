@@ -347,7 +347,67 @@ function calculateVentilator(){
         document.getElementById("staticCompliance").innerText = "—";
     }
 }
-\nfunction calculateRespiratoryMechanics(){\n    if(!patient || !patient.pbw) return;\n\n    const rr = Number(document.getElementById("rrInput").value);\n    const vt = Number(document.getElementById("vtInput").value);\n    const ratioValue = document.getElementById("ieRatioInput").value;\n    const ratioParts = ratioValue.split(":");\n    const iPart = Number(ratioParts[0]);\n    const ePart = Number(ratioParts[1]);\n\n    let ti = null;\n    let te = null;\n\n    if(rr > 0 && iPart > 0 && ePart > 0){\n        const cycleTime = 60 / rr;\n        ti = cycleTime * iPart / (iPart + ePart);\n        te = cycleTime * ePart / (iPart + ePart);\n\n        document.getElementById("calculatedTi").innerText = ti.toFixed(2);\n        document.getElementById("calculatedTe").innerText = te.toFixed(2);\n        document.getElementById("calculatedIERatio").innerText = iPart + ":" + ePart;\n\n        const tiInput = document.getElementById("tiInput");\n        const teInput = document.getElementById("teInput");\n        if(document.activeElement !== tiInput) tiInput.value = ti.toFixed(2);\n        if(document.activeElement !== teInput) teInput.value = te.toFixed(2);\n    }else{\n        document.getElementById("calculatedTi").innerText = "—";\n        document.getElementById("calculatedTe").innerText = "—";\n        document.getElementById("calculatedIERatio").innerText = "—";\n    }\n\n    if(vt > 0 && ti && ti > 0){\n        const flow = (vt / 1000) / (ti / 60);\n        document.getElementById("calculatedFlow").innerText = flow.toFixed(1);\n        const flowInput = document.getElementById("flowInput");\n        if(document.activeElement !== flowInput && !flowInput.value) flowInput.value = flow.toFixed(1);\n    }else{\n        document.getElementById("calculatedFlow").innerText = "—";\n    }\n\n    const peep = document.getElementById("peepInput").value === "" ? null : Number(document.getElementById("peepInput").value);\n    const plateau = document.getElementById("plateauInput").value === "" ? null : Number(document.getElementById("plateauInput").value);\n    const ppeak = document.getElementById("peakPressureInput").value === "" ? null : Number(document.getElementById("peakPressureInput").value);\n\n    if(vt > 0 && peep !== null && ppeak !== null && ppeak > peep){\n        document.getElementById("dynamicCompliance").innerText = (vt / (ppeak - peep)).toFixed(1);\n    }else{\n        document.getElementById("dynamicCompliance").innerText = "—";\n    }\n\n    const flowValue = document.getElementById("flowInput").value === "" ? null : Number(document.getElementById("flowInput").value);\n    if(ppeak !== null && plateau !== null && flowValue !== null && flowValue > 0 && ppeak >= plateau){\n        const resistance = (ppeak - plateau) / (flowValue / 60);\n        document.getElementById("airwayResistance").innerText = resistance.toFixed(1);\n    }else{\n        document.getElementById("airwayResistance").innerText = "—";\n    }\n}\n
+
+function calculateRespiratoryMechanics(){
+    if(!patient || !patient.pbw) return;
+
+    const rr = Number(document.getElementById("rrInput").value);
+    const vt = Number(document.getElementById("vtInput").value);
+    const ratioValue = document.getElementById("ieRatioInput").value;
+    const ratioParts = ratioValue.split(":");
+    const iPart = Number(ratioParts[0]);
+    const ePart = Number(ratioParts[1]);
+
+    let ti = null;
+    let te = null;
+
+    if(rr > 0 && iPart > 0 && ePart > 0){
+        const cycleTime = 60 / rr;
+        ti = cycleTime * iPart / (iPart + ePart);
+        te = cycleTime * ePart / (iPart + ePart);
+
+        document.getElementById("calculatedTi").innerText = ti.toFixed(2);
+        document.getElementById("calculatedTe").innerText = te.toFixed(2);
+        document.getElementById("calculatedIERatio").innerText = iPart + ":" + ePart;
+
+        const tiInput = document.getElementById("tiInput");
+        const teInput = document.getElementById("teInput");
+        if(document.activeElement !== tiInput) tiInput.value = ti.toFixed(2);
+        if(document.activeElement !== teInput) teInput.value = te.toFixed(2);
+    }else{
+        document.getElementById("calculatedTi").innerText = "—";
+        document.getElementById("calculatedTe").innerText = "—";
+        document.getElementById("calculatedIERatio").innerText = "—";
+    }
+
+    if(vt > 0 && ti && ti > 0){
+        const flow = (vt / 1000) / (ti / 60);
+        document.getElementById("calculatedFlow").innerText = flow.toFixed(1);
+        const flowInput = document.getElementById("flowInput");
+        if(document.activeElement !== flowInput && !flowInput.value) flowInput.value = flow.toFixed(1);
+    }else{
+        document.getElementById("calculatedFlow").innerText = "—";
+    }
+
+    const peep = document.getElementById("peepInput").value === "" ? null : Number(document.getElementById("peepInput").value);
+    const plateau = document.getElementById("plateauInput").value === "" ? null : Number(document.getElementById("plateauInput").value);
+    const ppeak = document.getElementById("peakPressureInput").value === "" ? null : Number(document.getElementById("peakPressureInput").value);
+
+    if(vt > 0 && peep !== null && ppeak !== null && ppeak > peep){
+        document.getElementById("dynamicCompliance").innerText = (vt / (ppeak - peep)).toFixed(1);
+    }else{
+        document.getElementById("dynamicCompliance").innerText = "—";
+    }
+
+    const flowValue = document.getElementById("flowInput").value === "" ? null : Number(document.getElementById("flowInput").value);
+    if(ppeak !== null && plateau !== null && flowValue !== null && flowValue > 0 && ppeak >= plateau){
+        const resistance = (ppeak - plateau) / (flowValue / 60);
+        document.getElementById("airwayResistance").innerText = resistance.toFixed(1);
+    }else{
+        document.getElementById("airwayResistance").innerText = "—";
+    }
+}
+
 function calculateGasExchange(){
     const fio2Percent = Number(document.getElementById("fio2Input").value);
     const pao2 = Number(document.getElementById("pao2Input").value);
