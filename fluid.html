@@ -3,600 +3,252 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fluids & Blood | Anesthesia Calculator</title>
+<title>Fluid Calculator | Anesthesia Calculator</title>
 <style>
-*{box-sizing:border-box}
-body{
-    margin:0;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-    background:#eef7f4;
-    color:#18332f;
-}
-.container{
-    max-width:760px;
-    margin:0 auto;
-    padding:24px 16px 40px;
-}
-.header{text-align:center;margin-bottom:22px}
-h1{margin:0;font-size:28px;color:#145b50}
-.subtitle{margin-top:6px;color:#64817b;font-size:14px}
-.card{
-    background:#fff;
-    border-radius:18px;
-    padding:18px;
-    margin-bottom:16px;
-    box-shadow:0 5px 18px rgba(22,76,66,.08);
-    border:1px solid #dcece7;
-}
-.card h2{
-    margin:0 0 15px;
-    font-size:18px;
-    color:#155c51;
-}
-.grid{
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:12px;
-}
-.field{display:flex;flex-direction:column;gap:6px}
-.field.full{grid-column:1/-1}
-label{font-size:13px;font-weight:600;color:#476760}
-input,select{
-    width:100%;
-    min-height:44px;
-    border:1px solid #c9ded8;
-    border-radius:10px;
-    padding:9px 11px;
-    font-size:16px;
-    color:#18332f;
-    background:#fbfefd;
-}
-input:focus,select:focus{outline:2px solid #8fcfc1;outline-offset:1px}
-.patient-summary{
-    display:grid;
-    grid-template-columns:repeat(3,minmax(0,1fr));
-    gap:8px;
-}
-.summary-item{
-    background:#f2faf7;
-    border-radius:10px;
-    padding:9px;
-    text-align:center;
-}
-.summary-label{font-size:11px;color:#67827b}
-.summary-value{font-weight:700;margin-top:3px}
-.result-grid{
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:10px;
-}
-.result{
-    background:#f4faf8;
-    border-radius:12px;
-    padding:12px;
-    border:1px solid #deeee9;
-}
-.result .label{font-size:12px;color:#66817a}
-.result .value{font-size:20px;font-weight:700;margin-top:4px;color:#145b50}
-.result .unit{font-size:11px;color:#6c8580}
-.method-grid{
-    display:grid;
-    grid-template-columns:repeat(3,minmax(0,1fr));
-    gap:10px;
-}
-.method{
-    border:1px solid #d8e9e4;
-    border-radius:13px;
-    padding:13px;
-    background:#fbfefd;
-}
-.method h3{margin:0 0 9px;font-size:15px;color:#155c51}
-.method .big{font-size:21px;font-weight:700}
-.note{
-    margin-top:10px;
-    padding:10px 12px;
-    border-radius:10px;
-    background:#f6faf9;
-    color:#58716b;
-    font-size:12px;
-    line-height:1.5;
-}
-.formula{
-    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-    font-size:12px;
-    background:#f5faf8;
-    padding:8px 10px;
-    border-radius:8px;
-    margin-top:9px;
-    color:#41635b;
-}
-.calculate-btn{
-    width:100%;
-    min-height:48px;
-    border:0;
-    border-radius:12px;
-    background:#17665a;
-    color:#fff;
-    font-size:16px;
-    font-weight:700;
-    cursor:pointer;
-    margin-top:14px;
-}
-.calculate-btn:active{transform:translateY(1px)}
-.warning{
-    color:#7a5b16;
-    background:#fff8df;
-    border:1px solid #f0df9e;
-}
-.error{
-    color:#8b3030;
-    background:#fff0f0;
-    border:1px solid #efcaca;
-}
-.hidden{display:none}
-.small{font-size:11px;color:#6b837d}
-@media(max-width:600px){
-    .grid,.result-grid{grid-template-columns:1fr}
-    .patient-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
-    .method-grid{grid-template-columns:1fr}
-}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#eef7f4;color:#18332f}.container{max-width:780px;margin:auto;padding:24px 16px 40px}.header{text-align:center;margin-bottom:22px}h1{margin:0;color:#145b50;font-size:28px}.subtitle{margin-top:6px;color:#64817b;font-size:14px}.card{background:#fff;border:1px solid #dcece7;border-radius:18px;padding:18px;margin-bottom:16px;box-shadow:0 5px 18px rgba(22,76,66,.08)}h2{margin:0 0 15px;color:#155c51;font-size:18px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px}.full{grid-column:1/-1}label{font-size:13px;font-weight:600;color:#476760}input,select{width:100%;min-height:44px;border:1px solid #c9ded8;border-radius:10px;padding:9px 11px;font-size:16px;color:#18332f;background:#fbfefd}input:focus,select:focus{outline:2px solid #8fcfc1}.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.summary-item{background:#f2faf7;border-radius:10px;padding:9px;text-align:center}.summary-label{font-size:11px;color:#67827b}.summary-value{font-weight:700;margin-top:3px}.table-wrap{overflow-x:auto}.fluid-table{width:100%;border-collapse:collapse;min-width:600px}.fluid-table th,.fluid-table td{padding:10px 8px;border-bottom:1px solid #e3efeb;text-align:right}.fluid-table th{background:#f2faf7;color:#155c51;font-size:12px}.fluid-table th:first-child,.fluid-table td:first-child{text-align:left}.fluid-table td{font-size:14px}.total-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:14px}.result{background:#f4faf8;border:1px solid #deeee9;border-radius:12px;padding:11px}.result-label{font-size:11px;color:#66817a}.result-value{font-size:20px;font-weight:700;color:#145b50;margin-top:4px}.unit{font-size:11px;color:#6c8580}.formula{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;background:#f5faf8;padding:8px 10px;border-radius:8px;margin-top:10px;color:#41635b;line-height:1.5}.note{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f6faf9;color:#58716b;font-size:12px;line-height:1.5}.warning{background:#fff8df;border:1px solid #f0df9e;color:#725917}.error{background:#fff0f0;border:1px solid #efcaca;color:#8b3030}.hidden{display:none}.btn{width:100%;min-height:48px;border:0;border-radius:12px;background:#17665a;color:#fff;font-size:16px;font-weight:700;cursor:pointer}.section-total{font-weight:700;color:#145b50}@media(max-width:600px){.grid{grid-template-columns:1fr}.summary{grid-template-columns:repeat(2,1fr)}.total-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
-
 <body>
 <div class="container">
-
-<header class="header">
-    <h1>Fluids & Blood</h1>
-    <div class="subtitle">Perioperative Fluid and Blood Loss Calculator</div>
-</header>
+<header class="header"><h1>Fluid Calculator</h1><div class="subtitle">Intraoperative Fluid Estimation & MABL</div></header>
 
 <section class="card">
-    <h2>Patient Profile</h2>
-    <div class="patient-summary">
-        <div class="summary-item"><div class="summary-label">Age</div><div class="summary-value" id="patientAge">—</div></div>
-        <div class="summary-item"><div class="summary-label">Sex</div><div class="summary-value" id="patientSex">—</div></div>
-        <div class="summary-item"><div class="summary-label">Weight</div><div class="summary-value" id="patientWeight">—</div></div>
-        <div class="summary-item"><div class="summary-label">Height</div><div class="summary-value" id="patientHeight">—</div></div>
-        <div class="summary-item"><div class="summary-label">BMI</div><div class="summary-value" id="patientBMI">—</div></div>
-        <div class="summary-item"><div class="summary-label">PBW</div><div class="summary-value" id="patientPBW">—</div></div>
-    </div>
-    <div id="patientMessage" class="note hidden"></div>
+<h2>Patient Profile</h2>
+<div class="summary">
+<div class="summary-item"><div class="summary-label">Age</div><div class="summary-value" id="patientAge">—</div></div>
+<div class="summary-item"><div class="summary-label">Sex</div><div class="summary-value" id="patientSex">—</div></div>
+<div class="summary-item"><div class="summary-label">Weight</div><div class="summary-value" id="patientWeight">—</div></div>
+<div class="summary-item"><div class="summary-label">NPO</div><div class="summary-value" id="patientNPO">—</div></div>
+<div class="summary-item"><div class="summary-label">Hb</div><div class="summary-value" id="patientHb">—</div></div>
+<div class="summary-item"><div class="summary-label">Target Hb</div><div class="summary-value" id="patientTargetHb">—</div></div>
+</div>
+<div id="patientMessage" class="note hidden"></div>
 </section>
 
 <section class="card">
-    <h2>1. Maintenance & NPO Deficit</h2>
+<h2>1. Fluid Therapy</h2>
+<div class="grid">
+<div class="field"><label for="npoHours">NPO Duration (hours)</label><input id="npoHours" type="number" min="0" step="0.5" value="0"></div>
+<div class="field"><label for="surgeryType">Type of Surgery</label><select id="surgeryType"><option value="minimal">Minimal</option><option value="mild">Mild</option><option value="moderate" selected>Moderate</option><option value="severe">Severe</option></select></div>
+<div class="field"><label for="duration">Surgery Duration (hours)</label><input id="duration" type="number" min="0" step="0.1" value="4"></div>
+</div>
 
-    <div class="grid">
-        <div class="field">
-            <label for="npoHours">NPO Duration (hours)</label>
-            <input id="npoHours" type="number" min="0" step="0.5" value="0">
-        </div>
-        <div class="field">
-            <label for="maintenanceMethod">Maintenance Method</label>
-            <select id="maintenanceMethod">
-                <option value="421">4–2–1 Rule</option>
-            </select>
-        </div>
-    </div>
+<div class="total-grid" style="margin-top:14px">
+<div class="result"><div class="result-label">Maintenance</div><div class="result-value" id="maintenance">—</div><div class="unit">mL/h</div></div>
+<div class="result"><div class="result-label">NPO Deficit</div><div class="result-value" id="deficit">—</div><div class="unit">mL</div></div>
+<div class="result"><div class="result-label">Third-Space / Surgical Loss</div><div class="result-value" id="thirdLoss">—</div><div class="unit">mL</div></div>
+<div class="result"><div class="result-label">CVE (5 mL/kg)</div><div class="result-value" id="cve">—</div><div class="unit">mL</div></div>
+</div>
 
-    <div class="result-grid" style="margin-top:12px">
-        <div class="result">
-            <div class="label">Maintenance Rate</div>
-            <div class="value" id="maintenanceRate">—</div>
-            <div class="unit">mL/h</div>
-        </div>
-        <div class="result">
-            <div class="label">24-h Maintenance</div>
-            <div class="value" id="maintenance24">—</div>
-            <div class="unit">mL/day</div>
-        </div>
-        <div class="result">
-            <div class="label">NPO Deficit</div>
-            <div class="value" id="npoDeficit">—</div>
-            <div class="unit">mL</div>
-        </div>
-        <div class="result">
-            <div class="label">1st Hour Deficit Replacement</div>
-            <div class="value" id="deficitHour1">—</div>
-            <div class="unit">mL</div>
-        </div>
-    </div>
+<div class="table-wrap" style="margin-top:16px">
+<table class="fluid-table">
+<thead><tr><th>Time</th><th>Restrictive</th><th>Normal</th><th>Liberal</th><th>Experimental</th><th>Unit</th></tr></thead>
+<tbody id="fluidRows"></tbody>
+</table>
+</div>
 
-    <div class="formula">Maintenance = 4 mL/kg/h for first 10 kg + 2 mL/kg/h for next 10 kg + 1 mL/kg/h thereafter</div>
-    <div class="formula">NPO deficit = maintenance rate × NPO hours</div>
+<div class="total-grid">
+<div class="result"><div class="result-label">Total Restrictive</div><div class="result-value" id="totalRestrictive">—</div><div class="unit">mL</div></div>
+<div class="result"><div class="result-label">Total Normal</div><div class="result-value" id="totalNormal">—</div><div class="unit">mL</div></div>
+<div class="result"><div class="result-label">Total Liberal</div><div class="result-value" id="totalLiberal">—</div><div class="unit">mL</div></div>
+<div class="result"><div class="result-label">Total Experimental</div><div class="result-value" id="totalExperimental">—</div><div class="unit">mL</div></div>
+</div>
 
-    <div class="note">
-        The classic 4–2–1 rule is displayed as a calculation reference. Actual perioperative fluid therapy should be individualized rather than treated as an automatic prescription.
-    </div>
+<div class="formula">
+Maintenance = 4 mL/kg/h (≤10 kg); 4-2-1 rule thereafter.<br>
+Deficit = Maintenance × NPO hours.<br>
+Third-space loss = 0 / 2 / 4 / 6 mL/kg for Minimal / Mild / Moderate / Severe.
+</div>
 </section>
 
 <section class="card">
-    <h2>2. Intraoperative Fluid</h2>
-
-    <div class="grid">
-        <div class="field">
-            <label for="surgeryType">Surgery Type</label>
-            <select id="surgeryType">
-                <option value="minimal">Minimal</option>
-                <option value="mild">Mild</option>
-                <option value="moderate">Moderate</option>
-                <option value="severe">Severe</option>
-            </select>
-        </div>
-        <div class="field">
-            <label for="duration">Surgery Duration (hours)</label>
-            <input id="duration" type="number" min="0" step="0.1" value="1">
-        </div>
-    </div>
-
-    <div class="method-grid" style="margin-top:12px">
-        <div class="method">
-            <h3>Liberal</h3>
-            <div class="big" id="liberalRate">—</div>
-            <div class="small">mL/h</div>
-            <div class="formula" id="liberalFormula">—</div>
-        </div>
-        <div class="method">
-            <h3>Experimental / Zero-Balance</h3>
-            <div class="big" id="experimentalRate">—</div>
-            <div class="small">mL/h</div>
-            <div class="formula" id="experimentalFormula">—</div>
-        </div>
-        <div class="method">
-            <h3>Restrictive</h3>
-            <div class="big" id="restrictiveRate">—</div>
-            <div class="small">mL/h</div>
-            <div class="formula" id="restrictiveFormula">—</div>
-        </div>
-    </div>
-
-    <div class="note warning">
-        The surgery-specific Liberal / Experimental / Restrictive coefficients below are intentionally isolated in the JavaScript configuration. They should be replaced with the exact coefficients from the project's Excel model rather than being assumed to represent a universal guideline.
-    </div>
+<h2>2. Blood Loss & MABL</h2>
+<div class="grid">
+<div class="field"><label for="initialHb">Patient Hb (g/dL)</label><input id="initialHb" type="number" min="1" max="30" step="0.1" placeholder="e.g. 12.9"></div>
+<div class="field"><label for="targetHb">Allowable Hb (g/dL)</label><input id="targetHb" type="number" min="1" max="30" step="0.1" placeholder="e.g. 9"></div>
+<div class="field"><label for="bleeding">Estimated Bleeding (mL)</label><input id="bleeding" type="number" min="0" step="1" value="0"></div>
+</div>
+<div class="total-grid" style="margin-top:14px">
+<div class="result"><div class="result-label">EBV coefficient</div><div class="result-value" id="ebvCoeff">—</div><div class="unit">mL/kg</div></div>
+<div class="result"><div class="result-label">EBV</div><div class="result-value" id="ebv">—</div><div class="unit">mL</div></div>
+<div class="result"><div class="result-label">MABL</div><div class="result-value" id="mabl">—</div><div class="unit">mL</div></div>
+<div class="result"><div class="result-label">Bleeding / EBV</div><div class="result-value" id="bleedingPct">—</div><div class="unit">%</div></div>
+</div>
+<div id="bloodMessage" class="note hidden"></div>
+<div class="formula">MABL = EBV × (Patient Hb − Allowable Hb) / Patient Hb</div>
+<div class="note warning">MABL is a planning calculation and does not by itself determine transfusion. Clinical status, ongoing bleeding and oxygen delivery must also be considered.</div>
 </section>
-
-<section class="card">
-    <h2>3. Blood Loss & MABL</h2>
-
-    <div class="grid">
-        <div class="field">
-            <label for="initialHct">Initial Hct (%)</label>
-            <input id="initialHct" type="number" min="1" max="80" step="0.1" placeholder="e.g. 42">
-        </div>
-        <div class="field">
-            <label for="targetHct">Target Hct (%)</label>
-            <input id="targetHct" type="number" min="1" max="80" step="0.1" value="30">
-        </div>
-        <div class="field">
-            <label for="bloodLoss">Estimated Blood Loss (mL)</label>
-            <input id="bloodLoss" type="number" min="0" step="1" value="0">
-        </div>
-        <div class="field">
-            <label for="bloodVolumeMethod">EBV Method</label>
-            <select id="bloodVolumeMethod">
-                <option value="age-sex">Age / Sex based</option>
-                <option value="adult-simple">Adult simple: 75/65 mL/kg</option>
-            </select>
-        </div>
-    </div>
-
-    <div class="result-grid" style="margin-top:12px">
-        <div class="result">
-            <div class="label">Estimated Blood Volume</div>
-            <div class="value" id="ebv">—</div>
-            <div class="unit">mL</div>
-        </div>
-        <div class="result">
-            <div class="label">Maximum Allowable Blood Loss</div>
-            <div class="value" id="mabl">—</div>
-            <div class="unit">mL</div>
-        </div>
-        <div class="result">
-            <div class="label">Blood Loss / EBV</div>
-            <div class="value" id="bloodLossPercent">—</div>
-            <div class="unit">%</div>
-        </div>
-        <div class="result">
-            <div class="label">MABL Remaining</div>
-            <div class="value" id="mablRemaining">—</div>
-            <div class="unit">mL</div>
-        </div>
-    </div>
-
-    <div id="bloodMessage" class="note hidden"></div>
-    <div class="formula">MABL = EBV × (Initial Hct − Target Hct) / Initial Hct</div>
-    <div class="note">
-        MABL is a planning calculation. The transfusion decision should also incorporate hemodynamics, ongoing blood loss, oxygen delivery, comorbidity, and the clinical context.
-    </div>
-</section>
-
-<button class="calculate-btn" onclick="calculateAll()">Calculate</button>
-
+<button class="btn" id="calculateBtn" type="button">Calculate</button>
 </div>
 
 <script>
 "use strict";
+let patient=null;
 
-/*
- * ============================================================
- * FLUID CALCULATOR
- * ============================================================
- * Patient data sources:
- *   1) URL ?patientData=...
- *   2) sessionStorage.patientData
- *   3) localStorage.patientData
- *
- * The surgery-specific coefficients are isolated here.
- * Replace ONLY these numbers when the project's Excel
- * coefficients are available.
- *
- * Current placeholders are deliberately transparent and
- * should not be interpreted as universal guideline values.
- */
-const SURGERY_RATES = {
-    minimal: {
-        liberal: 2,
-        experimental: 1.5,
-        restrictive: 1
-    },
-    mild: {
-        liberal: 3,
-        experimental: 2,
-        restrictive: 1.5
-    },
-    moderate: {
-        liberal: 4,
-        experimental: 3,
-        restrictive: 2
-    },
-    severe: {
-        liberal: 5,
-        experimental: 4,
-        restrictive: 3
-    }
-};
-
-let patient = null;
-
-function numberOrNull(value){
-    const n = parseFloat(value);
-    return Number.isFinite(n) ? n : null;
-}
+function num(v){const n=parseFloat(v);return Number.isFinite(n)?n:null}
 
 function loadPatientData(){
-
-    let raw = null;
-
-    try{
-        const params = new URLSearchParams(window.location.search);
-        raw = params.get("patientData");
-    }catch(e){}
-
-    if(raw){
-        try{
-            patient = JSON.parse(decodeURIComponent(raw));
-        }catch(e){
-            patient = null;
-        }
-    }
-
-    if(!patient){
-        try{
-            const saved = sessionStorage.getItem("patientData");
-            if(saved) patient = JSON.parse(saved);
-        }catch(e){}
-    }
-
-    if(!patient){
-        try{
-            const saved = localStorage.getItem("patientData");
-            if(saved) patient = JSON.parse(saved);
-        }catch(e){}
-    }
-
-    renderPatient();
+ let raw=null;
+ try{raw=new URLSearchParams(location.search).get("patientData")}catch(e){}
+ if(raw){try{patient=JSON.parse(decodeURIComponent(raw))}catch(e){patient=null}}
+ if(!patient){try{const x=sessionStorage.getItem("patientData");if(x)patient=JSON.parse(x)}catch(e){}}
+ if(!patient){try{const x=localStorage.getItem("patientData");if(x)patient=JSON.parse(x)}catch(e){}}
+ renderPatient();
 }
 
 function renderPatient(){
-
-    const msg = document.getElementById("patientMessage");
-
-    if(!patient){
-        msg.textContent = "No patient data was transferred. Enter patient data in the Patient Profile page first.";
-        msg.className = "note error";
-        return;
-    }
-
-    const age = numberOrNull(patient.age);
-    const weight = numberOrNull(patient.weight);
-    const height = numberOrNull(patient.height);
-    const bmi = numberOrNull(patient.bmi);
-    const pbw = numberOrNull(patient.pbw);
-
-    document.getElementById("patientAge").textContent =
-        age !== null ? age + " y" : "—";
-
-    document.getElementById("patientSex").textContent =
-        patient.sex ? String(patient.sex).charAt(0).toUpperCase() + String(patient.sex).slice(1) : "—";
-
-    document.getElementById("patientWeight").textContent =
-        weight !== null ? weight.toFixed(1) + " kg" : "—";
-
-    document.getElementById("patientHeight").textContent =
-        height !== null ? height.toFixed(0) + " cm" : "—";
-
-    document.getElementById("patientBMI").textContent =
-        bmi !== null ? bmi.toFixed(1) : "—";
-
-    document.getElementById("patientPBW").textContent =
-        pbw !== null ? pbw.toFixed(1) + " kg" : "—";
-
-    if(weight === null || weight <= 0){
-        msg.textContent = "Valid patient weight is required for fluid calculations.";
-        msg.className = "note error";
-    }else{
-        msg.className = "note hidden";
-    }
+ const m=document.getElementById("patientMessage");
+ if(!patient){m.textContent="No patient data was transferred. Return to Patient Profile.";m.className="note error";return}
+ const age=num(patient.age),w=num(patient.weight);
+ document.getElementById("patientAge").textContent=age!==null?age+" y":"—";
+ document.getElementById("patientSex").textContent=patient.sex?String(patient.sex).charAt(0).toUpperCase()+String(patient.sex).slice(1):"—";
+ document.getElementById("patientWeight").textContent=w!==null?w.toFixed(1)+" kg":"—";
+ document.getElementById("patientNPO").textContent="Enter below";
+ document.getElementById("patientHb").textContent="Enter below";
+ document.getElementById("patientTargetHb").textContent="Enter below";
+ if(w===null||w<=0){m.textContent="Valid patient weight is required.";m.className="note error"}else m.className="note hidden";
 }
 
-function maintenanceRate(weight){
-
-    if(!Number.isFinite(weight) || weight <= 0) return null;
-
-    if(weight <= 10) return 4 * weight;
-    if(weight <= 20) return 40 + 2 * (weight - 10);
-    return 60 + (weight - 20);
+function maintenanceRate(w){
+ if(!Number.isFinite(w)||w<=0)return null;
+ if(w<=10)return 4*w;
+ if(w<=20)return 40+2*(w-10);
+ return 60+(w-20);
 }
 
-function calculateMaintenance(){
-
-    const weight = numberOrNull(patient && patient.weight);
-
-    if(weight === null || weight <= 0){
-        ["maintenanceRate","maintenance24","npoDeficit","deficitHour1"]
-        .forEach(id => document.getElementById(id).textContent = "—");
-        return;
-    }
-
-    const rate = maintenanceRate(weight);
-    const hours = Math.max(0, numberOrNull(document.getElementById("npoHours").value) || 0);
-    const deficit = rate * hours;
-
-    document.getElementById("maintenanceRate").textContent = rate.toFixed(0);
-    document.getElementById("maintenance24").textContent = (rate * 24).toFixed(0);
-    document.getElementById("npoDeficit").textContent = deficit.toFixed(0);
-
-    // Classic traditional first-hour replacement display:
-    document.getElementById("deficitHour1").textContent =
-        Math.min(deficit * 0.5, deficit).toFixed(0);
+function surgeryLossPerKg(type){
+ return {minimal:0,mild:2,moderate:4,severe:6}[type] ?? 0;
 }
 
-function calculateIntraoperative(){
-
-    const weight = numberOrNull(patient && patient.weight);
-
-    if(weight === null || weight <= 0) return;
-
-    const surgery = document.getElementById("surgeryType").value;
-    const duration = Math.max(
-        0,
-        numberOrNull(document.getElementById("duration").value) || 0
-    );
-
-    const rates = SURGERY_RATES[surgery];
-
-    const liberal = weight * rates.liberal;
-    const experimental = weight * rates.experimental;
-    const restrictive = weight * rates.restrictive;
-
-    document.getElementById("liberalRate").textContent = liberal.toFixed(0);
-    document.getElementById("experimentalRate").textContent = experimental.toFixed(0);
-    document.getElementById("restrictiveRate").textContent = restrictive.toFixed(0);
-
-    document.getElementById("liberalFormula").textContent =
-        `${rates.liberal} × weight`;
-
-    document.getElementById("experimentalFormula").textContent =
-        `${rates.experimental} × weight`;
-
-    document.getElementById("restrictiveFormula").textContent =
-        `${rates.restrictive} × weight`;
+function fluidHourValues(hour,w,maint,deficit,third,cve){
+ /*
+  Exact reconstruction of Sheet1 formulas:
+  Restrictive: surgery coefficient + 2×weight first hour,
+                then + maintenance.
+  Normal: surgery coefficient + 3×weight first hour,
+         then + 1.5×maintenance.
+  Liberal: first = CVE + maintenance + deficit/2 + third loss
+           second/third = maintenance + deficit/4 + third loss
+           fourth = maintenance + third loss
+  Experimental = (Restrictive + Liberal)/2
+ */
+ const restrictiveBase = {minimal:2,mild:4,moderate:6,severe:8}[document.getElementById("surgeryType").value] * w;
+ const normalBase = {minimal:4,mild:6,moderate:8,severe:10}[document.getElementById("surgeryType").value] * w;
+ let r,n,l;
+ if(hour===1){
+   r=restrictiveBase+2*w;
+   n=normalBase+3*w;
+   l=cve+maint+(deficit/2)+surgicalBase;
+ }else if(hour===2||hour===3){
+   r=restrictiveBase;
+   n=normalBase;
+   l=maint+(deficit/4)+third;
+ }else{
+   r=restrictiveBase;
+   n=normalBase;
+   l=maint+third;
+ }
+ return {r,n,l,e:(r+l)/2};
 }
 
-function getEBVPerKg(){
+function calculateFluid(){
+ const w=num(patient&&patient.weight);
+ if(w===null||w<=0)return;
+ const npo=Math.max(0,num(document.getElementById("npoHours").value)||0);
+ const duration=Math.max(0,num(document.getElementById("duration").value)||0);
+ const type=document.getElementById("surgeryType").value;
+ const maint=maintenanceRate(w);
+ const deficit=maint*npo;
+ const third=surgeryLossPerKg(type)*w;
+ const cve=5*w;
 
-    const weight = numberOrNull(patient && patient.weight);
-    const age = numberOrNull(patient && patient.age);
-    const sex = patient && patient.sex ? String(patient.sex).toLowerCase() : "";
+ document.getElementById("maintenance").textContent=maint.toFixed(0);
+ document.getElementById("deficit").textContent=deficit.toFixed(0);
+ document.getElementById("thirdLoss").textContent=third.toFixed(0);
+ document.getElementById("cve").textContent=cve.toFixed(0);
 
-    if(weight === null || weight <= 0) return null;
+ const rows=[];
+ for(let h=1;h<=4;h++){
+   const x=fluidHourValues(h,w,maint,deficit,third,cve);
+   rows.push(x);
+ }
+ document.getElementById("fluidRows").innerHTML=rows.map((x,i)=>`
+ <tr><td>${["First","Second","Third","Fourth"][i]} hour</td>
+ <td>${x.r.toFixed(0)}</td><td>${x.n.toFixed(0)}</td><td>${x.l.toFixed(0)}</td><td>${x.e.toFixed(0)}</td><td>mL/h</td></tr>`).join("");
 
-    // Pediatric / adolescent reference ranges represented by
-    // a single practical value for calculation.
-    if(age !== null){
-        if(age < 1) return 80;
-        if(age < 12) return 72.5;
-        if(age < 18) return 70;
-    }
-
-    if(sex === "female") return 65;
-    if(sex === "male") return 75;
-
-    return 70;
+ let totals={r:0,n:0,l:0,e:0};
+ const full=Math.floor(duration),part=duration-full;
+ for(let i=0;i<full;i++){
+   const x=i<4?rows[i]:fluidHourValues(4,w,maint,deficit,third,cve);
+   totals.r+=x.r;totals.n+=x.n;totals.l+=x.l;totals.e+=x.e;
+ }
+ if(part>0){
+   const x=full<4?rows[full]:rows[3];
+   totals.r+=x.r*part;totals.n+=x.n*part;totals.l+=x.l*part;totals.e+=x.e*part;
+ }
+ document.getElementById("totalRestrictive").textContent=totals.r.toFixed(0);
+ document.getElementById("totalNormal").textContent=totals.n.toFixed(0);
+ document.getElementById("totalLiberal").textContent=totals.l.toFixed(0);
+ document.getElementById("totalExperimental").textContent=totals.e.toFixed(0);
 }
 
-function calculateBloodLoss(){
-
-    const weight = numberOrNull(patient && patient.weight);
-    const initialHct = numberOrNull(document.getElementById("initialHct").value);
-    const targetHct = numberOrNull(document.getElementById("targetHct").value);
-    const bloodLoss = Math.max(
-        0,
-        numberOrNull(document.getElementById("bloodLoss").value) || 0
-    );
-
-    const ebvPerKg = getEBVPerKg();
-
-    if(weight === null || ebvPerKg === null){
-        ["ebv","mabl","bloodLossPercent","mablRemaining"]
-        .forEach(id => document.getElementById(id).textContent = "—");
-        return;
-    }
-
-    const ebv = weight * ebvPerKg;
-
-    document.getElementById("ebv").textContent = ebv.toFixed(0);
-
-    if(
-        initialHct === null ||
-        targetHct === null ||
-        initialHct <= 0 ||
-        targetHct <= 0 ||
-        targetHct >= initialHct
-    ){
-        document.getElementById("mabl").textContent = "—";
-        document.getElementById("bloodLossPercent").textContent =
-            ((bloodLoss / ebv) * 100).toFixed(1);
-        document.getElementById("mablRemaining").textContent = "—";
-
-        const msg = document.getElementById("bloodMessage");
-        msg.textContent = "Enter an initial Hct greater than the target Hct to calculate MABL.";
-        msg.className = "note warning";
-        return;
-    }
-
-    const mabl = ebv * ((initialHct - targetHct) / initialHct);
-    const percent = (bloodLoss / ebv) * 100;
-    const remaining = Math.max(0, mabl - bloodLoss);
-
-    document.getElementById("mabl").textContent = mabl.toFixed(0);
-    document.getElementById("bloodLossPercent").textContent = percent.toFixed(1);
-    document.getElementById("mablRemaining").textContent = remaining.toFixed(0);
-
-    const msg = document.getElementById("bloodMessage");
-
-    if(bloodLoss > mabl){
-        msg.textContent = "Estimated blood loss exceeds calculated MABL. Reassess the patient and transfusion strategy using the clinical context.";
-        msg.className = "note error";
-    }else{
-        msg.textContent = "Estimated blood loss is below the calculated MABL.";
-        msg.className = "note";
-    }
+function ebvCoeff(){
+ const age=num(patient&&patient.age);
+ const sex=String(patient&&patient.sex||"").toLowerCase();
+ /*
+  Exact age branch represented in workbook:
+  <0.5 y = 90 mL/kg
+  <2 y   = 80 mL/kg
+  <6 y   = 70 mL/kg
+  >=10 y = 60 mL/kg
+  The workbook has no explicit 6–10 y branch; use 60 mL/kg
+  for the otherwise-uncovered interval rather than inventing a
+  hidden rule.
+ */
+ let c;
+ if(age!==null && age<0.5)c=90;
+ else if(age!==null && age<2)c=80;
+ else if(age!==null && age<6)c=70;
+ else c=60;
+ if(sex==="female")c*=0.85;
+ return c;
 }
 
-function calculateAll(){
-    calculateMaintenance();
-    calculateIntraoperative();
-    calculateBloodLoss();
+function calculateMABL(){
+ const w=num(patient&&patient.weight);
+ const hb=num(document.getElementById("initialHb").value);
+ const target=num(document.getElementById("targetHb").value);
+ const bleeding=Math.max(0,num(document.getElementById("bleeding").value)||0);
+ if(w===null||w<=0)return;
+ const coeff=ebvCoeff();
+ const ebv=w*coeff;
+ document.getElementById("ebvCoeff").textContent=coeff.toFixed(1);
+ document.getElementById("ebv").textContent=ebv.toFixed(0);
+ document.getElementById("bleedingPct").textContent=((bleeding/ebv)*100).toFixed(1);
+ const msg=document.getElementById("bloodMessage");
+ if(hb===null||target===null||hb<=0||target<=0||target>=hb){
+   document.getElementById("mabl").textContent="—";
+   msg.textContent="Enter Patient Hb and Allowable Hb, with Patient Hb greater than Allowable Hb.";
+   msg.className="note warning";
+   return;
+ }
+ const mabl=ebv*(hb-target)/hb;
+ document.getElementById("mabl").textContent=mabl.toFixed(0);
+ if(bleeding>mabl){
+   msg.textContent="Estimated bleeding exceeds the calculated MABL.";
+   msg.className="note error";
+ }else{
+   msg.textContent="Estimated bleeding is below the calculated MABL.";
+   msg.className="note";
+ }
 }
 
-document.getElementById("npoHours").addEventListener("input", calculateMaintenance);
-document.getElementById("surgeryType").addEventListener("change", calculateIntraoperative);
-document.getElementById("duration").addEventListener("input", calculateIntraoperative);
-document.getElementById("initialHct").addEventListener("input", calculateBloodLoss);
-document.getElementById("targetHct").addEventListener("input", calculateBloodLoss);
-document.getElementById("bloodLoss").addEventListener("input", calculateBloodLoss);
+function calculateAll(){calculateFluid();calculateMABL()}
+
+["npoHours","surgeryType","duration","initialHb","targetHb","bleeding"].forEach(id=>{
+ document.getElementById(id).addEventListener(id==="surgeryType"?"change":"input",calculateAll)
+});
+document.getElementById("calculateBtn").addEventListener("click",calculateAll);
 
 loadPatientData();
 calculateAll();
