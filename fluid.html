@@ -141,7 +141,7 @@ function fluidHourValues(hour,w,maint,deficit,third,cve){
  if(hour===1){
    r=restrictiveBase+2*w;
    n=normalBase+3*w;
-   l=cve+maint+(deficit/2)+surgicalBase;
+   l=cve+maint+(deficit/2)+third;
  }else if(hour===2||hour===3){
    r=restrictiveBase;
    n=normalBase;
