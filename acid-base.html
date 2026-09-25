@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acid–Base Calculator</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#eef7f4;color:#18332f}
+.container{max-width:760px;margin:auto;padding:24px 16px 44px}.header{text-align:center;margin-bottom:22px}
+h1{margin:0;font-size:28px;color:#145b50}.subtitle{margin-top:6px;color:#64817b;font-size:14px}
+.card{background:#fff;border-radius:18px;padding:18px;margin-bottom:16px;box-shadow:0 5px 18px rgba(22,76,66,.08);border:1px solid #dcece7}
+.card h2{margin:0 0 15px;font-size:18px;color:#155c51}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:6px}.full{grid-column:1/-1}label{font-size:13px;font-weight:600;color:#476760}
+input{width:100%;min-height:44px;border:1px solid #c9ded8;border-radius:10px;padding:9px 11px;font-size:16px;color:#18332f;background:#fbfefd}
+input:focus{outline:2px solid #8fcfc1}.patient-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.summary-item{background:#f2faf7;border-radius:10px;padding:9px;text-align:center}.summary-label{font-size:11px;color:#67827b}.summary-value{font-weight:700;margin-top:3px}
+.result-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.result{background:#f4faf8;border-radius:12px;padding:12px;border:1px solid #deeee9}
+.label{font-size:12px;color:#66817a}.value{font-size:20px;font-weight:700;margin-top:4px;color:#145b50}.unit{font-size:11px;color:#6c8580}
+.note{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f6faf9;color:#58716b;font-size:12px;line-height:1.5}.warning{background:#fff8df;border:1px solid #f0df9e}.success{background:#eefaf3;border:1px solid #cdebd9}.hidden{display:none}
+.primary{font-size:21px;font-weight:800;color:#145b50}.formula{font-family:ui-monospace,monospace;font-size:12px;background:#f5faf8;padding:8px 10px;border-radius:8px;margin-top:9px;color:#41635b;line-height:1.45}
+.calculate-btn{width:100%;min-height:48px;border:0;border-radius:12px;background:#17665a;color:white;font-size:16px;font-weight:700;cursor:pointer}
+.small{font-size:11px;color:#6b837d}@media(max-width:600px){.grid,.result-grid{grid-template-columns:1fr}.patient-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<div class="container">
+<header class="header"><h1>Acid–Base Calculator</h1><div class="subtitle">ABG Interpretation & Acid–Base Analysis</div></header>
+
+<section class="card"><h2>Patient Profile</h2>
+<div class="patient-summary">
+<div class="summary-item"><div class="summary-label">Age</div><div class="summary-value" id="patientAge">—</div></div>
+<div class="summary-item"><div class="summary-label">Sex</div><div class="summary-value" id="patientSex">—</div></div>
+<div class="summary-item"><div class="summary-label">Weight</div><div class="summary-value" id="patientWeight">—</div></div>
+<div class="summary-item"><div class="summary-label">Height</div><div class="summary-value" id="patientHeight">—</div></div>
+<div class="summary-item"><div class="summary-label">BMI</div><div class="summary-value" id="patientBMI">—</div></div>
+<div class="summary-item"><div class="summary-label">PBW</div><div class="summary-value" id="patientPBW">—</div></div>
+</div><div id="patientMessage" class="note hidden"></div></section>
+
+<section class="card"><h2>1. ABG</h2>
+<div class="grid">
+<div class="field"><label for="pH">pH</label><input id="pH" type="number" min="6.5" max="8" step=".01" placeholder="7.40"></div>
+<div class="field"><label for="paco2">PaCO₂ (mmHg)</label><input id="paco2" type="number" min="5" max="150" step=".1" placeholder="40"></div>
+<div class="field"><label for="hco3">HCO₃⁻ (mEq/L)</label><input id="hco3" type="number" min="1" max="60" step=".1" placeholder="24"></div>
+<div class="field"><label for="be">Base Excess <span class="small">optional</span></label><input id="be" type="number" step=".1" placeholder="0"></div>
+<div class="field"><label for="pao2">PaO₂ (mmHg) <span class="small">optional</span></label><input id="pao2" type="number" min="20" max="700" step="1" placeholder="90"></div>
+<div class="field"><label for="fio2">FiO₂ (%)</label><input id="fio2" type="number" min="21" max="100" step="1" value="21"></div>
+</div></section>
+
+<section class="card"><h2>2. Electrolytes & Anion Gap</h2>
+<div class="grid">
+<div class="field"><label for="na">Na⁺ (mEq/L)</label><input id="na" type="number" placeholder="140"></div>
+<div class="field"><label for="cl">Cl⁻ (mEq/L)</label><input id="cl" type="number" placeholder="104"></div>
+<div class="field"><label for="albumin">Albumin (g/dL) <span class="small">optional</span></label><input id="albumin" type="number" step=".1" placeholder="4.0"></div>
+<div class="field"><label for="lactate">Lactate (mmol/L) <span class="small">optional</span></label><input id="lactate" type="number" step=".1" placeholder="1.0"></div>
+</div>
+<div class="result-grid" style="margin-top:12px">
+<div class="result"><div class="label">Anion Gap</div><div class="value" id="ag">—</div><div class="unit">mEq/L</div></div>
+<div class="result"><div class="label">Albumin-corrected AG</div><div class="value" id="agCorrected">—</div><div class="unit">mEq/L</div></div>
+<div class="result"><div class="label">ΔAG</div><div class="value" id="deltaAG">—</div><div class="unit">mEq/L</div></div>
+<div class="result"><div class="label">Corrected HCO₃⁻</div><div class="value" id="correctedHco3">—</div><div class="unit">mEq/L</div></div>
+</div><div class="formula">AG = Na − (Cl + HCO₃⁻)<br>Corrected AG = AG + 2.5 × (4 − albumin)</div>
+</section>
+
+<section class="card"><h2>3. Primary Disorder</h2><div class="result"><div class="label">Calculated interpretation</div><div class="primary" id="primaryDisorder">Enter pH, PaCO₂ and HCO₃⁻</div><div id="primaryDetail" class="note hidden"></div></div></section>
+
+<section class="card"><h2>4. Compensation & Mixed Disorder</h2>
+<div class="result-grid">
+<div class="result"><div class="label">Expected compensation</div><div class="value" id="expectedComp">—</div><div class="unit" id="expectedUnit">—</div></div>
+<div class="result"><div class="label">Measured vs expected</div><div class="value" id="compDifference">—</div><div class="unit">difference</div></div>
+<div class="result"><div class="label">Delta ratio</div><div class="value" id="deltaRatio">—</div><div class="unit">ratio</div></div>
+<div class="result"><div class="label">Compensation status</div><div class="value" id="compStatus">—</div></div>
+</div><div id="compMessage" class="note hidden"></div></section>
+
+<section class="card"><h2>5. Oxygenation</h2>
+<div class="result-grid">
+<div class="result"><div class="label">P/F Ratio</div><div class="value" id="pfRatio">—</div><div class="unit">mmHg</div></div>
+<div class="result"><div class="label">PAO₂</div><div class="value" id="pao2Alv">—</div><div class="unit">mmHg</div></div>
+<div class="result"><div class="label">A–a Gradient</div><div class="value" id="aaGradient">—</div><div class="unit">mmHg</div></div>
+<div class="result"><div class="label">PaO₂</div><div class="value" id="pao2Shown">—</div><div class="unit">mmHg</div></div>
+</div><div class="formula">PAO₂ ≈ FiO₂ × (PB − 47) − PaCO₂ / 0.8</div></section>
+
+<section class="card"><h2>6. Summary</h2><div id="summary" class="note">Enter the required ABG values to generate a summary.</div></section>
+<button class="calculate-btn" type="button" id="calculateBtn">Calculate</button>
+<div class="note" style="margin-top:14px">Decision-support aid only; correlate with clinical history, examination and laboratory data.</div>
+</div>
+
+<script>
+"use strict";
+let patient=null;
+const num=v=>{const n=parseFloat(v);return Number.isFinite(n)?n:null};
+const txt=(id,v)=>document.getElementById(id).textContent=v;
+
+function loadPatientData(){
+ let raw=null;
+ try{raw=new URLSearchParams(location.search).get("patientData")}catch(e){}
+ if(raw){try{patient=JSON.parse(decodeURIComponent(raw))}catch(e){}}
+ if(!patient){try{const s=sessionStorage.getItem("patientData");if(s)patient=JSON.parse(s)}catch(e){}}
+ if(!patient){try{const s=localStorage.getItem("patientData");if(s)patient=JSON.parse(s)}catch(e){}}
+ if(patient){
+  txt("patientAge",num(patient.age)!==null?num(patient.age)+" y":"—");
+  txt("patientSex",patient.sex?String(patient.sex).charAt(0).toUpperCase()+String(patient.sex).slice(1):"—");
+  txt("patientWeight",num(patient.weight)!==null?num(patient.weight).toFixed(1)+" kg":"—");
+  txt("patientHeight",num(patient.height)!==null?num(patient.height).toFixed(0)+" cm":"—");
+  txt("patientBMI",num(patient.bmi)!==null?num(patient.bmi).toFixed(1):"—");
+  txt("patientPBW",num(patient.pbw)!==null?num(patient.pbw).toFixed(1)+" kg":"—");
+ }else{
+  const m=document.getElementById("patientMessage");m.textContent="No patient data transferred. ABG analysis can still be performed.";m.className="note warning";
+ }
+}
+
+function calcAG(h){
+ const na=num(naEl.value),cl=num(clEl.value),alb=num(albuminEl.value);
+ if(na===null||cl===null)return null;
+ const ag=na-(cl+h),agc=alb!==null?ag+2.5*(4-alb):null,delta=ag-12,corrected=h+delta;
+ txt("ag",ag.toFixed(1));txt("agCorrected",agc!==null?agc.toFixed(1):"—");txt("deltaAG",delta.toFixed(1));txt("correctedHco3",corrected.toFixed(1));
+ return {ag,agc,delta,corrected};
+}
+
+function primary(p,pco,h){
+ if(p<7.35){
+  if(h<24&&pco<40)return "Metabolic acidosis";
+  if(pco>40&&h>=24)return "Respiratory acidosis";
+  if(h<24&&pco>40)return "Mixed metabolic + respiratory acidosis";
+  return "Acidemia — correlate clinically";
+ }
+ if(p>7.45){
+  if(h>24&&pco>40)return "Metabolic alkalosis";
+  if(pco<40&&h<=24)return "Respiratory alkalosis";
+  if(h>24&&pco<40)return "Mixed metabolic + respiratory alkalosis";
+  return "Alkalemia — correlate clinically";
+ }
+ if(h<24&&pco<40)return "Compensated/mixed pattern: metabolic acidosis + respiratory alkalosis";
+ if(h>24&&pco>40)return "Compensated/mixed pattern: metabolic alkalosis + respiratory acidosis";
+ return "No major acid–base abnormality detected";
+}
+
+function compensation(p,pco,h,agd){
+ let expected=null,status="—",msg="",unit="—",diff=null;
+ if(p<7.35&&h<24){
+  expected=1.5*h+8;unit="Expected PaCO₂ (mmHg)";
+  if(pco>expected+2){status="Additional respiratory acidosis";msg="PaCO₂ is above the expected Winter's range."}
+  else if(pco<expected-2){status="Additional respiratory alkalosis";msg="PaCO₂ is below the expected Winter's range."}
+  else{status="Appropriate compensation";msg="PaCO₂ is within the expected Winter's range."}
+  diff=pco-expected;
+ }else if(p>7.45&&h>24){
+  expected=40+0.7*(h-24);expected=Math.min(expected,55);unit="Expected PaCO₂ (mmHg)";
+  if(pco>expected+5){status="Additional respiratory acidosis";msg="PaCO₂ is higher than expected for metabolic alkalosis."}
+  else if(pco<expected-5){status="Additional respiratory alkalosis";msg="PaCO₂ is lower than expected for metabolic alkalosis."}
+  else{status="Appropriate compensation";msg="PaCO₂ is within the expected range."}
+  diff=pco-expected;
+ }else if(p<7.35&&pco>40){
+  const d=pco-40,acute=24+1.5*d/10,chronic=24+3.5*d/10;expected=acute;unit="HCO₃⁻ acute "+acute.toFixed(1)+" / chronic "+chronic.toFixed(1);
+  if(h<acute-2){status="Additional metabolic acidosis";msg="HCO₃⁻ is lower than expected for respiratory acidosis."}
+  else if(h>chronic+2){status="Metabolic alkalosis / chronic compensation";msg="HCO₃⁻ is higher than expected; chronicity or a metabolic alkalosis should be considered."}
+  else{status="Respiratory compensation pattern";msg="HCO₃⁻ is compatible with respiratory compensation."}
+  diff=h-acute;
+ }else if(p>7.45&&pco<40){
+  const d=40-pco,acute=24-2*d/10,chronic=24-4.5*d/10;expected=acute;unit="HCO₃⁻ acute "+acute.toFixed(1)+" / chronic "+chronic.toFixed(1);
+  if(h<chronic-2){status="Additional metabolic acidosis";msg="HCO₃⁻ is lower than expected for respiratory alkalosis."}
+  else if(h>acute+2){status="Additional metabolic alkalosis";msg="HCO₃⁻ is higher than expected for respiratory alkalosis."}
+  else{status="Respiratory compensation pattern";msg="HCO₃⁻ is compatible with respiratory compensation."}
+  diff=h-acute;
+ }
+ txt("expectedComp",expected!==null?expected.toFixed(1):"—");txt("expectedUnit",unit);txt("compDifference",diff!==null?diff.toFixed(1):"—");txt("compStatus",status);
+ const m=document.getElementById("compMessage");if(msg){m.textContent=msg;m.className=status==="Appropriate compensation"?"note success":"note warning"}else m.className="note hidden";
+ if(agd&&agd.ag>12&&h<24)txt("deltaRatio",((agd.ag-12)/(24-h)).toFixed(2));else txt("deltaRatio","—");
+ return status;
+}
+
+function oxygen(pco){
+ const po=num(pao2El.value),fio=num(fio2El.value);
+ txt("pao2Shown",po!==null?po.toFixed(0):"—");
+ if(po===null||fio===null||fio<=0){txt("pfRatio","—");txt("pao2Alv","—");txt("aaGradient","—");return}
+ const f=fio/100,pa=f*(760-47)-pco/0.8,aa=pa-po;
+ txt("pfRatio",(po/f).toFixed(0));txt("pao2Alv",pa.toFixed(0));txt("aaGradient",aa.toFixed(0));
+}
+
+function calculate(){
+ const p=num(pHEl.value),pco=num(paco2El.value),h=num(hco3El.value);
+ if(p===null||pco===null||h===null){txt("primaryDisorder","Enter pH, PaCO₂ and HCO₃⁻");return}
+ const agd=calcAG(h),pr=primary(p,pco,h);
+ txt("primaryDisorder",pr);
+ const d=document.getElementById("primaryDetail");d.textContent=`pH ${p.toFixed(2)} | PaCO₂ ${pco.toFixed(1)} | HCO₃⁻ ${h.toFixed(1)}`;d.className="note";
+ const st=compensation(p,pco,h,agd);oxygen(pco);
+ let s=`Primary pattern: ${pr}.`;
+ if(agd)s+=agd.ag>12?` Anion gap elevated (${agd.ag.toFixed(1)}).`:` Anion gap ${agd.ag.toFixed(1)} mEq/L.`;
+ if(st!=="—")s+=` Compensation: ${st}.`;
+ txt("summary",s);
+}
+
+const pHEl=document.getElementById("pH"),paco2El=document.getElementById("paco2"),hco3El=document.getElementById("hco3"),naEl=document.getElementById("na"),clEl=document.getElementById("cl"),albuminEl=document.getElementById("albumin"),pao2El=document.getElementById("pao2");
+document.getElementById("calculateBtn").addEventListener("click",calculate);
+document.querySelectorAll("input").forEach(el=>el.addEventListener("input",calculate));
+loadPatientData();
+</script>
+</body>
+</html>
