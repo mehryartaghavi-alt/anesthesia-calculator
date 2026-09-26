@@ -52,12 +52,17 @@ input:focus{outline:2px solid #8fcfc1}.patient-summary{display:grid;grid-templat
 <div class="field"><label for="cl">Cl⁻ (mEq/L)</label><input id="cl" type="number" placeholder="104"></div>
 <div class="field"><label for="albumin">Albumin (g/dL) <span class="small">optional</span></label><input id="albumin" type="number" step=".1" placeholder="4.0"></div>
 <div class="field"><label for="lactate">Lactate (mmol/L) <span class="small">optional</span></label><input id="lactate" type="number" step=".1" placeholder="1.0"></div>
+<div class="field"><label for="glucose">Glucose (mg/dL) <span class="small">optional</span></label><input id="glucose" type="number" min="1" step="1" placeholder="100"></div>
+<div class="field"><label for="bun">BUN (mg/dL) <span class="small">optional</span></label><input id="bun" type="number" min="0" step="1" placeholder="15"></div>
+<div class="field"><label for="measuredOsm">Measured serum osmolality (mOsm/kg) <span class="small">optional</span></label><input id="measuredOsm" type="number" min="1" step="1" placeholder="285"></div>
 </div>
 <div class="result-grid" style="margin-top:12px">
 <div class="result"><div class="label">Anion Gap</div><div class="value" id="ag">—</div><div class="unit">mEq/L</div></div>
 <div class="result"><div class="label">Albumin-corrected AG</div><div class="value" id="agCorrected">—</div><div class="unit">mEq/L</div></div>
 <div class="result"><div class="label">ΔAG</div><div class="value" id="deltaAG">—</div><div class="unit">mEq/L</div></div>
 <div class="result"><div class="label">Corrected HCO₃⁻</div><div class="value" id="correctedHco3">—</div><div class="unit">mEq/L</div></div>
+<div class="result"><div class="label">Calculated Osmolality</div><div class="value" id="calculatedOsm">—</div><div class="unit">mOsm/kg</div></div>
+<div class="result"><div class="label">Osmolal Gap</div><div class="value" id="osmGap">—</div><div class="unit">mOsm/kg</div></div>
 </div><div class="formula">AG = Na − (Cl + HCO₃⁻)<br>Corrected AG = AG + 2.5 × (4 − albumin)</div>
 </section>
 
@@ -133,6 +138,16 @@ function checkABGConsistency(p,pco,h){
  const difference=h-calculatedHco3;
  const consistent=Math.abs(difference)<=2;
  return {calculatedHco3,difference,consistent};
+}
+
+function calculateOsmolality(){
+ const na=num(naEl.value), glucose=num(glucoseEl.value), bun=num(bunEl.value), measured=num(measuredOsmEl.value);
+ if(na===null || glucose===null || bun===null){txt("calculatedOsm","—");txt("osmGap","—");return null;}
+ const calculated=2*na+glucose/18+bun/2.8;
+ txt("calculatedOsm",calculated.toFixed(1));
+ if(measured===null){txt("osmGap","—");return {calculated,measured:null,gap:null};}
+ const gap=measured-calculated;txt("osmGap",gap.toFixed(1));
+ return {calculated,measured,gap};
 }
 
 function primary(p,pco,h){
@@ -279,18 +294,23 @@ function calculate(){
  const d=document.getElementById("primaryDetail");
  d.textContent=`pH ${p.toFixed(2)} | PaCO₂ ${pco.toFixed(1)} | HCO₃⁻ ${h.toFixed(1)} | Calculated HCO₃⁻ ${abg.calculatedHco3.toFixed(1)} | ABG consistency: ${abg.consistent?"consistent":"discrepancy detected"}`;
  d.className=abg.consistent?"note success":"note warning";
- const comp=compensation(p,pco,h,agd),oxy=oxygen(pco);
+ const comp=compensation(p,pco,h,agd),oxy=oxygen(pco),osm=calculateOsmolality();
  let s=`Primary pattern: ${pr}.`;
  if(agd){const agx=agd.agc!==null?agd.agc:agd.ag;if(agx>12)s+=` Elevated anion gap (${agx.toFixed(1)} mEq/L).`;else s+=` Anion gap ${agx.toFixed(1)} mEq/L.`;}
  if(comp.deltaMessage)s+=" "+comp.deltaMessage
  if(comp.status!=="—")s+=` Compensation: ${comp.status}.`;
  const lactate=num(lactateEl.value);if(lactate!==null&&lactate>2)s+=` Lactate ${lactate.toFixed(1)} mmol/L is elevated and may contribute to metabolic acidosis.`;
  if(oxy){s+=` P/F ratio ${oxy.pf.toFixed(0)} (${oxy.pfText}).`;s+=` A–a gradient ${oxy.aa.toFixed(0)} mmHg (${oxy.aaText}).`;}
+ if(osm&&osm.gap!==null){
+  if(osm.gap>=10)s+=` Osmolal gap ${osm.gap.toFixed(1)} mOsm/kg is elevated; consider unmeasured osmotically active substances in the appropriate clinical context.`;
+  else s+=` Osmolal gap ${osm.gap.toFixed(1)} mOsm/kg.`;
+ }
  if(!abg.consistent)s+=" ABG internal consistency should be reviewed.";
  txt("summary",s);
 }
 
 const pHEl=document.getElementById("pH"),paco2El=document.getElementById("paco2"),hco3El=document.getElementById("hco3"),naEl=document.getElementById("na"),clEl=document.getElementById("cl"),albuminEl=document.getElementById("albumin"),pao2El=document.getElementById("pao2"),lactateEl=document.getElementById("lactate"),fio2El=document.getElementById("fio2");
+const glucoseEl=document.getElementById("glucose"),bunEl=document.getElementById("bun"),measuredOsmEl=document.getElementById("measuredOsm");
 document.getElementById("calculateBtn").addEventListener("click",calculate);
 document.querySelectorAll("input").forEach(el=>el.addEventListener("input",calculate));
 loadPatientData();
