@@ -67,6 +67,7 @@ input:focus{outline:2px solid #8fcfc1}.patient-summary{display:grid;grid-templat
 <div class="result-grid">
 <div class="result"><div class="label">Expected compensation</div><div class="value" id="expectedComp">—</div><div class="unit" id="expectedUnit">—</div></div>
 <div class="result"><div class="label">Measured vs expected</div><div class="value" id="compDifference">—</div><div class="unit">difference</div></div>
+<div class="result"><div class="label">ΔHCO₃⁻</div><div class="value" id="deltaHco3">—</div><div class="unit">mEq/L</div></div>
 <div class="result"><div class="label">Delta ratio</div><div class="value" id="deltaRatio">—</div><div class="unit">ratio</div></div>
 <div class="result"><div class="label">Compensation status</div><div class="value" id="compStatus">—</div></div>
 </div><div id="compMessage" class="note hidden"></div></section>
@@ -196,9 +197,23 @@ function compensation(p,pco,h,agd){
  }
  txt("expectedComp",expected!==null?expected.toFixed(1):"—");txt("expectedUnit",unit);txt("compDifference",diff!==null?diff.toFixed(1):"—");txt("compStatus",status);
  const m=document.getElementById("compMessage");if(msg){m.textContent=msg;m.className=status==="Appropriate respiratory compensation"?"note success":"note warning"}else m.className="note hidden";
- let ratio=null;
- if(agd&&h<24){const agForDelta=agd.agc!==null?agd.agc:agd.ag;if(agForDelta>12){ratio=(agForDelta-12)/(24-h);txt("deltaRatio",ratio.toFixed(2));}else txt("deltaRatio","—");}else txt("deltaRatio","—");
- return {status,ratio};
+ let ratio=null,deltaHco3=null,deltaAg=null,deltaMessage="";
+ if(agd&&h<24){
+  const agForDelta=agd.agc!==null?agd.agc:agd.ag;
+  if(agForDelta>12){
+   deltaAg=agForDelta-12;
+   deltaHco3=24-h;
+   ratio=deltaAg/deltaHco3;
+   txt("deltaHco3",deltaHco3.toFixed(1));
+   txt("deltaRatio",ratio.toFixed(2));
+   if(ratio<0.4) deltaMessage="The delta ratio is low, suggesting an additional normal-anion-gap metabolic acidosis.";
+   else if(ratio<0.8) deltaMessage="The delta ratio suggests high-anion-gap metabolic acidosis with an additional normal-anion-gap metabolic acidosis.";
+   else if(ratio<=2.0) deltaMessage="The delta ratio is compatible with predominantly high-anion-gap metabolic acidosis.";
+   else deltaMessage="The delta ratio is high, suggesting concurrent metabolic alkalosis or a pre-existing elevated bicarbonate level.";
+  }else{txt("deltaHco3","—");txt("deltaRatio","—");}
+ }else{txt("deltaHco3","—");txt("deltaRatio","—");}
+ if(deltaMessage){const dm=document.getElementById("compMessage");dm.textContent=(dm.textContent?dm.textContent+" ":"")+deltaMessage;dm.className="note warning";}
+ return {status,ratio,deltaHco3,deltaAg,deltaMessage};
 }
 
 function oxygen(pco){
@@ -221,7 +236,7 @@ function calculate(){
  const comp=compensation(p,pco,h,agd),oxy=oxygen(pco);
  let s=`Primary pattern: ${pr}.`;
  if(agd){const agx=agd.agc!==null?agd.agc:agd.ag;if(agx>12)s+=` Elevated anion gap (${agx.toFixed(1)} mEq/L).`;else s+=` Anion gap ${agx.toFixed(1)} mEq/L.`;}
- if(comp.ratio!==null){if(comp.ratio<0.4)s+=" Delta ratio suggests predominantly normal-anion-gap metabolic acidosis.";else if(comp.ratio<0.8)s+=" Delta ratio suggests high-anion-gap plus normal-anion-gap metabolic acidosis.";else if(comp.ratio<=2)s+=" Delta ratio is compatible with predominantly high-anion-gap metabolic acidosis.";else s+=" Delta ratio suggests high-anion-gap metabolic acidosis with possible concurrent metabolic alkalosis or elevated baseline HCO₃⁻.";}
+ if(comp.deltaMessage)s+=" "+comp.deltaMessage
  if(comp.status!=="—")s+=` Compensation: ${comp.status}.`;
  const lactate=num(lactateEl.value);if(lactate!==null&&lactate>2)s+=` Lactate ${lactate.toFixed(1)} mmol/L is elevated and may contribute to metabolic acidosis.`;
  if(oxy)s+=` P/F ratio ${oxy.pf.toFixed(0)}.`;
