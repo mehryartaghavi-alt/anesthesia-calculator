@@ -73,12 +73,23 @@ input:focus{outline:2px solid #8fcfc1}.patient-summary{display:grid;grid-templat
 </div><div id="compMessage" class="note hidden"></div></section>
 
 <section class="card"><h2>5. Oxygenation</h2>
-<div class="result-grid">
+<div class="grid">
+<div class="field"><label for="barometricPressure">Barometric pressure (mmHg)</label><input id="barometricPressure" type="number" min="300" max="800" step="1" value="760"></div>
+<div class="field"><label for="rq">Respiratory quotient (RQ)</label><input id="rq" type="number" min="0.6" max="1.2" step=".01" value="0.80"></div>
+</div>
+<div class="result-grid" style="margin-top:12px">
 <div class="result"><div class="label">P/F Ratio</div><div class="value" id="pfRatio">—</div><div class="unit">mmHg</div></div>
+<div class="result"><div class="label">P/F Interpretation</div><div class="value" id="pfInterpretation">—</div></div>
 <div class="result"><div class="label">PAO₂</div><div class="value" id="pao2Alv">—</div><div class="unit">mmHg</div></div>
 <div class="result"><div class="label">A–a Gradient</div><div class="value" id="aaGradient">—</div><div class="unit">mmHg</div></div>
+<div class="result"><div class="label">Expected A–a upper estimate</div><div class="value" id="aaExpected">—</div><div class="unit">mmHg</div></div>
+<div class="result"><div class="label">A–a Interpretation</div><div class="value" id="aaInterpretation">—</div></div>
 <div class="result"><div class="label">PaO₂</div><div class="value" id="pao2Shown">—</div><div class="unit">mmHg</div></div>
-</div><div class="formula">PAO₂ ≈ FiO₂ × (PB − 47) − PaCO₂ / 0.8</div></section>
+<div class="result"><div class="label">PaO₂ / PAO₂</div><div class="value" id="oxygenTransferRatio">—</div><div class="unit">ratio</div></div>
+</div>
+<div id="oxygenMessage" class="note hidden"></div>
+<div class="formula">PAO₂ = FiO₂ × (PB − PH₂O) − PaCO₂ / RQ; PH₂O ≈ 47 mmHg at body temperature.</div>
+</section>
 
 <section class="card"><h2>6. Summary</h2><div id="summary" class="note">Enter the required ABG values to generate a summary.</div></section>
 <button class="calculate-btn" type="button" id="calculateBtn">Calculate</button>
@@ -218,11 +229,46 @@ function compensation(p,pco,h,agd){
 
 function oxygen(pco){
  const po=num(pao2El.value),fio=num(fio2El.value);
+ const pb=num(document.getElementById("barometricPressure").value);
+ const rq=num(document.getElementById("rq").value);
  txt("pao2Shown",po!==null?po.toFixed(0):"—");
- if(po===null||fio===null||fio<=0){txt("pfRatio","—");txt("pao2Alv","—");txt("aaGradient","—");return null}
- const f=fio/100,pa=f*(760-47)-pco/0.8,aa=pa-po,pf=po/f;
- txt("pfRatio",pf.toFixed(0));txt("pao2Alv",pa.toFixed(0));txt("aaGradient",aa.toFixed(0));
- return {pf,pa,aa};
+ if(po===null||fio===null||fio<=0||pb===null||rq===null||rq<=0){
+  ["pfRatio","pao2Alv","aaGradient","aaExpected","oxygenTransferRatio"].forEach(id=>txt(id,"—"));
+  txt("pfInterpretation","—");txt("aaInterpretation","—");
+  document.getElementById("oxygenMessage").className="note hidden";
+  return null;
+ }
+ const f=fio/100;
+ const pa=f*(pb-47)-pco/rq;
+ const aa=pa-po;
+ const pf=po/f;
+ const oxygenTransfer=pa>0?po/pa:null;
+ const age=num(patient&&patient.age);
+ const aaExpected=age!==null?Math.max(15,age/4+4):15;
+ let pfText="Normal/near-normal";
+ if(pf<=100)pfText="Severely reduced";
+ else if(pf<=200)pfText="Moderately reduced";
+ else if(pf<=300)pfText="Reduced";
+ let aaText="Not clearly elevated";
+ if(aa>aaExpected)aaText="Elevated";
+ else if(aa<0)aaText="Negative / calculation-review";
+ txt("pfRatio",pf.toFixed(0));
+ txt("pfInterpretation",pfText);
+ txt("pao2Alv",pa.toFixed(0));
+ txt("aaGradient",aa.toFixed(0));
+ txt("aaExpected",aaExpected.toFixed(0));
+ txt("aaInterpretation",aaText);
+ txt("oxygenTransferRatio",oxygenTransfer!==null?oxygenTransfer.toFixed(2):"—");
+ const m=document.getElementById("oxygenMessage");
+ if(pf<=300||aa>aaExpected){
+  let msg=[];
+  if(pf<=300)msg.push("P/F ratio is reduced; this indicates impaired arterial oxygenation but does not by itself diagnose ARDS.");
+  if(aa>aaExpected)msg.push("A–a gradient is elevated, supporting impaired gas exchange such as V/Q mismatch, shunt or diffusion abnormality rather than isolated hypoventilation.");
+  m.textContent=msg.join(" ");m.className="note warning";
+ }else{
+  m.textContent="Oxygenation indices do not show a major abnormality by these calculations.";m.className="note success";
+ }
+ return {pf,pa,aa,aaExpected,pfText,aaText,oxygenTransfer};
 }
 
 function calculate(){
@@ -239,7 +285,7 @@ function calculate(){
  if(comp.deltaMessage)s+=" "+comp.deltaMessage
  if(comp.status!=="—")s+=` Compensation: ${comp.status}.`;
  const lactate=num(lactateEl.value);if(lactate!==null&&lactate>2)s+=` Lactate ${lactate.toFixed(1)} mmol/L is elevated and may contribute to metabolic acidosis.`;
- if(oxy)s+=` P/F ratio ${oxy.pf.toFixed(0)}.`;
+ if(oxy){s+=` P/F ratio ${oxy.pf.toFixed(0)} (${oxy.pfText}).`;s+=` A–a gradient ${oxy.aa.toFixed(0)} mmHg (${oxy.aaText}).`;}
  if(!abg.consistent)s+=" ABG internal consistency should be reviewed.";
  txt("summary",s);
 }
