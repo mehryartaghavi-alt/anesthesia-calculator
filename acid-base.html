@@ -61,6 +61,8 @@ input:focus{outline:2px solid #8fcfc1}.patient-summary{display:grid;grid-templat
 <div class="result"><div class="label">Albumin-corrected AG</div><div class="value" id="agCorrected">—</div><div class="unit">mEq/L</div></div>
 <div class="result"><div class="label">ΔAG</div><div class="value" id="deltaAG">—</div><div class="unit">mEq/L</div></div>
 <div class="result"><div class="label">Corrected HCO₃⁻</div><div class="value" id="correctedHco3">—</div><div class="unit">mEq/L</div></div>
+<div class="result"><div class="label">Base Excess</div><div class="value" id="beValue">—</div><div class="unit" id="beInterpretation">—</div></div>
+<div class="result"><div class="label">Lactate</div><div class="value" id="lactateValue">—</div><div class="unit" id="lactateInterpretation">—</div></div>
 <div class="result"><div class="label">Calculated Osmolality</div><div class="value" id="calculatedOsm">—</div><div class="unit">mOsm/kg</div></div>
 <div class="result"><div class="label">Osmolal Gap</div><div class="value" id="osmGap">—</div><div class="unit">mOsm/kg</div></div>
 </div><div class="formula">AG = Na − (Cl + HCO₃⁻)<br>Corrected AG = AG + 2.5 × (4 − albumin)</div>
@@ -138,6 +140,25 @@ function checkABGConsistency(p,pco,h){
  const difference=h-calculatedHco3;
  const consistent=Math.abs(difference)<=2;
  return {calculatedHco3,difference,consistent};
+}
+
+function interpretBE(){
+ const be=num(document.getElementById("be").value);
+ if(be===null){txt("beValue","—");txt("beInterpretation","Not provided");return null;}
+ let interpretation="Within reference range";
+ if(be<=-3)interpretation="Metabolic acid-base component";
+ else if(be>=3)interpretation="Metabolic alkalosis component";
+ txt("beValue",be.toFixed(1));txt("beInterpretation",interpretation);
+ return {be,interpretation};
+}
+
+function interpretLactate(){
+ const lactate=num(lactateEl.value);
+ if(lactate===null){txt("lactateValue","—");txt("lactateInterpretation","Not provided");return null;}
+ let interpretation="Within reference range";
+ if(lactate>2)interpretation=lactate>=4?"Markedly elevated":"Elevated";
+ txt("lactateValue",lactate.toFixed(1));txt("lactateInterpretation",interpretation);
+ return {lactate,interpretation};
 }
 
 function calculateOsmolality(){
@@ -294,12 +315,16 @@ function calculate(){
  const d=document.getElementById("primaryDetail");
  d.textContent=`pH ${p.toFixed(2)} | PaCO₂ ${pco.toFixed(1)} | HCO₃⁻ ${h.toFixed(1)} | Calculated HCO₃⁻ ${abg.calculatedHco3.toFixed(1)} | ABG consistency: ${abg.consistent?"consistent":"discrepancy detected"}`;
  d.className=abg.consistent?"note success":"note warning";
- const comp=compensation(p,pco,h,agd),oxy=oxygen(pco),osm=calculateOsmolality();
+ const comp=compensation(p,pco,h,agd),oxy=oxygen(pco),osm=calculateOsmolality(),beResult=interpretBE(),lactateResult=interpretLactate();
  let s=`Primary pattern: ${pr}.`;
  if(agd){const agx=agd.agc!==null?agd.agc:agd.ag;if(agx>12)s+=` Elevated anion gap (${agx.toFixed(1)} mEq/L).`;else s+=` Anion gap ${agx.toFixed(1)} mEq/L.`;}
  if(comp.deltaMessage)s+=" "+comp.deltaMessage
  if(comp.status!=="—")s+=` Compensation: ${comp.status}.`;
- const lactate=num(lactateEl.value);if(lactate!==null&&lactate>2)s+=` Lactate ${lactate.toFixed(1)} mmol/L is elevated and may contribute to metabolic acidosis.`;
+ if(beResult){
+  if(beResult.be<=-3)s+=` Base excess ${beResult.be.toFixed(1)} mEq/L supports a metabolic acid-base component.`;
+  else if(beResult.be>=3)s+=` Base excess ${beResult.be.toFixed(1)} mEq/L supports a metabolic alkalosis component.`;
+ }
+ if(lactateResult&&lactateResult.lactate>2)s+=` Lactate ${lactateResult.lactate.toFixed(1)} mmol/L is elevated and may contribute to metabolic acidosis; interpret in the clinical context.`;
  if(oxy){s+=` P/F ratio ${oxy.pf.toFixed(0)} (${oxy.pfText}).`;s+=` A–a gradient ${oxy.aa.toFixed(0)} mmHg (${oxy.aaText}).`;}
  if(osm&&osm.gap!==null){
   if(osm.gap>=10)s+=` Osmolal gap ${osm.gap.toFixed(1)} mOsm/kg is elevated; consider unmeasured osmotically active substances in the appropriate clinical context.`;
