@@ -124,20 +124,44 @@ function checkABGConsistency(p,pco,h){
 }
 
 function primary(p,pco,h){
- if(p<7.35){
-  if(h<24&&pco<40)return "Metabolic acidosis";
-  if(pco>40&&h>=24)return "Respiratory acidosis";
-  if(h<24&&pco>40)return "Mixed metabolic + respiratory acidosis";
-  return "Acidemia — correlate clinically";
+ const acidemia=p<7.35, alkalemia=p>7.45;
+ const metabolicAcid=h<24, metabolicAlk=h>24;
+ const respiratoryAcid=pco>40, respiratoryAlk=pco<40;
+
+ if(acidemia){
+  if(metabolicAcid && respiratoryAcid)
+   return "Mixed metabolic + respiratory acidosis";
+  if(metabolicAcid)
+   return "Primary metabolic acidosis";
+  if(respiratoryAcid)
+   return "Primary respiratory acidosis";
+  return "Acidemia — discordant ABG pattern; review values";
  }
- if(p>7.45){
-  if(h>24&&pco>40)return "Metabolic alkalosis";
-  if(pco<40&&h<=24)return "Respiratory alkalosis";
-  if(h>24&&pco<40)return "Mixed metabolic + respiratory alkalosis";
-  return "Alkalemia — correlate clinically";
+
+ if(alkalemia){
+  if(metabolicAlk && respiratoryAlk)
+   return "Mixed metabolic + respiratory alkalosis";
+  if(metabolicAlk)
+   return "Primary metabolic alkalosis";
+  if(respiratoryAlk)
+   return "Primary respiratory alkalosis";
+  return "Alkalemia — discordant ABG pattern; review values";
  }
- if(h<24&&pco<40)return "Compensated/mixed pattern: metabolic acidosis + respiratory alkalosis";
- if(h>24&&pco>40)return "Compensated/mixed pattern: metabolic alkalosis + respiratory acidosis";
+
+ // Near-normal pH: identify the direction of HCO3⁻ and PaCO2 first,
+ // then use compensation testing to distinguish compensation from a mixed disorder.
+ if(metabolicAcid && respiratoryAlk)
+  return "Mixed metabolic acidosis + respiratory alkalosis (near-normal pH)";
+ if(metabolicAlk && respiratoryAcid)
+  return "Mixed metabolic alkalosis + respiratory acidosis (near-normal pH)";
+ if(metabolicAcid)
+  return "Compensated metabolic acidosis pattern";
+ if(metabolicAlk)
+  return "Compensated metabolic alkalosis pattern";
+ if(respiratoryAcid)
+  return "Compensated respiratory acidosis pattern";
+ if(respiratoryAlk)
+  return "Compensated respiratory alkalosis pattern";
  return "No major acid–base abnormality detected";
 }
 
@@ -205,7 +229,7 @@ function calculate(){
  txt("summary",s);
 }
 
-const pHEl=document.getElementById("pH"),paco2El=document.getElementById("paco2"),hco3El=document.getElementById("hco3"),naEl=document.getElementById("na"),clEl=document.getElementById("cl"),albuminEl=document.getElementById("albumin"),pao2El=document.getElementById("pao2");
+const pHEl=document.getElementById("pH"),paco2El=document.getElementById("paco2"),hco3El=document.getElementById("hco3"),naEl=document.getElementById("na"),clEl=document.getElementById("cl"),albuminEl=document.getElementById("albumin"),pao2El=document.getElementById("pao2"),lactateEl=document.getElementById("lactate"),fio2El=document.getElementById("fio2");
 document.getElementById("calculateBtn").addEventListener("click",calculate);
 document.querySelectorAll("input").forEach(el=>el.addEventListener("input",calculate));
 loadPatientData();
