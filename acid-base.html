@@ -98,7 +98,18 @@ input:focus{outline:2px solid #8fcfc1}.patient-summary{display:grid;grid-templat
 <div class="formula">PAO₂ = FiO₂ × (PB − PH₂O) − PaCO₂ / RQ; PH₂O ≈ 47 mmHg at body temperature.</div>
 </section>
 
-<section class="card"><h2>6. Summary</h2><div id="summary" class="note">Enter the required ABG values to generate a summary.</div></section>
+<section class="card"><h2>6. Integrated Interpretation</h2>
+<div class="result-grid">
+<div class="result"><div class="label">Primary disorder</div><div class="value" id="finalPrimary">—</div></div>
+<div class="result"><div class="label">Compensation / mixed disorder</div><div class="value" id="finalCompensation">—</div></div>
+<div class="result"><div class="label">Metabolic assessment</div><div class="value" id="finalMetabolic">—</div></div>
+<div class="result"><div class="label">Oxygenation</div><div class="value" id="finalOxygenation">—</div></div>
+<div class="result"><div class="label">Osmolality</div><div class="value" id="finalOsmolality">—</div></div>
+<div class="result"><div class="label">Data quality</div><div class="value" id="finalDataQuality">—</div></div>
+</div>
+<div id="summary" class="note" style="margin-top:12px">Enter the required ABG values to generate an integrated interpretation.</div>
+<div class="formula">Interpretation is based on the entered ABG and laboratory values. A calculated pattern does not establish the clinical cause by itself.</div>
+</section>
 <button class="calculate-btn" type="button" id="calculateBtn">Calculate</button>
 <div class="note" style="margin-top:14px">Decision-support aid only; correlate with clinical history, examination and laboratory data.</div>
 </div>
@@ -307,31 +318,77 @@ function oxygen(pco){
  return {pf,pa,aa,aaExpected,pfText,aaText,oxygenTransfer};
 }
 
+
+function validationMessages(p,pco,h,agd,oxy,osm){
+ const issues=[];
+ if(p<6.8||p>7.8)issues.push("pH is outside the usual physiologic range; verify the sample and entry.");
+ if(pco<15||pco>100)issues.push("PaCO₂ is markedly abnormal; verify the clinical context and entry.");
+ if(h<5||h>50)issues.push("HCO₃⁻ is markedly abnormal; verify the result and units.");
+ if(agd&&agd.ag<0)issues.push("Anion gap is negative; review electrolytes, albumin and laboratory data.");
+ if(oxy&&oxy.aa<0)issues.push("A–a gradient is negative; review PaO₂, FiO₂, barometric pressure and RQ.");
+ if(osm&&osm.gap!==null&&Math.abs(osm.gap)>30)issues.push("Osmolal gap is markedly abnormal; verify measured/calculated osmolality inputs and consider clinical causes.");
+ return issues;
+}
+
+function buildIntegratedInterpretation(pr,comp,agd,beResult,lactateResult,oxy,osm,abg){
+ let metabolic="No additional metabolic signal";
+ if(agd){
+  const agx=agd.agc!==null?agd.agc:agd.ag;
+  if(agx>12){
+   if(comp.deltaMessage)metabolic=comp.deltaMessage.replace(/^The delta ratio is /i,"").replace(/\.$/,"");
+   else metabolic=`Elevated anion gap (${agx.toFixed(1)} mEq/L)`;
+  } else if(hco3El && num(hco3El.value)<24){
+   metabolic="Normal-anion-gap metabolic acidosis pattern";
+  }
+ }
+ if(beResult){
+  if(beResult.be<=-3)metabolic+=(metabolic==="No additional metabolic signal"?"":"; ")+`BE ${beResult.be.toFixed(1)} supports a metabolic acid component`;
+  else if(beResult.be>=3)metabolic+=(metabolic==="No additional metabolic signal"?"":"; ")+`BE ${beResult.be.toFixed(1)} supports a metabolic alkalosis component`;
+ }
+ if(lactateResult&&lactateResult.lactate>2)metabolic+=(metabolic==="No additional metabolic signal"?"":"; ")+`lactate ${lactateResult.lactate.toFixed(1)} mmol/L elevated`;
+ const oxygenText=oxy?`P/F ${oxy.pf.toFixed(0)}; A–a ${oxy.aa.toFixed(0)} mmHg`:"Not assessed";
+ const osmText=osm?(osm.gap!==null?`Calculated ${osm.calculated.toFixed(1)}; gap ${osm.gap.toFixed(1)} mOsm/kg`:`Calculated ${osm.calculated.toFixed(1)}`):"Not assessed";
+ const quality=abg.consistent?"ABG internally consistent":"ABG consistency discrepancy — review values";
+ txt("finalPrimary",pr);
+ txt("finalCompensation",comp.status||"Not assessed");
+ txt("finalMetabolic",metabolic);
+ txt("finalOxygenation",oxygenText);
+ txt("finalOsmolality",osmText);
+ txt("finalDataQuality",quality);
+ let s=`Primary disorder: ${pr}.`;
+ if(comp.status&&comp.status!=="—")s+=` ${comp.status}.`;
+ if(metabolic!=="No additional metabolic signal")s+=` Metabolic assessment: ${metabolic}.`;
+ if(lactateResult&&lactateResult.lactate>2)s+=` Lactate elevation should be interpreted with perfusion, tissue oxygen delivery and other clinical findings.`;
+ if(oxy)s+=` Oxygenation: P/F ${oxy.pf.toFixed(0)} (${oxy.pfText}); A–a gradient ${oxy.aa.toFixed(0)} mmHg (${oxy.aaText}).`;
+ if(osm&&osm.gap!==null&&osm.gap>=10)s+=` Osmolal gap is elevated (${osm.gap.toFixed(1)} mOsm/kg); consider unmeasured osmotically active substances in the appropriate clinical context.`;
+ if(!abg.consistent)s+=` The entered pH/PaCO₂/HCO₃⁻ values are not fully consistent with the Henderson–Hasselbalch calculation; verify the source values and units.`;
+ return s;
+}
+
 function calculate(){
  const p=num(pHEl.value),pco=num(paco2El.value),h=num(hco3El.value);
- if(p===null||pco===null||h===null){txt("primaryDisorder","Enter pH, PaCO₂ and HCO₃⁻");txt("summary","Enter the required ABG values to generate a summary.");return}
+ if(p===null||pco===null||h===null){
+  txt("primaryDisorder","Enter pH, PaCO₂ and HCO₃⁻");
+  ["finalPrimary","finalCompensation","finalMetabolic","finalOxygenation","finalOsmolality","finalDataQuality"].forEach(id=>txt(id,"—"));
+  txt("summary","Enter the required ABG values to generate an integrated interpretation.");
+  return;
+ }
  const agd=calcAG(h),pr=primary(p,pco,h),abg=checkABGConsistency(p,pco,h);
  txt("primaryDisorder",pr);
  const d=document.getElementById("primaryDetail");
  d.textContent=`pH ${p.toFixed(2)} | PaCO₂ ${pco.toFixed(1)} | HCO₃⁻ ${h.toFixed(1)} | Calculated HCO₃⁻ ${abg.calculatedHco3.toFixed(1)} | ABG consistency: ${abg.consistent?"consistent":"discrepancy detected"}`;
  d.className=abg.consistent?"note success":"note warning";
  const comp=compensation(p,pco,h,agd),oxy=oxygen(pco),osm=calculateOsmolality(),beResult=interpretBE(),lactateResult=interpretLactate();
- let s=`Primary pattern: ${pr}.`;
- if(agd){const agx=agd.agc!==null?agd.agc:agd.ag;if(agx>12)s+=` Elevated anion gap (${agx.toFixed(1)} mEq/L).`;else s+=` Anion gap ${agx.toFixed(1)} mEq/L.`;}
- if(comp.deltaMessage)s+=" "+comp.deltaMessage
- if(comp.status!=="—")s+=` Compensation: ${comp.status}.`;
- if(beResult){
-  if(beResult.be<=-3)s+=` Base excess ${beResult.be.toFixed(1)} mEq/L supports a metabolic acid-base component.`;
-  else if(beResult.be>=3)s+=` Base excess ${beResult.be.toFixed(1)} mEq/L supports a metabolic alkalosis component.`;
+ const issues=validationMessages(p,pco,h,agd,oxy,osm);
+ const summary=buildIntegratedInterpretation(pr,comp,agd,beResult,lactateResult,oxy,osm,abg);
+ txt("summary",summary);
+ if(issues.length){
+  const box=document.getElementById("summary");
+  box.textContent+=` Validation: ${issues.join(" ")}`;
+  box.className="note warning";
+ }else{
+  document.getElementById("summary").className="note success";
  }
- if(lactateResult&&lactateResult.lactate>2)s+=` Lactate ${lactateResult.lactate.toFixed(1)} mmol/L is elevated and may contribute to metabolic acidosis; interpret in the clinical context.`;
- if(oxy){s+=` P/F ratio ${oxy.pf.toFixed(0)} (${oxy.pfText}).`;s+=` A–a gradient ${oxy.aa.toFixed(0)} mmHg (${oxy.aaText}).`;}
- if(osm&&osm.gap!==null){
-  if(osm.gap>=10)s+=` Osmolal gap ${osm.gap.toFixed(1)} mOsm/kg is elevated; consider unmeasured osmotically active substances in the appropriate clinical context.`;
-  else s+=` Osmolal gap ${osm.gap.toFixed(1)} mOsm/kg.`;
- }
- if(!abg.consistent)s+=" ABG internal consistency should be reviewed.";
- txt("summary",s);
 }
 
 const pHEl=document.getElementById("pH"),paco2El=document.getElementById("paco2"),hco3El=document.getElementById("hco3"),naEl=document.getElementById("na"),clEl=document.getElementById("cl"),albuminEl=document.getElementById("albumin"),pao2El=document.getElementById("pao2"),lactateEl=document.getElementById("lactate"),fio2El=document.getElementById("fio2");
