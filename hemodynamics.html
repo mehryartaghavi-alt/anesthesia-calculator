@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hemodynamics Calculator</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#eef7f4;color:#18332f}
+.container{max-width:760px;margin:auto;padding:24px 16px 44px}.header{text-align:center;margin-bottom:22px}
+h1{margin:0;font-size:28px;color:#145b50}.subtitle{margin-top:6px;color:#64817b;font-size:14px}
+.card{background:#fff;border-radius:18px;padding:18px;margin-bottom:16px;box-shadow:0 5px 18px rgba(22,76,66,.08);border:1px solid #dcece7}
+.card h2{margin:0 0 15px;font-size:18px;color:#155c51}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:6px}.full{grid-column:1/-1}label{font-size:13px;font-weight:600;color:#476760}
+input,select{width:100%;min-height:44px;border:1px solid #c9ded8;border-radius:10px;padding:9px 11px;font-size:16px;color:#18332f;background:#fbfefd}
+input:focus,select:focus{outline:2px solid #8fcfc1}.patient-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.summary-item{background:#f2faf7;border-radius:10px;padding:9px;text-align:center}.summary-label{font-size:11px;color:#67827b}.summary-value{font-weight:700;margin-top:3px}
+.result-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.result{background:#f4faf8;border-radius:12px;padding:12px;border:1px solid #deeee9}
+.label{font-size:12px;color:#66817a}.value{font-size:20px;font-weight:700;margin-top:4px;color:#145b50}.unit{font-size:11px;color:#6c8580}
+.note{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f6faf9;color:#58716b;font-size:12px;line-height:1.5}.warning{background:#fff8df;border:1px solid #f0df9e}.success{background:#eefaf3;border:1px solid #cdebd9}.hidden{display:none}
+.calculate-btn{width:100%;min-height:48px;border:0;border-radius:12px;background:#17665a;color:white;font-size:16px;font-weight:700;cursor:pointer}
+.small{font-size:11px;color:#6b837d}@media(max-width:600px){.grid,.result-grid{grid-template-columns:1fr}.patient-summary{grid-template-columns:repeat(2,minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<div class="container">
+<header class="header"><h1>Hemodynamics Calculator</h1><div class="subtitle">Basic Hemodynamics & Cardiac Output Analysis</div></header>
+
+<section class="card"><h2>1. Patient Profile</h2>
+<div class="patient-summary">
+<div class="summary-item"><div class="summary-label">Age</div><div class="summary-value" id="patientAge">—</div></div>
+<div class="summary-item"><div class="summary-label">Sex</div><div class="summary-value" id="patientSex">—</div></div>
+<div class="summary-item"><div class="summary-label">Weight</div><div class="summary-value" id="patientWeight">—</div></div>
+<div class="summary-item"><div class="summary-label">Height</div><div class="summary-value" id="patientHeight">—</div></div>
+<div class="summary-item"><div class="summary-label">BSA</div><div class="summary-value" id="patientBSA">—</div></div>
+<div class="summary-item"><div class="summary-label">Hb</div><div class="summary-value" id="patientHb">—</div></div>
+</div><div id="patientMessage" class="note hidden"></div>
+</section>
+
+<section class="card"><h2>2. Basic Hemodynamics</h2>
+<div class="grid">
+<div class="field"><label for="hr">Heart Rate (bpm)</label><input id="hr" type="number" min="20" max="250" step="1" placeholder="80"></div>
+<div class="field"><label for="sbp">SBP (mmHg)</label><input id="sbp" type="number" min="40" max="300" step="1" placeholder="120"></div>
+<div class="field"><label for="dbp">DBP (mmHg)</label><input id="dbp" type="number" min="20" max="200" step="1" placeholder="80"></div>
+<div class="field"><label for="cvp">CVP (mmHg) <span class="small">optional</span></label><input id="cvp" type="number" min="-5" max="40" step="1" placeholder="5"></div>
+<div class="field"><label for="spo2">SpO₂ (%) <span class="small">optional</span></label><input id="spo2" type="number" min="50" max="100" step="1" placeholder="98"></div>
+</div>
+<div class="result-grid" style="margin-top:12px">
+<div class="result"><div class="label">MAP</div><div class="value" id="map">—</div><div class="unit">mmHg</div></div>
+<div class="result"><div class="label">Pulse Pressure</div><div class="value" id="pp">—</div><div class="unit">mmHg</div></div>
+<div class="result"><div class="label">Shock Index</div><div class="value" id="shockIndex">—</div><div class="unit">HR / SBP</div></div>
+<div class="result"><div class="label">Modified Shock Index</div><div class="value" id="modifiedShockIndex">—</div><div class="unit">HR / MAP</div></div>
+</div>
+</section>
+
+<section class="card"><h2>3. Cardiac Output</h2>
+<div class="grid">
+<div class="field"><label for="strokeVolume">Stroke Volume (mL/beat)</label><input id="strokeVolume" type="number" min="1" max="300" step="1" placeholder="70"></div>
+<div class="field"><label for="cardiacOutput">Cardiac Output (L/min) <span class="small">optional</span></label><input id="cardiacOutput" type="number" min="0.1" max="30" step="0.1" placeholder="5.6"></div>
+</div>
+<div class="result-grid" style="margin-top:12px">
+<div class="result"><div class="label">Cardiac Output</div><div class="value" id="co">—</div><div class="unit">L/min</div></div>
+<div class="result"><div class="label">Cardiac Index</div><div class="value" id="ci">—</div><div class="unit">L/min/m²</div></div>
+<div class="result"><div class="label">Stroke Volume</div><div class="value" id="sv">—</div><div class="unit">mL/beat</div></div>
+<div class="result"><div class="label">Stroke Volume Index</div><div class="value" id="svi">—</div><div class="unit">mL/beat/m²</div></div>
+</div>
+<div class="formula" style="font-family:ui-monospace,monospace;font-size:12px;background:#f5faf8;padding:8px 10px;border-radius:8px;margin-top:9px;color:#41635b;line-height:1.45">CO = HR × SV ÷ 1000<br>CI = CO ÷ BSA<br>SVI = SV ÷ BSA</div>
+</section>
+
+<section class="card"><h2>4. Interpretation</h2><div id="interpretation" class="note">Enter the available hemodynamic values to generate a basic summary.</div></section>
+<button class="calculate-btn" type="button" id="calculateBtn">Calculate</button>
+<div class="note" style="margin-top:14px">Decision-support aid only; interpret hemodynamic measurements in clinical context.</div>
+</div>
+
+<script>
+"use strict";
+let patient=null;
+const num=v=>{const n=parseFloat(v);return Number.isFinite(n)?n:null};
+const txt=(id,v)=>document.getElementById(id).textContent=v;
+
+function loadPatientData(){
+ let raw=null;
+ try{raw=new URLSearchParams(location.search).get("patientData")}catch(e){}
+ if(raw){try{patient=JSON.parse(decodeURIComponent(raw))}catch(e){}}
+ if(!patient){try{const s=sessionStorage.getItem("patientData");if(s)patient=JSON.parse(s)}catch(e){}}
+ if(!patient){try{const s=localStorage.getItem("patientData");if(s)patient=JSON.parse(s)}catch(e){}}
+ if(patient){
+  txt("patientAge",num(patient.age)!==null?num(patient.age)+" y":"—");
+  txt("patientSex",patient.sex?String(patient.sex).charAt(0).toUpperCase()+String(patient.sex).slice(1):"—");
+  txt("patientWeight",num(patient.weight)!==null?num(patient.weight).toFixed(1)+" kg":"—");
+  txt("patientHeight",num(patient.height)!==null?num(patient.height).toFixed(0)+" cm":"—");
+  txt("patientBSA",num(patient.bsa)!==null?num(patient.bsa).toFixed(2)+" m²":"—");
+  txt("patientHb",num(patient.hb)!==null?num(patient.hb).toFixed(1)+" g/dL":"—");
+ }else{
+  const m=document.getElementById("patientMessage");m.textContent="No patient data transferred. Basic hemodynamic calculations can still be performed.";m.className="note warning";
+ }
+}
+
+function calculate(){
+ const hr=num(document.getElementById("hr").value);
+ const sbp=num(document.getElementById("sbp").value);
+ const dbp=num(document.getElementById("dbp").value);
+ const svInput=num(document.getElementById("strokeVolume").value);
+ const coInput=num(document.getElementById("cardiacOutput").value);
+ const bsa=num(patient?.bsa);
+ let map=null,pp=null,si=null,msi=null;
+ if(sbp!==null&&dbp!==null){
+  map=(sbp+2*dbp)/3;pp=sbp-dbp;
+  txt("map",map.toFixed(1));txt("pp",pp.toFixed(1));
+ }else{txt("map","—");txt("pp","—")}
+ if(hr!==null&&sbp!==null){si=hr/sbp;txt("shockIndex",si.toFixed(2))}else txt("shockIndex","—");
+ if(hr!==null&&map!==null){msi=hr/map;txt("modifiedShockIndex",msi.toFixed(2))}else txt("modifiedShockIndex","—");
+ let co=null,sv=null;
+ if(hr!==null&&svInput!==null){co=hr*svInput/1000;sv=svInput;}
+ else if(coInput!==null&&hr!==null&&hr>0){co=coInput;sv=coInput*1000/hr;}
+ else if(coInput!==null){co=coInput;}
+ if(co!==null){txt("co",co.toFixed(2))}else txt("co","—");
+ if(sv!==null){txt("sv",sv.toFixed(1))}else txt("sv","—");
+ if(co!==null&&bsa!==null&&bsa>0){txt("ci",(co/bsa).toFixed(2))}else txt("ci","—");
+ if(sv!==null&&bsa!==null&&bsa>0){txt("svi",(sv/bsa).toFixed(1))}else txt("svi","—");
+ let messages=[];
+ if(si!==null){if(si>=1)messages.push("Shock Index is elevated; assess perfusion and clinical context.");else messages.push("Shock Index calculated.")}
+ if(msi!==null){if(msi>=1.3)messages.push("Modified Shock Index is elevated; interpret with the clinical picture.")}
+ if(map!==null){if(map<65)messages.push("MAP is below 65 mmHg.");else messages.push("MAP is ≥65 mmHg.")}
+ if(co!==null&&bsa!==null){const ci=co/bsa;if(ci<2.2)messages.push("Cardiac index is below 2.2 L/min/m².");else messages.push("Cardiac index is ≥2.2 L/min/m².")}
+ const box=document.getElementById("interpretation");
+ if(messages.length){box.textContent=messages.join(" ");box.className="note"}else{box.textContent="Enter the available hemodynamic values to generate a basic summary.";box.className="note"}
+}
+
+document.getElementById("calculateBtn").addEventListener("click",calculate);
+document.querySelectorAll("input").forEach(el=>el.addEventListener("input",calculate));
+loadPatientData();
+</script>
+</body>
+</html>
