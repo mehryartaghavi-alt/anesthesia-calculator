@@ -23,7 +23,7 @@ input:focus,select:focus{outline:2px solid #8fcfc1}.patient-summary{display:grid
 </head>
 <body>
 <div class="container">
-<header class="header"><h1>Hemodynamics Calculator</h1><div class="subtitle">Basic Hemodynamics & Cardiac Output Analysis</div></header>
+<header class="header"><h1>Hemodynamics Calculator</h1><div class="subtitle">Hemodynamics, Vascular Resistance & Oxygen Transport</div></header>
 
 <section class="card"><h2>1. Patient Profile</h2>
 <div class="patient-summary">
@@ -66,7 +66,39 @@ input:focus,select:focus{outline:2px solid #8fcfc1}.patient-summary{display:grid
 <div class="formula" style="font-family:ui-monospace,monospace;font-size:12px;background:#f5faf8;padding:8px 10px;border-radius:8px;margin-top:9px;color:#41635b;line-height:1.45">CO = HR × SV ÷ 1000<br>CI = CO ÷ BSA<br>SVI = SV ÷ BSA</div>
 </section>
 
-<section class="card"><h2>4. Interpretation</h2><div id="interpretation" class="note">Enter the available hemodynamic values to generate a basic summary.</div></section>
+<section class="card"><h2>4. Vascular Resistance</h2>
+<div class="grid">
+<div class="field"><label for="mpap">Mean Pulmonary Artery Pressure (mPAP) <span class="small">mmHg</span></label><input id="mpap" type="number" min="1" max="150" step="1" placeholder="20"></div>
+<div class="field"><label for="pcwp">PCWP / PAOP <span class="small">mmHg</span></label><input id="pcwp" type="number" min="0" max="50" step="1" placeholder="10"></div>
+</div>
+<div class="result-grid" style="margin-top:12px">
+<div class="result"><div class="label">SVR</div><div class="value" id="svr">—</div><div class="unit">dyn·s·cm⁻⁵</div></div>
+<div class="result"><div class="label">PVR</div><div class="value" id="pvr">—</div><div class="unit">dyn·s·cm⁻⁵</div></div>
+</div>
+<div class="formula" style="font-family:ui-monospace,monospace;font-size:12px;background:#f5faf8;padding:8px 10px;border-radius:8px;margin-top:9px;color:#41635b;line-height:1.45">SVR = 80 × (MAP − CVP) ÷ CO<br>PVR = 80 × (mPAP − PCWP) ÷ CO</div>
+<div class="note">SVR requires MAP, CVP and CO. PVR requires mPAP, PCWP and CO.</div>
+</section>
+
+<section class="card"><h2>5. Oxygen Transport</h2>
+<div class="grid">
+<div class="field"><label for="hbInput">Hemoglobin (g/dL)</label><input id="hbInput" type="number" min="1" max="25" step="0.1" placeholder="12"></div>
+<div class="field"><label for="sao2">SaO₂ (%)</label><input id="sao2" type="number" min="1" max="100" step="0.1" placeholder="98"></div>
+<div class="field"><label for="pao2">PaO₂ (mmHg)</label><input id="pao2" type="number" min="20" max="500" step="1" placeholder="100"></div>
+<div class="field"><label for="svo2">SvO₂ (%)</label><input id="svo2" type="number" min="1" max="100" step="0.1" placeholder="75"></div>
+<div class="field"><label for="pvo2">PvO₂ (mmHg) <span class="small">optional</span></label><input id="pvo2" type="number" min="10" max="100" step="1" placeholder="40"></div>
+<div class="field"><label for="vo2">VO₂ (mL/min) <span class="small">optional</span></label><input id="vo2" type="number" min="1" max="1000" step="1" placeholder="250"></div>
+</div>
+<div class="result-grid" style="margin-top:12px">
+<div class="result"><div class="label">CaO₂</div><div class="value" id="cao2">—</div><div class="unit">mL O₂/dL</div></div>
+<div class="result"><div class="label">CvO₂</div><div class="value" id="cvo2">—</div><div class="unit">mL O₂/dL</div></div>
+<div class="result"><div class="label">DO₂</div><div class="value" id="do2">—</div><div class="unit">mL O₂/min</div></div>
+<div class="result"><div class="label">O₂ Extraction Ratio</div><div class="value" id="o2extraction">—</div><div class="unit">%</div></div>
+</div>
+<div class="formula" style="font-family:ui-monospace,monospace;font-size:12px;background:#f5faf8;padding:8px 10px;border-radius:8px;margin-top:9px;color:#41635b;line-height:1.45">CaO₂ = 1.34 × Hb × SaO₂ + 0.003 × PaO₂<br>CvO₂ = 1.34 × Hb × SvO₂ + 0.003 × PvO₂<br>DO₂ = CO × CaO₂ × 10<br>O₂ Extraction = (CaO₂ − CvO₂) ÷ CaO₂ × 100</div>
+<div class="note">DO₂ is calculated when CO and CaO₂ are available. VO₂ is accepted as an optional measured value for future oxygen-consumption analysis.</div>
+</section>
+
+<section class="card"><h2>6. Interpretation</h2><div id="interpretation" class="note">Enter the available hemodynamic values to generate a basic summary.</div></section>
 <button class="calculate-btn" type="button" id="calculateBtn">Calculate</button>
 <div class="note" style="margin-top:14px">Decision-support aid only; interpret hemodynamic measurements in clinical context.</div>
 </div>
@@ -102,6 +134,14 @@ function calculate(){
  const svInput=num(document.getElementById("strokeVolume").value);
  const coInput=num(document.getElementById("cardiacOutput").value);
  const bsa=num(patient?.bsa);
+ const cvp=num(document.getElementById("cvp").value);
+ const mpap=num(document.getElementById("mpap").value);
+ const pcwp=num(document.getElementById("pcwp").value);
+ const hb=num(document.getElementById("hbInput").value) ?? num(patient?.hb);
+ const sao2=num(document.getElementById("sao2").value);
+ const pao2=num(document.getElementById("pao2").value);
+ const svo2=num(document.getElementById("svo2").value);
+ const pvo2=num(document.getElementById("pvo2").value);
  let map=null,pp=null,si=null,msi=null;
  if(sbp!==null&&dbp!==null){
   map=(sbp+2*dbp)/3;pp=sbp-dbp;
@@ -117,11 +157,27 @@ function calculate(){
  if(sv!==null){txt("sv",sv.toFixed(1))}else txt("sv","—");
  if(co!==null&&bsa!==null&&bsa>0){txt("ci",(co/bsa).toFixed(2))}else txt("ci","—");
  if(sv!==null&&bsa!==null&&bsa>0){txt("svi",(sv/bsa).toFixed(1))}else txt("svi","—");
+
+ let svr=null,pvr=null;
+ if(map!==null&&cvp!==null&&co!==null&&co>0){svr=80*(map-cvp)/co;txt("svr",svr.toFixed(0));}else txt("svr","—");
+ if(mpap!==null&&pcwp!==null&&co!==null&&co>0){pvr=80*(mpap-pcwp)/co;txt("pvr",pvr.toFixed(0));}else txt("pvr","—");
+
+ const satA=sao2!==null?sao2/100:null;
+ const satV=svo2!==null?svo2/100:null;
+ let cao2=null,cvo2=null;
+ if(hb!==null&&satA!==null&&pao2!==null){cao2=1.34*hb*satA+0.003*pao2;txt("cao2",cao2.toFixed(1));}else txt("cao2","—");
+ if(hb!==null&&satV!==null){cvo2=1.34*hb*satV+(pvo2!==null?0.003*pvo2:0);txt("cvo2",cvo2.toFixed(1));}else txt("cvo2","—");
+ if(co!==null&&cao2!==null){txt("do2",(co*cao2*10).toFixed(0));}else txt("do2","—");
+ if(cao2!==null&&cvo2!==null&&cao2>0){txt("o2extraction",(((cao2-cvo2)/cao2)*100).toFixed(1));}else txt("o2extraction","—");
  let messages=[];
  if(si!==null){if(si>=1)messages.push("Shock Index is elevated; assess perfusion and clinical context.");else messages.push("Shock Index calculated.")}
  if(msi!==null){if(msi>=1.3)messages.push("Modified Shock Index is elevated; interpret with the clinical picture.")}
  if(map!==null){if(map<65)messages.push("MAP is below 65 mmHg.");else messages.push("MAP is ≥65 mmHg.")}
  if(co!==null&&bsa!==null){const ci=co/bsa;if(ci<2.2)messages.push("Cardiac index is below 2.2 L/min/m².");else messages.push("Cardiac index is ≥2.2 L/min/m².")}
+ if(svr!==null)messages.push("SVR calculated.");
+ if(pvr!==null)messages.push("PVR calculated.");
+ if(cao2!==null)messages.push("Arterial oxygen content calculated.");
+ if(cvo2!==null)messages.push("Venous oxygen content calculated.");
  const box=document.getElementById("interpretation");
  if(messages.length){box.textContent=messages.join(" ");box.className="note"}else{box.textContent="Enter the available hemodynamic values to generate a basic summary.";box.className="note"}
 }
