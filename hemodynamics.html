@@ -98,7 +98,7 @@ input:focus,select:focus{outline:2px solid #8fcfc1}.patient-summary{display:grid
 <div class="note">DO₂ is calculated when CO and CaO₂ are available. VO₂ is accepted as an optional measured value for future oxygen-consumption analysis.</div>
 </section>
 
-<section class="card"><h2>6. Interpretation</h2><div id="interpretation" class="note">Enter the available hemodynamic values to generate a basic summary.</div></section>
+<section class="card"><h2>6. Dynamic Hemodynamic Indices</h2><div class="grid"><div class="field"><label for="ppv">PPV (%) <span class="small">optional</span></label><input id="ppv" type="number" min="0" max="50" step="0.1" placeholder="10"></div><div class="field"><label for="svv">SVV (%) <span class="small">optional</span></label><input id="svv" type="number" min="0" max="50" step="0.1" placeholder="10"></div><div class="field"><label for="ppInsp">Pulse Pressure – Inspiration (mmHg)</label><input id="ppInsp" type="number" min="0" max="200" step="0.1" placeholder="45"></div><div class="field"><label for="ppExp">Pulse Pressure – Expiration (mmHg)</label><input id="ppExp" type="number" min="0" max="200" step="0.1" placeholder="35"></div><div class="field"><label for="plrBefore">PLR Baseline SV (mL/beat) <span class="small">optional</span></label><input id="plrBefore" type="number" min="1" max="300" step="0.1" placeholder="60"></div><div class="field"><label for="plrAfter">PLR Post-response SV (mL/beat) <span class="small">optional</span></label><input id="plrAfter" type="number" min="1" max="300" step="0.1" placeholder="68"></div></div><div class="result-grid" style="margin-top:12px"><div class="result"><div class="label">PPV</div><div class="value" id="ppvResult">—</div><div class="unit">%</div></div><div class="result"><div class="label">SVV</div><div class="value" id="svvResult">—</div><div class="unit">%</div></div><div class="result"><div class="label">ΔPP</div><div class="value" id="dppResult">—</div><div class="unit">%</div></div><div class="result"><div class="label">PLR Response</div><div class="value" id="plrResult">—</div><div class="unit">% change in SV</div></div></div><div class="note">PPV and SVV are dynamic indices and require appropriate clinical conditions, including controlled mechanical ventilation and regular cardiac rhythm. Interpret them with the clinical context rather than in isolation.</div></section><section class="card"><h2>7. Interpretation</h2><div id="interpretation" class="note">Enter the available hemodynamic values to generate a basic summary.</div></section>
 <button class="calculate-btn" type="button" id="calculateBtn">Calculate</button>
 <div class="note" style="margin-top:14px">Decision-support aid only; interpret hemodynamic measurements in clinical context.</div>
 </div>
@@ -137,6 +137,12 @@ function calculate(){
  const cvp=num(document.getElementById("cvp").value);
  const mpap=num(document.getElementById("mpap").value);
  const pcwp=num(document.getElementById("pcwp").value);
+ const ppv=num(document.getElementById("ppv").value);
+ const svv=num(document.getElementById("svv").value);
+ const ppInsp=num(document.getElementById("ppInsp").value);
+ const ppExp=num(document.getElementById("ppExp").value);
+ const plrBefore=num(document.getElementById("plrBefore").value);
+ const plrAfter=num(document.getElementById("plrAfter").value);
  const hb=num(document.getElementById("hbInput").value) ?? num(patient?.hb);
  const sao2=num(document.getElementById("sao2").value);
  const pao2=num(document.getElementById("pao2").value);
@@ -162,6 +168,11 @@ function calculate(){
  if(map!==null&&cvp!==null&&co!==null&&co>0){svr=80*(map-cvp)/co;txt("svr",svr.toFixed(0));}else txt("svr","—");
  if(mpap!==null&&pcwp!==null&&co!==null&&co>0){pvr=80*(mpap-pcwp)/co;txt("pvr",pvr.toFixed(0));}else txt("pvr","—");
 
+ if(ppv!==null)txt("ppvResult",ppv.toFixed(1));else txt("ppvResult","—");
+ if(svv!==null)txt("svvResult",svv.toFixed(1));else txt("svvResult","—");
+ if(ppInsp!==null&&ppExp!==null&&(ppInsp+ppExp)>0){const dpp=((ppInsp-ppExp)/((ppInsp+ppExp)/2))*100;txt("dppResult",dpp.toFixed(1));}else txt("dppResult","—");
+ if(plrBefore!==null&&plrAfter!==null&&plrBefore>0){const response=((plrAfter-plrBefore)/plrBefore)*100;txt("plrResult",response.toFixed(1));}else txt("plrResult","—");
+
  const satA=sao2!==null?sao2/100:null;
  const satV=svo2!==null?svo2/100:null;
  let cao2=null,cvo2=null;
@@ -178,6 +189,9 @@ function calculate(){
  if(pvr!==null)messages.push("PVR calculated.");
  if(cao2!==null)messages.push("Arterial oxygen content calculated.");
  if(cvo2!==null)messages.push("Venous oxygen content calculated.");
+ if(ppv!==null&&ppv>=13)messages.push("PPV ≥13% may indicate preload responsiveness when appropriate clinical conditions are present.");
+ if(svv!==null&&svv>=13)messages.push("SVV ≥13% may indicate preload responsiveness when appropriate clinical conditions are present.");
+ if(plrBefore!==null&&plrAfter!==null&&plrBefore>0){const response=((plrAfter-plrBefore)/plrBefore)*100;if(response>=10)messages.push("PLR produced a ≥10% increase in stroke volume.");}
  const box=document.getElementById("interpretation");
  if(messages.length){box.textContent=messages.join(" ");box.className="note"}else{box.textContent="Enter the available hemodynamic values to generate a basic summary.";box.className="note"}
 }
