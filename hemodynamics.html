@@ -18,7 +18,7 @@ input:focus,select:focus{outline:2px solid #8fcfc1}.patient-summary{display:grid
 .label{font-size:12px;color:#66817a}.value{font-size:20px;font-weight:700;margin-top:4px;color:#145b50}.unit{font-size:11px;color:#6c8580}
 .note{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f6faf9;color:#58716b;font-size:12px;line-height:1.5}.warning{background:#fff8df;border:1px solid #f0df9e}.success{background:#eefaf3;border:1px solid #cdebd9}.hidden{display:none}
 .calculate-btn{width:100%;min-height:48px;border:0;border-radius:12px;background:#17665a;color:white;font-size:16px;font-weight:700;cursor:pointer}
-.small{font-size:11px;color:#6b837d}@media(max-width:600px){.grid,.result-grid{grid-template-columns:1fr}.patient-summary{grid-template-columns:repeat(2,minmax(0,1fr)}}
+.small{font-size:11px;color:#6b837d}.status-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}.status{background:#f4faf8;border:1px solid #deeee9;border-radius:12px;padding:12px}.status-label{font-size:12px;color:#66817a}.status-value{font-size:17px;font-weight:700;margin-top:5px;color:#145b50}@media(max-width:600px){.status-grid{grid-template-columns:1fr}}@media(max-width:600px){.grid,.result-grid{grid-template-columns:1fr}.patient-summary{grid-template-columns:repeat(2,minmax(0,1fr)}}
 </style>
 </head>
 <body>
@@ -98,7 +98,18 @@ input:focus,select:focus{outline:2px solid #8fcfc1}.patient-summary{display:grid
 <div class="note">DO₂ is calculated when CO and CaO₂ are available. VO₂ is accepted as an optional measured value for future oxygen-consumption analysis.</div>
 </section>
 
-<section class="card"><h2>6. Dynamic Hemodynamic Indices</h2><div class="grid"><div class="field"><label for="ppv">PPV (%) <span class="small">optional</span></label><input id="ppv" type="number" min="0" max="50" step="0.1" placeholder="10"></div><div class="field"><label for="svv">SVV (%) <span class="small">optional</span></label><input id="svv" type="number" min="0" max="50" step="0.1" placeholder="10"></div><div class="field"><label for="ppInsp">Pulse Pressure – Inspiration (mmHg)</label><input id="ppInsp" type="number" min="0" max="200" step="0.1" placeholder="45"></div><div class="field"><label for="ppExp">Pulse Pressure – Expiration (mmHg)</label><input id="ppExp" type="number" min="0" max="200" step="0.1" placeholder="35"></div><div class="field"><label for="plrBefore">PLR Baseline SV (mL/beat) <span class="small">optional</span></label><input id="plrBefore" type="number" min="1" max="300" step="0.1" placeholder="60"></div><div class="field"><label for="plrAfter">PLR Post-response SV (mL/beat) <span class="small">optional</span></label><input id="plrAfter" type="number" min="1" max="300" step="0.1" placeholder="68"></div></div><div class="result-grid" style="margin-top:12px"><div class="result"><div class="label">PPV</div><div class="value" id="ppvResult">—</div><div class="unit">%</div></div><div class="result"><div class="label">SVV</div><div class="value" id="svvResult">—</div><div class="unit">%</div></div><div class="result"><div class="label">ΔPP</div><div class="value" id="dppResult">—</div><div class="unit">%</div></div><div class="result"><div class="label">PLR Response</div><div class="value" id="plrResult">—</div><div class="unit">% change in SV</div></div></div><div class="note">PPV and SVV are dynamic indices and require appropriate clinical conditions, including controlled mechanical ventilation and regular cardiac rhythm. Interpret them with the clinical context rather than in isolation.</div></section><section class="card"><h2>7. Interpretation</h2><div id="interpretation" class="note">Enter the available hemodynamic values to generate a basic summary.</div></section>
+<section class="card"><h2>6. Dynamic Hemodynamic Indices</h2><div class="grid"><div class="field"><label for="ppv">PPV (%) <span class="small">optional</span></label><input id="ppv" type="number" min="0" max="50" step="0.1" placeholder="10"></div><div class="field"><label for="svv">SVV (%) <span class="small">optional</span></label><input id="svv" type="number" min="0" max="50" step="0.1" placeholder="10"></div><div class="field"><label for="ppInsp">Pulse Pressure – Inspiration (mmHg)</label><input id="ppInsp" type="number" min="0" max="200" step="0.1" placeholder="45"></div><div class="field"><label for="ppExp">Pulse Pressure – Expiration (mmHg)</label><input id="ppExp" type="number" min="0" max="200" step="0.1" placeholder="35"></div><div class="field"><label for="plrBefore">PLR Baseline SV (mL/beat) <span class="small">optional</span></label><input id="plrBefore" type="number" min="1" max="300" step="0.1" placeholder="60"></div><div class="field"><label for="plrAfter">PLR Post-response SV (mL/beat) <span class="small">optional</span></label><input id="plrAfter" type="number" min="1" max="300" step="0.1" placeholder="68"></div></div><div class="result-grid" style="margin-top:12px"><div class="result"><div class="label">PPV</div><div class="value" id="ppvResult">—</div><div class="unit">%</div></div><div class="result"><div class="label">SVV</div><div class="value" id="svvResult">—</div><div class="unit">%</div></div><div class="result"><div class="label">ΔPP</div><div class="value" id="dppResult">—</div><div class="unit">%</div></div><div class="result"><div class="label">PLR Response</div><div class="value" id="plrResult">—</div><div class="unit">% change in SV</div></div></div><div class="note">PPV and SVV are dynamic indices and require appropriate clinical conditions, including controlled mechanical ventilation and regular cardiac rhythm. Interpret them with the clinical context rather than in isolation.</div></section><section class="card"><h2>7. Integrated Hemodynamic Interpretation</h2>
+<div class="status-grid">
+<div class="status"><div class="status-label">Perfusion Pressure</div><div class="status-value" id="perfusionStatus">—</div></div>
+<div class="status"><div class="status-label">Cardiac Output</div><div class="status-value" id="coStatus">—</div></div>
+<div class="status"><div class="status-label">Systemic Resistance</div><div class="status-value" id="svrStatus">—</div></div>
+<div class="status"><div class="status-label">Pulmonary Resistance</div><div class="status-value" id="pvrStatus">—</div></div>
+<div class="status"><div class="status-label">Preload Responsiveness</div><div class="status-value" id="dynamicStatus">—</div></div>
+<div class="status"><div class="status-label">Oxygen Delivery</div><div class="status-value" id="oxygenStatus">—</div></div>
+</div>
+<div id="interpretation" class="note">Enter the available hemodynamic values to generate an integrated summary.</div>
+<div class="note warning">This interpretation is calculation-based and should not be used alone as a diagnosis or treatment decision.</div>
+</section>
 <button class="calculate-btn" type="button" id="calculateBtn">Calculate</button>
 <div class="note" style="margin-top:14px">Decision-support aid only; interpret hemodynamic measurements in clinical context.</div>
 </div>
@@ -192,7 +203,29 @@ function calculate(){
  if(ppv!==null&&ppv>=13)messages.push("PPV ≥13% may indicate preload responsiveness when appropriate clinical conditions are present.");
  if(svv!==null&&svv>=13)messages.push("SVV ≥13% may indicate preload responsiveness when appropriate clinical conditions are present.");
  if(plrBefore!==null&&plrAfter!==null&&plrBefore>0){const response=((plrAfter-plrBefore)/plrBefore)*100;if(response>=10)messages.push("PLR produced a ≥10% increase in stroke volume.");}
+ const setStatus=(id,value)=>txt(id,value);
+ const ci=(co!==null&&bsa!==null&&bsa>0)?co/bsa:null;
+ const do2=(co!==null&&cao2!==null)?co*cao2*10:null;
+ setStatus("perfusionStatus",map===null?"—":(map<65?"Low MAP":"MAP ≥65"));
+ setStatus("coStatus",ci===null?"—":(ci<2.2?"Low CI":"CI ≥2.2"));
+ setStatus("svrStatus",svr===null?"—":(svr<800?"Low SVR":(svr>1600?"High SVR":"Typical SVR")));
+ setStatus("pvrStatus",pvr===null?"—":(pvr>240?"Elevated PVR":"Not elevated"));
+ let dynamic="—";
+ if((ppv!==null&&ppv>=13)||(svv!==null&&svv>=13)) dynamic="Possible preload response";
+ else if(plrBefore!==null&&plrAfter!==null&&plrBefore>0&&(((plrAfter-plrBefore)/plrBefore)*100)>=10) dynamic="Positive PLR response";
+ else if(ppv!==null||svv!==null||(plrBefore!==null&&plrAfter!==null)) dynamic="No positive signal";
+ setStatus("dynamicStatus",dynamic);
+ setStatus("oxygenStatus",do2===null?"—":(do2<300?"Low DO₂":"Calculated DO₂"));
+ const integrated=[];
+ if(map!==null) integrated.push(map<65?"MAP is below 65 mmHg.":"MAP is ≥65 mmHg.");
+ if(ci!==null) integrated.push(ci<2.2?"Cardiac index is below 2.2 L/min/m².":"Cardiac index is ≥2.2 L/min/m².");
+ if(svr!==null) integrated.push(svr<800?"SVR is low.":(svr>1600?"SVR is high.":"SVR is within the defined range."));
+ if(pvr!==null) integrated.push(pvr>240?"PVR is elevated.":"PVR is not elevated by the selected threshold.");
+ if(dynamic!=="—") integrated.push(dynamic+".");
+ if(do2!==null) integrated.push(do2<300?"Calculated DO₂ is low.":"Calculated DO₂ is available.");
  const box=document.getElementById("interpretation");
+ if(integrated.length){box.textContent=integrated.join(" ");box.className="note"}else{box.textContent="Enter the available hemodynamic values to generate an integrated summary.";box.className="note"}
+
  if(messages.length){box.textContent=messages.join(" ");box.className="note"}else{box.textContent="Enter the available hemodynamic values to generate a basic summary.";box.className="note"}
 }
 
