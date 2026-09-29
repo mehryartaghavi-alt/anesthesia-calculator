@@ -18,7 +18,7 @@ input:focus,select:focus{outline:2px solid #8fcfc1}.patient-summary{display:grid
 .label{font-size:12px;color:#66817a}.value{font-size:20px;font-weight:700;margin-top:4px;color:#145b50}.unit{font-size:11px;color:#6c8580}
 .note{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f6faf9;color:#58716b;font-size:12px;line-height:1.5}.warning{background:#fff8df;border:1px solid #f0df9e}.success{background:#eefaf3;border:1px solid #cdebd9}.danger{background:#fff0f0;border:1px solid #efc4c4;color:#8a3434}
 .calculate-btn{width:100%;min-height:48px;border:0;border-radius:12px;background:#17665a;color:white;font-size:16px;font-weight:700;cursor:pointer}
-.small{font-size:11px;color:#6b837d}.hidden{display:none}
+.small{font-size:11px;color:#6b837d}.hidden{display:none}.status-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.status{background:#f4faf8;border:1px solid #deeee9;border-radius:12px;padding:12px}.status-label{font-size:12px;color:#66817a}.status-value{font-size:17px;font-weight:700;margin-top:5px;color:#145b50}@media(max-width:600px){.status-grid{grid-template-columns:1fr}}
 @media(max-width:600px){.grid,.result-grid{grid-template-columns:1fr}.patient-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
@@ -91,7 +91,24 @@ input:focus,select:focus{outline:2px solid #8fcfc1}.patient-summary{display:grid
 <div class="note">For combined local anesthetics, a commonly used safety approach is to consider the sum of the fractions of each drug's maximum dose. This is a calculation aid, not a substitute for clinical judgment.</div>
 </section>
 
-<section class="card"><h2>5. Result / Safety Summary</h2>
+<section class="card"><h2>5. Block Dose Planning</h2>
+<div class="grid">
+<div class="field"><label for="technique">Technique / Route</label>
+<select id="technique"><option value="">Select</option><option>Spinal</option><option>Epidural</option><option>Peripheral Nerve Block</option><option>Other Regional Technique</option></select></div>
+<div class="field"><label for="targetDose">Target Local Anesthetic Dose (mg)</label><input id="targetDose" type="number" min="0" step="0.1" placeholder="Enter intended dose"></div>
+</div>
+<div class="result-grid" style="margin-top:12px">
+<div class="result"><div class="label">Calculated Volume</div><div class="value" id="targetVolume">—</div><div class="unit">mL</div></div>
+<div class="result"><div class="label">Calculated Dose/kg</div><div class="value" id="targetDoseKg">—</div><div class="unit">mg/kg</div></div>
+</div>
+<div class="note">Enter the intended dose yourself. This section converts that dose to volume using the selected concentration; it does not recommend a dose for a specific block.</div>
+</section>
+
+<section class="card"><h2>6. Result / Safety Summary</h2>
+<div class="status-grid">
+<div class="status"><div class="status-label">Dose Status</div><div class="status-value" id="doseStatus2">—</div></div>
+<div class="status"><div class="status-label">Combined Drug Status</div><div class="status-value" id="combinedStatus2">—</div></div>
+</div>
 <div id="summary" class="note">Enter the available values to generate a summary.</div>
 </section>
 
@@ -184,6 +201,14 @@ function calculate(){
  if(combined!==null){
   txt("combinedStatus",combined<=1?"Within reference":"Exceeds reference");
  }else txt("combinedStatus","—");
+
+ const targetDose=num(document.getElementById("targetDose").value);
+ const targetVolume=targetDose!==null&&mgml!==null&&mgml>0?targetDose/mgml:null;
+ const targetDoseKg=targetDose!==null&&w!==null?targetDose/w:null;
+ txt("targetVolume",targetVolume!==null?targetVolume.toFixed(2):"—");
+ txt("targetDoseKg",targetDoseKg!==null?targetDoseKg.toFixed(2):"—");
+ txt("doseStatus2",total!==null&&maxTotal!==null?(total>maxTotal?"Exceeds reference maximum":total>=0.8*maxTotal?"Close to reference maximum":"Below reference maximum"):"—");
+ txt("combinedStatus2",combined!==null?(combined<=1?"Within reference":"Exceeds reference"):"—");
 
  const summary=document.getElementById("summary");
  if(drug&&total!==null&&maxTotal!==null){
