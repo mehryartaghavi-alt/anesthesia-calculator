@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pediatric Calculator — Stage 1</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#eef7f4;color:#18332f}
+.container{max-width:760px;margin:auto;padding:18px}h1{margin:4px 0 6px;font-size:26px}.subtitle{color:#55736d;margin-bottom:18px}
+.card{background:#fff;border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 4px 14px rgba(20,70,60,.08)}
+.card h2{margin:0 0 14px;font-size:19px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field label{display:block;font-size:14px;margin-bottom:6px;color:#49665f}
+input,select{width:100%;padding:12px;border:1px solid #c9d9d5;border-radius:10px;font-size:16px;background:#fff;color:#18332f}
+.results{display:grid;grid-template-columns:1fr 1fr;gap:10px}.result{background:#f3faf7;border-radius:12px;padding:13px}
+.result .label{font-size:13px;color:#58736d}.result .value{margin-top:5px;font-size:18px;font-weight:600}
+.note{font-size:13px;line-height:1.55;color:#5b716c}.warning{background:#fff8e8;border-left:4px solid #d49b2a;padding:12px;border-radius:8px;font-size:13px;line-height:1.5}
+@media(max-width:520px){.grid,.results{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🧒 Pediatric Calculator</h1>
+<div class="subtitle">Stage 1 — Patient Profile</div>
+
+<div class="card">
+<h2>Patient Information</h2>
+<div class="grid">
+<div class="field"><label for="age">Age (years)</label><input id="age" type="number" min="0" max="18" step="0.1" placeholder="e.g. 5"></div>
+<div class="field"><label for="sex">Sex</label><select id="sex"><option value="">Select</option><option value="male">Male</option><option value="female">Female</option></select></div>
+<div class="field"><label for="weight">Weight (kg)</label><input id="weight" type="number" min="0.1" step="0.1" placeholder="e.g. 20"></div>
+<div class="field"><label for="height">Height (cm)</label><input id="height" type="number" min="20" max="220" step="0.1" placeholder="e.g. 115"></div>
+</div>
+</div>
+
+<div class="card">
+<h2>Calculated Parameters</h2>
+<div class="results">
+<div class="result"><div class="label">BMI</div><div class="value" id="bmi">—</div></div>
+<div class="result"><div class="label">BSA — Mosteller</div><div class="value" id="bsa">—</div></div>
+<div class="result"><div class="label">IBW — Reference</div><div class="value" id="ibw">Not used</div></div>
+<div class="result"><div class="label">Patient Type</div><div class="value" id="patientType">—</div></div>
+</div>
+</div>
+
+<div class="card">
+<h2>Data Transfer</h2>
+<div class="note" id="transferStatus">Enter patient data above. Data will be available to the next pediatric calculator stages.</div>
+</div>
+
+<div class="card"><div class="warning">Stage 1 is limited to patient-profile calculations. Drug dosing, fluids, and airway calculations will be added in later stages.</div></div>
+</div>
+
+<script>
+(function(){
+const age=document.getElementById("age"),sex=document.getElementById("sex"),weight=document.getElementById("weight"),height=document.getElementById("height");
+const bmiEl=document.getElementById("bmi"),bsaEl=document.getElementById("bsa"),patientTypeEl=document.getElementById("patientType"),transferStatus=document.getElementById("transferStatus");
+function num(v){const x=parseFloat(v);return Number.isFinite(x)?x:null}
+function saveData(){
+ const data={age:num(age.value),sex:sex.value||null,weight:num(weight.value),height:num(height.value)};
+ try{sessionStorage.setItem("pediatricPatientData",JSON.stringify(data));localStorage.setItem("pediatricPatientData",JSON.stringify(data));transferStatus.textContent="Patient data is ready for the next pediatric calculator stages."}catch(e){}
+}
+function calculate(){
+ const a=num(age.value),w=num(weight.value),h=num(height.value);
+ let bmi=null,bsa=null;
+ if(w!==null&&h!==null&&h>0){const hm=h/100;bmi=w/(hm*hm);bsa=Math.sqrt((h*w)/3600)}
+ bmiEl.textContent=bmi!==null?bmi.toFixed(1):"—";
+ bsaEl.textContent=bsa!==null?bsa.toFixed(2)+" m²":"—";
+ if(a!==null){patientTypeEl.textContent=a<1?"Infant":a<2?"Toddler":a<12?"Child":"Adolescent"}else patientTypeEl.textContent="—";
+ saveData();
+}
+function loadData(){
+ let data=null;
+ try{const p=new URLSearchParams(location.search);if(p.get("data"))data=JSON.parse(decodeURIComponent(p.get("data")))}catch(e){}
+ const stores=["patientData","pediatricPatientData"];
+ for(const key of stores){if(!data)try{data=JSON.parse(sessionStorage.getItem(key))}catch(e){}}
+ for(const key of stores){if(!data)try{data=JSON.parse(localStorage.getItem(key))}catch(e){}}
+ if(data){if(data.age!=null)age.value=data.age;if(data.sex)sex.value=data.sex;if(data.weight!=null)weight.value=data.weight;if(data.height!=null)height.value=data.height;calculate()}
+}
+[age,sex,weight,height].forEach(el=>{el.addEventListener("input",calculate);el.addEventListener("change",calculate)});
+loadData();
+})();
+</script>
+</body>
+</html>
