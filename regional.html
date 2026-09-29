@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regional Anesthesia Calculator</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#eef7f4;color:#18332f}
+.container{max-width:760px;margin:auto;padding:24px 16px 44px}.header{text-align:center;margin-bottom:22px}
+h1{margin:0;font-size:28px;color:#145b50}.subtitle{margin-top:6px;color:#64817b;font-size:14px}
+.card{background:#fff;border-radius:18px;padding:18px;margin-bottom:16px;box-shadow:0 5px 18px rgba(22,76,66,.08);border:1px solid #dcece7}
+.card h2{margin:0 0 15px;font-size:18px;color:#155c51}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:6px}.full{grid-column:1/-1}label{font-size:13px;font-weight:600;color:#476760}
+input,select{width:100%;min-height:44px;border:1px solid #c9ded8;border-radius:10px;padding:9px 11px;font-size:16px;color:#18332f;background:#fbfefd}
+input:focus,select:focus{outline:2px solid #8fcfc1}.patient-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.summary-item{background:#f2faf7;border-radius:10px;padding:9px;text-align:center}.summary-label{font-size:11px;color:#67827b}.summary-value{font-weight:700;margin-top:3px}
+.result-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.result{background:#f4faf8;border-radius:12px;padding:12px;border:1px solid #deeee9}
+.label{font-size:12px;color:#66817a}.value{font-size:20px;font-weight:700;margin-top:4px;color:#145b50}.unit{font-size:11px;color:#6c8580}
+.note{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f6faf9;color:#58716b;font-size:12px;line-height:1.5}.warning{background:#fff8df;border:1px solid #f0df9e}.success{background:#eefaf3;border:1px solid #cdebd9}.danger{background:#fff0f0;border:1px solid #efc4c4;color:#8a3434}
+.calculate-btn{width:100%;min-height:48px;border:0;border-radius:12px;background:#17665a;color:white;font-size:16px;font-weight:700;cursor:pointer}
+.small{font-size:11px;color:#6b837d}.hidden{display:none}
+@media(max-width:600px){.grid,.result-grid{grid-template-columns:1fr}.patient-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<div class="container">
+<header class="header"><h1>Regional Anesthesia Calculator</h1><div class="subtitle">Local Anesthetic Dose & Safety Calculator</div></header>
+
+<section class="card"><h2>1. Patient Profile</h2>
+<div class="patient-summary">
+<div class="summary-item"><div class="summary-label">Age</div><div class="summary-value" id="patientAge">—</div></div>
+<div class="summary-item"><div class="summary-label">Sex</div><div class="summary-value" id="patientSex">—</div></div>
+<div class="summary-item"><div class="summary-label">Weight</div><div class="summary-value" id="patientWeight">—</div></div>
+<div class="summary-item"><div class="summary-label">Height</div><div class="summary-value" id="patientHeight">—</div></div>
+<div class="summary-item"><div class="summary-label">BMI</div><div class="summary-value" id="patientBMI">—</div></div>
+<div class="summary-item"><div class="summary-label">BSA</div><div class="summary-value" id="patientBSA">—</div></div>
+</div>
+<div id="patientMessage" class="note hidden"></div>
+</section>
+
+<section class="card"><h2>2. Local Anesthetic</h2>
+<div class="grid">
+<div class="field"><label for="drug">Local Anesthetic</label>
+<select id="drug">
+<option value="">Select drug</option>
+<option value="lidocaine">Lidocaine</option>
+<option value="bupivacaine">Bupivacaine</option>
+<option value="ropivacaine">Ropivacaine</option>
+<option value="mepivacaine">Mepivacaine</option>
+<option value="prilocaine">Prilocaine</option>
+</select></div>
+<div class="field"><label for="concentration">Concentration (%)</label><input id="concentration" type="number" min="0.01" max="10" step="0.01" placeholder="0.5"></div>
+<div class="field"><label for="volume">Volume (mL)</label><input id="volume" type="number" min="0" max="500" step="0.1" placeholder="20"></div>
+<div class="field"><label for="epinephrine">Epinephrine</label><select id="epinephrine"><option value="no">No</option><option value="yes">Yes</option></select></div>
+</div>
+<div class="note">Drug-specific maximum-dose values are preloaded as reference values and should be interpreted according to the intended block, route, patient factors, and institutional guidance.</div>
+</section>
+
+<section class="card"><h2>3. Dose Calculation</h2>
+<div class="result-grid">
+<div class="result"><div class="label">Drug Amount</div><div class="value" id="mgPerMl">—</div><div class="unit">mg/mL</div></div>
+<div class="result"><div class="label">Total Dose</div><div class="value" id="totalDose">—</div><div class="unit">mg</div></div>
+<div class="result"><div class="label">Dose per kg</div><div class="value" id="dosePerKg">—</div><div class="unit">mg/kg</div></div>
+<div class="result"><div class="label">Maximum Dose</div><div class="value" id="maxDose">—</div><div class="unit">mg</div></div>
+<div class="result"><div class="label">Maximum Dose per kg</div><div class="value" id="maxMgKg">—</div><div class="unit">mg/kg</div></div>
+<div class="result"><div class="label">Remaining Allowable Dose</div><div class="value" id="remainingDose">—</div><div class="unit">mg</div></div>
+</div>
+<div id="doseStatus" class="note">Enter patient weight, drug, concentration and volume.</div>
+</section>
+
+<section class="card"><h2>4. Combined Local Anesthetics</h2>
+<div class="grid">
+<div class="field"><label for="drug2">Second Local Anesthetic</label>
+<select id="drug2">
+<option value="">None</option>
+<option value="lidocaine">Lidocaine</option>
+<option value="bupivacaine">Bupivacaine</option>
+<option value="ropivacaine">Ropivacaine</option>
+<option value="mepivacaine">Mepivacaine</option>
+<option value="prilocaine">Prilocaine</option>
+</select></div>
+<div class="field"><label for="conc2">Concentration (%)</label><input id="conc2" type="number" min="0.01" max="10" step="0.01" placeholder="0.25"></div>
+<div class="field"><label for="volume2">Volume (mL)</label><input id="volume2" type="number" min="0" max="500" step="0.1" placeholder="10"></div>
+</div>
+<div class="result-grid" style="margin-top:12px">
+<div class="result"><div class="label">Drug 1 Toxicity Fraction</div><div class="value" id="fraction1">—</div><div class="unit">fraction of maximum</div></div>
+<div class="result"><div class="label">Drug 2 Toxicity Fraction</div><div class="value" id="fraction2">—</div><div class="unit">fraction of maximum</div></div>
+<div class="result"><div class="label">Combined Toxicity Fraction</div><div class="value" id="combinedFraction">—</div><div class="unit">sum of fractions</div></div>
+<div class="result"><div class="label">Combined Status</div><div class="value" id="combinedStatus">—</div><div class="unit">reference calculation</div></div>
+</div>
+<div class="note">For combined local anesthetics, a commonly used safety approach is to consider the sum of the fractions of each drug's maximum dose. This is a calculation aid, not a substitute for clinical judgment.</div>
+</section>
+
+<section class="card"><h2>5. Result / Safety Summary</h2>
+<div id="summary" class="note">Enter the available values to generate a summary.</div>
+</section>
+
+<button class="calculate-btn" type="button" id="calculateBtn">Calculate</button>
+<div class="note" style="margin-top:14px">Decision-support aid only. Maximum-dose estimates do not replace clinical judgment or institutional protocols.</div>
+</div>
+
+<script>
+"use strict";
+let patient=null;
+const num=v=>{const n=parseFloat(v);return Number.isFinite(n)?n:null};
+const txt=(id,v)=>document.getElementById(id).textContent=v;
+
+const drugs={
+ lidocaine:{max:4.5,epiMax:7},
+ bupivacaine:{max:2.5,epiMax:3},
+ ropivacaine:{max:3,epiMax:3},
+ mepivacaine:{max:5,epiMax:7},
+ prilocaine:{max:6,epiMax:8}
+};
+
+function loadPatientData(){
+ let raw=null;
+ try{raw=new URLSearchParams(location.search).get("patientData")}catch(e){}
+ if(raw){try{patient=JSON.parse(decodeURIComponent(raw))}catch(e){}}
+ if(!patient){try{const s=sessionStorage.getItem("patientData");if(s)patient=JSON.parse(s)}catch(e){}}
+ if(!patient){try{const s=localStorage.getItem("patientData");if(s)patient=JSON.parse(s)}catch(e){}}
+ if(patient){
+  const age=num(patient.age), weight=num(patient.weight), height=num(patient.height), bsa=num(patient.bsa);
+  txt("patientAge",age!==null?age+" y":"—");
+  txt("patientSex",patient.sex?String(patient.sex).charAt(0).toUpperCase()+String(patient.sex).slice(1):"—");
+  txt("patientWeight",weight!==null?weight.toFixed(1)+" kg":"—");
+  txt("patientHeight",height!==null?height.toFixed(0)+" cm":"—");
+  const bmi=weight!==null&&height!==null&&height>0?weight/Math.pow(height/100,2):null;
+  txt("patientBMI",bmi!==null?bmi.toFixed(1):"—");
+  txt("patientBSA",bsa!==null?bsa.toFixed(2)+" m²":"—");
+ }else{
+  const m=document.getElementById("patientMessage");m.textContent="No patient data transferred. Dose calculations can still be performed if weight is entered or otherwise available.";m.className="note warning";
+ }
+}
+
+function getMaxMgKg(drug,epi){
+ if(!drugs[drug]) return null;
+ return epi==="yes"?drugs[drug].epiMax:drugs[drug].max;
+}
+
+function calculate(){
+ const weight=num(patient?.weight);
+ const drug=document.getElementById("drug").value;
+ const conc=num(document.getElementById("concentration").value);
+ const volume=num(document.getElementById("volume").value);
+ const epi=document.getElementById("epinephrine").value;
+ const drug2=document.getElementById("drug2").value;
+ const conc2=num(document.getElementById("conc2").value);
+ const volume2=num(document.getElementById("volume2").value);
+
+ const w=weight!==null&&weight>0?weight:null;
+ const maxKg=getMaxMgKg(drug,epi);
+ const mgml=conc!==null&&conc>=0?conc*10:null;
+ const total=mgml!==null&&volume!==null?mgml*volume:null;
+ const doseKg=total!==null&&w!==null?total/w:null;
+ const maxTotal=maxKg!==null&&w!==null?maxKg*w:null;
+ const remaining=maxTotal!==null&&total!==null?maxTotal-total:null;
+
+ txt("mgPerMl",mgml!==null?mgml.toFixed(1):"—");
+ txt("totalDose",total!==null?total.toFixed(1):"—");
+ txt("dosePerKg",doseKg!==null?doseKg.toFixed(2):"—");
+ txt("maxDose",maxTotal!==null?maxTotal.toFixed(1):"—");
+ txt("maxMgKg",maxKg!==null?maxKg.toFixed(1):"—");
+ txt("remainingDose",remaining!==null?remaining.toFixed(1):"—");
+
+ const status=document.getElementById("doseStatus");
+ if(total!==null&&maxTotal!==null){
+  if(total>maxTotal){status.textContent="Calculated dose exceeds the selected reference maximum dose.";status.className="note danger";}
+  else if(total>=0.8*maxTotal){status.textContent="Calculated dose is within the reference maximum, but close to the upper limit.";status.className="note warning";}
+  else{status.textContent="Calculated dose is below the selected reference maximum.";status.className="note success";}
+ }else{status.textContent="Enter patient weight, drug, concentration and volume.";status.className="note";}
+
+ let f1=null,f2=null;
+ if(total!==null&&maxTotal!==null&&maxTotal>0) f1=total/maxTotal;
+ const mgml2=conc2!==null?conc2*10:null;
+ const total2=mgml2!==null&&volume2!==null?mgml2*volume2:null;
+ const maxKg2=getMaxMgKg(drug2,"no");
+ const maxTotal2=maxKg2!==null&&w!==null?maxKg2*w:null;
+ if(total2!==null&&maxTotal2!==null&&maxTotal2>0) f2=total2/maxTotal2;
+ const combined=f1!==null&&f2!==null?f1+f2:null;
+ txt("fraction1",f1!==null?f1.toFixed(2):"—");
+ txt("fraction2",f2!==null?f2.toFixed(2):"—");
+ txt("combinedFraction",combined!==null?combined.toFixed(2):"—");
+ if(combined!==null){
+  txt("combinedStatus",combined<=1?"Within reference":"Exceeds reference");
+ }else txt("combinedStatus","—");
+
+ const summary=document.getElementById("summary");
+ if(drug&&total!==null&&maxTotal!==null){
+  let text=drug.charAt(0).toUpperCase()+drug.slice(1)+": "+total.toFixed(1)+" mg total ("+(doseKg!==null?doseKg.toFixed(2):"—")+" mg/kg), reference maximum "+maxTotal.toFixed(1)+" mg.";
+  if(remaining!==null) text+=" Remaining calculated allowance: "+Math.max(remaining,0).toFixed(1)+" mg.";
+  if(total>maxTotal) text+=" The entered dose exceeds the selected reference maximum.";
+  summary.textContent=text;
+  summary.className=total>maxTotal?"note danger":"note";
+ }else{
+  summary.textContent="Enter the available values to generate a summary.";
+  summary.className="note";
+ }
+}
+
+document.getElementById("calculateBtn").addEventListener("click",calculate);
+document.querySelectorAll("input,select").forEach(el=>el.addEventListener("input",calculate));
+document.querySelectorAll("select").forEach(el=>el.addEventListener("change",calculate));
+loadPatientData();
+calculate();
+</script>
+</body>
+</html>
