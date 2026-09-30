@@ -66,6 +66,22 @@ input,select{width:100%;padding:12px;border:1px solid #c9d9d5;border-radius:10px
 <div class="note" style="margin-top:12px">Maintenance is calculated using the 4-2-1 rule. Bolus volume is calculated only from the entered mL/kg value and patient weight; it is not a treatment recommendation.</div>
 </div>
 
+
+<div class="card">
+<h2>Stage 4 — Pediatric Airway</h2>
+<div class="grid">
+<div class="field"><label for="airwayAge">Age (years)</label><input id="airwayAge" type="number" readonly></div>
+<div class="field"><label for="airwayWeight">Weight (kg)</label><input id="airwayWeight" type="number" readonly></div>
+<div class="field full"><label for="tubeType">ETT Type</label><select id="tubeType"><option value="cuffed">Cuffed</option><option value="uncuffed">Uncuffed</option></select></div>
+</div>
+<div class="results" style="margin-top:14px">
+<div class="result"><div class="label">ETT Size — ID (mm)</div><div class="value" id="ettSize">—</div></div>
+<div class="result"><div class="label">ETT Depth (cm)</div><div class="value" id="ettDepth">—</div></div>
+<div class="result"><div class="label">LMA Size</div><div class="value" id="lmaSize">—</div></div>
+</div>
+<div class="note" style="margin-top:12px">Airway values are reference estimates. Confirm tube size, depth, and airway device selection with clinical assessment and institutional practice.</div>
+</div>
+
 <div class="card">
 <h2>Data Transfer</h2>
 <div class="note" id="transferStatus">Enter patient data above. Data will be available to the next pediatric calculator stages.</div>
@@ -84,6 +100,14 @@ function saveData(){
  const data={age:num(age.value),sex:sex.value||null,weight:num(weight.value),height:num(height.value)};
  try{sessionStorage.setItem("pediatricPatientData",JSON.stringify(data));localStorage.setItem("pediatricPatientData",JSON.stringify(data));transferStatus.textContent="Patient data is ready for the next pediatric calculator stages."}catch(e){}
 }
+function calculateAirway(a,w){
+ if(a===null||a<0){airwayAge.value="";airwayWeight.value="";ettSize.textContent="—";ettDepth.textContent="—";lmaSize.textContent="—";return;}
+ airwayAge.value=a; airwayWeight.value=(w!==null&&w>0)?w.toFixed(1):"";
+ if(a<1){ettSize.textContent=tubeType.value==="cuffed"?"3.5–4.0":"3.0–3.5";}else{const s=tubeType.value==="cuffed"?(a/4+3.5):(a/4+4);ettSize.textContent=s.toFixed(1);}
+ const depth=a<1?10:(a/2+12); ettDepth.textContent=depth.toFixed(1)+" cm";
+ if(w===null||w<=0)lmaSize.textContent="—";else if(w<=5)lmaSize.textContent="1";else if(w<=10)lmaSize.textContent="1.5";else if(w<=20)lmaSize.textContent="2";else if(w<=30)lmaSize.textContent="2.5";else if(w<=50)lmaSize.textContent="3";else if(w<=70)lmaSize.textContent="4";else lmaSize.textContent="5";
+}
+
 function calculateDose(w){
  if(w===null||w<=0){doseWeight.textContent="—";calculatedDose.textContent="—";return;}
  doseWeight.textContent=w.toFixed(1)+" kg";
@@ -102,6 +126,7 @@ function calculate(){
  if(a!==null){patientTypeEl.textContent=a<1?"Infant":a<2?"Toddler":a<12?"Child":"Adolescent"}else patientTypeEl.textContent="—";
  calculateDose(w);
  calculateFluids(w);
+ calculateAirway(a,w);
  saveData();
 }
 function loadData(){
@@ -112,7 +137,7 @@ function loadData(){
  for(const key of stores){if(!data)try{data=JSON.parse(localStorage.getItem(key))}catch(e){}}
  if(data){if(data.age!=null)age.value=data.age;if(data.sex)sex.value=data.sex;if(data.weight!=null)weight.value=data.weight;if(data.height!=null)height.value=data.height;calculate()}
 }
-[age,sex,weight,height,dosePerKg,doseUnit,drug,bolusRate,bolusType].forEach(el=>{el.addEventListener("input",calculate);el.addEventListener("change",calculate)});
+[age,sex,weight,height,dosePerKg,doseUnit,drug,bolusRate,bolusType,tubeType].forEach(el=>{el.addEventListener("input",calculate);el.addEventListener("change",calculate)});
 loadData();
 })();
 </script>
