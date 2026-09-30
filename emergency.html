@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emergency & Resuscitation Calculator — Stage 1</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#f4f7fb;color:#182b3a}
+.container{max-width:760px;margin:auto;padding:18px}
+h1{margin:4px 0 6px;font-size:25px}
+.subtitle{color:#5d7180;margin-bottom:18px}
+.card{background:#fff;border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 4px 14px rgba(25,55,80,.08)}
+.card h2{margin:0 0 14px;font-size:19px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field label{display:block;font-size:14px;margin-bottom:6px;color:#4d6472}
+input,select{width:100%;padding:12px;border:1px solid #cbd7df;border-radius:10px;font-size:16px;background:#fff;color:#182b3a}
+.results{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.result{background:#f5f8fa;border-radius:12px;padding:13px}
+.result .label{font-size:13px;color:#607582}
+.result .value{margin-top:5px;font-size:18px;font-weight:600}
+.note{font-size:13px;line-height:1.55;color:#5b707d}
+.warning{background:#fff8e8;border-left:4px solid #d39a27;padding:12px;border-radius:8px;font-size:13px;line-height:1.55}
+@media(max-width:520px){.grid,.results{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🚑 Emergency & Resuscitation Calculator</h1>
+<div class="subtitle">Stage 1 — Emergency Patient Profile</div>
+
+<div class="card">
+<h2>Patient Information</h2>
+<div class="grid">
+<div class="field">
+<label for="age">Age (years)</label>
+<input id="age" type="number" min="0" max="18" step="0.1" placeholder="e.g. 5">
+</div>
+<div class="field">
+<label for="sex">Sex</label>
+<select id="sex">
+<option value="">Select</option>
+<option value="male">Male</option>
+<option value="female">Female</option>
+</select>
+</div>
+<div class="field">
+<label for="weight">Measured Weight (kg)</label>
+<input id="weight" type="number" min="0.1" step="0.1" placeholder="e.g. 20">
+</div>
+<div class="field">
+<label for="height">Height / Length (cm)</label>
+<input id="height" type="number" min="20" max="220" step="0.1" placeholder="e.g. 115">
+</div>
+</div>
+</div>
+
+<div class="card">
+<h2>Calculated Parameters</h2>
+<div class="results">
+<div class="result"><div class="label">BMI</div><div class="value" id="bmi">—</div></div>
+<div class="result"><div class="label">BSA — Mosteller</div><div class="value" id="bsa">—</div></div>
+<div class="result"><div class="label">Age Group</div><div class="value" id="ageGroup">—</div></div>
+<div class="result"><div class="label">Resuscitation Weight</div><div class="value" id="resusWeight">—</div></div>
+</div>
+</div>
+
+<div class="card">
+<h2>Emergency Weight</h2>
+<div class="grid">
+<div class="field full">
+<label for="weightSource">Weight Source</label>
+<select id="weightSource">
+<option value="measured">Measured weight</option>
+<option value="estimated">Estimated / length-based weight</option>
+</select>
+</div>
+<div class="field full">
+<label for="estimatedWeight">Estimated Weight (kg)</label>
+<input id="estimatedWeight" type="number" min="0.1" step="0.1" placeholder="Enter if measured weight is unavailable">
+</div>
+</div>
+<div class="note" style="margin-top:12px">
+For resuscitation drug calculations, current 2025 AHA/AAP PALS guidance recommends using
+the child's body weight when available. When weight is unknown, length-based or other
+cognitive aids may be considered. This stage does not perform a length-based weight
+estimation itself.
+</div>
+</div>
+
+<div class="card">
+<h2>Data Transfer</h2>
+<div class="note" id="transferStatus">
+Patient data will be available to the next emergency/resuscitation stages.
+</div>
+</div>
+
+<div class="card">
+<div class="warning">
+This module is intended as a calculation aid. It does not replace the current PALS/ALS
+algorithm, clinical assessment, monitoring, or local protocol.
+</div>
+</div>
+</div>
+
+<script>
+(function(){
+const age=document.getElementById("age");
+const sex=document.getElementById("sex");
+const weight=document.getElementById("weight");
+const height=document.getElementById("height");
+const weightSource=document.getElementById("weightSource");
+const estimatedWeight=document.getElementById("estimatedWeight");
+
+const bmiEl=document.getElementById("bmi");
+const bsaEl=document.getElementById("bsa");
+const ageGroupEl=document.getElementById("ageGroup");
+const resusWeightEl=document.getElementById("resusWeight");
+const transferStatus=document.getElementById("transferStatus");
+
+function num(v){
+ const x=parseFloat(v);
+ return Number.isFinite(x)?x:null;
+}
+
+function getAgeGroup(a){
+ if(a===null || a<0) return "—";
+ if(a<1) return "Infant";
+ if(a<2) return "Toddler";
+ if(a<12) return "Child";
+ return "Adolescent";
+}
+
+function calculate(){
+ const a=num(age.value);
+ const w=num(weight.value);
+ const h=num(height.value);
+ const ew=num(estimatedWeight.value);
+
+ let bmi=null,bsa=null;
+ if(w!==null && w>0 && h!==null && h>0){
+   const hm=h/100;
+   bmi=w/(hm*hm);
+   bsa=Math.sqrt((h*w)/3600);
+ }
+
+ bmiEl.textContent=bmi!==null?bmi.toFixed(1):"—";
+ bsaEl.textContent=bsa!==null?bsa.toFixed(2)+" m²":"—";
+ ageGroupEl.textContent=getAgeGroup(a);
+
+ let rw=null;
+ if(weightSource.value==="measured"){
+   rw=w;
+ }else{
+   rw=ew;
+ }
+ resusWeightEl.textContent=rw!==null && rw>0?rw.toFixed(1)+" kg":"—";
+
+ try{
+   const data={
+     age:a,
+     sex:sex.value||null,
+     weight:w,
+     height:h,
+     emergencyWeight:rw,
+     weightSource:weightSource.value
+   };
+   sessionStorage.setItem("emergencyPatientData",JSON.stringify(data));
+   localStorage.setItem("emergencyPatientData",JSON.stringify(data));
+   transferStatus.textContent="Patient data is ready for the next emergency/resuscitation stages.";
+ }catch(e){}
+}
+
+function loadData(){
+ let data=null;
+
+ try{
+   const params=new URLSearchParams(location.search);
+   if(params.get("data")){
+     data=JSON.parse(decodeURIComponent(params.get("data")));
+   }
+ }catch(e){}
+
+ const keys=["patientData","pediatricPatientData","emergencyPatientData"];
+
+ for(const key of keys){
+   if(!data){
+     try{data=JSON.parse(sessionStorage.getItem(key));}catch(e){}
+   }
+ }
+
+ for(const key of keys){
+   if(!data){
+     try{data=JSON.parse(localStorage.getItem(key));}catch(e){}
+   }
+ }
+
+ if(data){
+   if(data.age!=null) age.value=data.age;
+   if(data.sex) sex.value=data.sex;
+   if(data.weight!=null) weight.value=data.weight;
+   if(data.height!=null) height.value=data.height;
+
+   if(data.weightSource) weightSource.value=data.weightSource;
+   if(data.emergencyWeight!=null && data.weightSource==="estimated"){
+     estimatedWeight.value=data.emergencyWeight;
+   }
+
+   calculate();
+ }
+}
+
+[age,sex,weight,height,weightSource,estimatedWeight].forEach(el=>{
+ el.addEventListener("input",calculate);
+ el.addEventListener("change",calculate);
+});
+
+loadData();
+})();
+</script>
+</body>
+</html>
