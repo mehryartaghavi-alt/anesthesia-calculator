@@ -50,6 +50,22 @@ input,select{width:100%;padding:12px;border:1px solid #c9d9d5;border-radius:10px
 <div class="results" style="margin-top:14px"><div class="result"><div class="label">Weight Used</div><div class="value" id="doseWeight">—</div></div><div class="result"><div class="label">Calculated Dose</div><div class="value" id="calculatedDose">—</div></div></div>
 <div class="note" style="margin-top:12px">Enter the intended weight-based dose. This stage performs the arithmetic only; drug-specific pediatric dose ranges are not assumed here.</div></div>
 
+
+<div class="card">
+<h2>Stage 3 — Pediatric Fluids</h2>
+<div class="grid">
+<div class="field full"><label for="fluidWeight">Weight Used (kg)</label><input id="fluidWeight" type="number" readonly></div>
+<div class="field"><label for="bolusRate">Bolus Rate (mL/kg)</label><input id="bolusRate" type="number" min="0" step="1" placeholder="e.g. 10"></div>
+<div class="field"><label for="bolusType">Bolus Type</label><select id="bolusType"><option value="crystalloid">Crystalloid</option><option value="other">Other / Custom</option></select></div>
+</div>
+<div class="results" style="margin-top:14px">
+<div class="result"><div class="label">Maintenance — 4-2-1</div><div class="value" id="maintenanceHourly">—</div></div>
+<div class="result"><div class="label">Maintenance / Day</div><div class="value" id="maintenanceDaily">—</div></div>
+<div class="result"><div class="label">Bolus Volume</div><div class="value" id="bolusVolume">—</div></div>
+</div>
+<div class="note" style="margin-top:12px">Maintenance is calculated using the 4-2-1 rule. Bolus volume is calculated only from the entered mL/kg value and patient weight; it is not a treatment recommendation.</div>
+</div>
+
 <div class="card">
 <h2>Data Transfer</h2>
 <div class="note" id="transferStatus">Enter patient data above. Data will be available to the next pediatric calculator stages.</div>
@@ -85,6 +101,7 @@ function calculate(){
  bsaEl.textContent=bsa!==null?bsa.toFixed(2)+" m²":"—";
  if(a!==null){patientTypeEl.textContent=a<1?"Infant":a<2?"Toddler":a<12?"Child":"Adolescent"}else patientTypeEl.textContent="—";
  calculateDose(w);
+ calculateFluids(w);
  saveData();
 }
 function loadData(){
@@ -95,7 +112,7 @@ function loadData(){
  for(const key of stores){if(!data)try{data=JSON.parse(localStorage.getItem(key))}catch(e){}}
  if(data){if(data.age!=null)age.value=data.age;if(data.sex)sex.value=data.sex;if(data.weight!=null)weight.value=data.weight;if(data.height!=null)height.value=data.height;calculate()}
 }
-[age,sex,weight,height,dosePerKg,doseUnit,drug].forEach(el=>{el.addEventListener("input",calculate);el.addEventListener("change",calculate)});
+[age,sex,weight,height,dosePerKg,doseUnit,drug,bolusRate,bolusType].forEach(el=>{el.addEventListener("input",calculate);el.addEventListener("change",calculate)});
 loadData();
 })();
 </script>
