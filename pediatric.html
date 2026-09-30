@@ -95,6 +95,9 @@ input,select{width:100%;padding:12px;border:1px solid #c9d9d5;border-radius:10px
 const age=document.getElementById("age"),sex=document.getElementById("sex"),weight=document.getElementById("weight"),height=document.getElementById("height");
 const bmiEl=document.getElementById("bmi"),bsaEl=document.getElementById("bsa"),patientTypeEl=document.getElementById("patientType"),transferStatus=document.getElementById("transferStatus");
 const drug=document.getElementById("drug"),dosePerKg=document.getElementById("dosePerKg"),doseUnit=document.getElementById("doseUnit"),doseWeight=document.getElementById("doseWeight"),calculatedDose=document.getElementById("calculatedDose");
+const fluidWeight=document.getElementById("fluidWeight"),bolusRate=document.getElementById("bolusRate"),bolusType=document.getElementById("bolusType");
+const maintenanceHourly=document.getElementById("maintenanceHourly"),maintenanceDaily=document.getElementById("maintenanceDaily"),bolusVolume=document.getElementById("bolusVolume");
+const airwayAge=document.getElementById("airwayAge"),airwayWeight=document.getElementById("airwayWeight"),tubeType=document.getElementById("tubeType");
 function num(v){const x=parseFloat(v);return Number.isFinite(x)?x:null}
 function saveData(){
  const data={age:num(age.value),sex:sex.value||null,weight:num(weight.value),height:num(height.value)};
@@ -106,6 +109,19 @@ function calculateAirway(a,w){
  if(a<1){ettSize.textContent=tubeType.value==="cuffed"?"3.5–4.0":"3.0–3.5";}else{const s=tubeType.value==="cuffed"?(a/4+3.5):(a/4+4);ettSize.textContent=s.toFixed(1);}
  const depth=a<1?10:(a/2+12); ettDepth.textContent=depth.toFixed(1)+" cm";
  if(w===null||w<=0)lmaSize.textContent="—";else if(w<=5)lmaSize.textContent="1";else if(w<=10)lmaSize.textContent="1.5";else if(w<=20)lmaSize.textContent="2";else if(w<=30)lmaSize.textContent="2.5";else if(w<=50)lmaSize.textContent="3";else if(w<=70)lmaSize.textContent="4";else lmaSize.textContent="5";
+}
+
+function calculateFluids(w){
+ if(w===null||w<=0){fluidWeight.value="";maintenanceHourly.textContent="—";maintenanceDaily.textContent="—";bolusVolume.textContent="—";return;}
+ fluidWeight.value=w.toFixed(1);
+ let hourly=0;
+ if(w<=10) hourly=4*w;
+ else if(w<=20) hourly=40+2*(w-10);
+ else hourly=60+(w-20);
+ maintenanceHourly.textContent=hourly.toFixed(1)+" mL/hr";
+ maintenanceDaily.textContent=(hourly*24).toFixed(0)+" mL/day";
+ const rate=num(bolusRate.value);
+ bolusVolume.textContent=(rate!==null&&rate>=0)?(rate*w).toFixed(1)+" mL":"—";
 }
 
 function calculateDose(w){
