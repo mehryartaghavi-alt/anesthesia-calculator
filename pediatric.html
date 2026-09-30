@@ -42,6 +42,14 @@ input,select{width:100%;padding:12px;border:1px solid #c9d9d5;border-radius:10px
 </div>
 </div>
 
+
+<div class="card"><h2>Stage 2 — Pediatric Drug Dosing</h2><div class="grid">
+<div class="field full"><label for="drug">Drug</label><select id="drug"><option value="">Select drug</option><option>Atropine</option><option>Epinephrine</option><option>Fentanyl</option><option>Midazolam</option><option>Morphine</option><option>Ketamine</option><option>Propofol</option><option>Rocuronium</option><option>Succinylcholine</option><option>Ondansetron</option><option>Dexamethasone</option></select></div>
+<div class="field"><label for="dosePerKg">Dose</label><input id="dosePerKg" type="number" min="0" step="0.001" placeholder="Enter dose/kg"></div>
+<div class="field"><label for="doseUnit">Unit</label><select id="doseUnit"><option value="mg/kg">mg/kg</option><option value="mcg/kg">mcg/kg</option></select></div></div>
+<div class="results" style="margin-top:14px"><div class="result"><div class="label">Weight Used</div><div class="value" id="doseWeight">—</div></div><div class="result"><div class="label">Calculated Dose</div><div class="value" id="calculatedDose">—</div></div></div>
+<div class="note" style="margin-top:12px">Enter the intended weight-based dose. This stage performs the arithmetic only; drug-specific pediatric dose ranges are not assumed here.</div></div>
+
 <div class="card">
 <h2>Data Transfer</h2>
 <div class="note" id="transferStatus">Enter patient data above. Data will be available to the next pediatric calculator stages.</div>
@@ -54,11 +62,21 @@ input,select{width:100%;padding:12px;border:1px solid #c9d9d5;border-radius:10px
 (function(){
 const age=document.getElementById("age"),sex=document.getElementById("sex"),weight=document.getElementById("weight"),height=document.getElementById("height");
 const bmiEl=document.getElementById("bmi"),bsaEl=document.getElementById("bsa"),patientTypeEl=document.getElementById("patientType"),transferStatus=document.getElementById("transferStatus");
+const drug=document.getElementById("drug"),dosePerKg=document.getElementById("dosePerKg"),doseUnit=document.getElementById("doseUnit"),doseWeight=document.getElementById("doseWeight"),calculatedDose=document.getElementById("calculatedDose");
 function num(v){const x=parseFloat(v);return Number.isFinite(x)?x:null}
 function saveData(){
  const data={age:num(age.value),sex:sex.value||null,weight:num(weight.value),height:num(height.value)};
  try{sessionStorage.setItem("pediatricPatientData",JSON.stringify(data));localStorage.setItem("pediatricPatientData",JSON.stringify(data));transferStatus.textContent="Patient data is ready for the next pediatric calculator stages."}catch(e){}
 }
+function calculateDose(w){
+ if(w===null||w<=0){doseWeight.textContent="—";calculatedDose.textContent="—";return;}
+ doseWeight.textContent=w.toFixed(1)+" kg";
+ const d=num(dosePerKg.value);
+ if(d===null||d<0){calculatedDose.textContent="—";return;}
+ const total=d*w;
+ calculatedDose.textContent=(total<1?total.toFixed(3):total.toFixed(2))+" "+(doseUnit.value==="mcg/kg"?"mcg":"mg");
+}
+
 function calculate(){
  const a=num(age.value),w=num(weight.value),h=num(height.value);
  let bmi=null,bsa=null;
@@ -66,6 +84,7 @@ function calculate(){
  bmiEl.textContent=bmi!==null?bmi.toFixed(1):"—";
  bsaEl.textContent=bsa!==null?bsa.toFixed(2)+" m²":"—";
  if(a!==null){patientTypeEl.textContent=a<1?"Infant":a<2?"Toddler":a<12?"Child":"Adolescent"}else patientTypeEl.textContent="—";
+ calculateDose(w);
  saveData();
 }
 function loadData(){
@@ -76,7 +95,7 @@ function loadData(){
  for(const key of stores){if(!data)try{data=JSON.parse(localStorage.getItem(key))}catch(e){}}
  if(data){if(data.age!=null)age.value=data.age;if(data.sex)sex.value=data.sex;if(data.weight!=null)weight.value=data.weight;if(data.height!=null)height.value=data.height;calculate()}
 }
-[age,sex,weight,height].forEach(el=>{el.addEventListener("input",calculate);el.addEventListener("change",calculate)});
+[age,sex,weight,height,dosePerKg,doseUnit,drug].forEach(el=>{el.addEventListener("input",calculate);el.addEventListener("change",calculate)});
 loadData();
 })();
 </script>
