@@ -82,6 +82,52 @@ input,select{width:100%;padding:12px;border:1px solid #c9d9d5;border-radius:10px
 <div class="note" style="margin-top:12px">Airway values are reference estimates. Confirm tube size, depth, and airway device selection with clinical assessment and institutional practice.</div>
 </div>
 
+
+<div class="card">
+<h2>Stage 5 — Final Summary & Safety</h2>
+
+<div class="results">
+<div class="result">
+<div class="label">Patient</div>
+<div class="value" id="summaryPatient">—</div>
+</div>
+<div class="result">
+<div class="label">Weight</div>
+<div class="value" id="summaryWeight">—</div>
+</div>
+<div class="result">
+<div class="label">Maintenance</div>
+<div class="value" id="summaryMaintenance">—</div>
+</div>
+<div class="result">
+<div class="label">Bolus</div>
+<div class="value" id="summaryBolus">—</div>
+</div>
+<div class="result">
+<div class="label">ETT</div>
+<div class="value" id="summaryETT">—</div>
+</div>
+<div class="result">
+<div class="label">LMA</div>
+<div class="value" id="summaryLMA">—</div>
+</div>
+<div class="result">
+<div class="label">Calculated Drug Dose</div>
+<div class="value" id="summaryDrug">—</div>
+</div>
+<div class="result">
+<div class="label">BSA</div>
+<div class="value" id="summaryBSA">—</div>
+</div>
+</div>
+
+<div class="warning" style="margin-top:14px">
+These calculations are reference calculations only. Pediatric drug dosing, fluid therapy,
+and airway management must be checked against the indication, clinical condition,
+current institutional protocols, and the specific product/device.
+</div>
+</div>
+
 <div class="card">
 <h2>Data Transfer</h2>
 <div class="note" id="transferStatus">Enter patient data above. Data will be available to the next pediatric calculator stages.</div>
@@ -103,6 +149,20 @@ function saveData(){
  const data={age:num(age.value),sex:sex.value||null,weight:num(weight.value),height:num(height.value)};
  try{sessionStorage.setItem("pediatricPatientData",JSON.stringify(data));localStorage.setItem("pediatricPatientData",JSON.stringify(data));transferStatus.textContent="Patient data is ready for the next pediatric calculator stages."}catch(e){}
 }
+function calculateSummary(a,w,h,bmi,bsa){
+ summaryPatient.textContent = a!==null ? (
+   a<1 ? "Infant" : a<2 ? "Toddler" : a<12 ? "Child" : "Adolescent"
+ ) : "—";
+ summaryWeight.textContent = w!==null && w>0 ? w.toFixed(1)+" kg" : "—";
+ summaryBSA.textContent = bsa!==null ? bsa.toFixed(2)+" m²" : "—";
+
+ summaryMaintenance.textContent = maintenanceHourly.textContent || "—";
+ summaryBolus.textContent = bolusVolume.textContent || "—";
+ summaryETT.textContent = ettSize.textContent!=="—" ? ettSize.textContent+" / "+ettDepth.textContent : "—";
+ summaryLMA.textContent = lmaSize.textContent || "—";
+ summaryDrug.textContent = calculatedDose.textContent || "—";
+}
+
 function calculateAirway(a,w){
  if(a===null||a<0){airwayAge.value="";airwayWeight.value="";ettSize.textContent="—";ettDepth.textContent="—";lmaSize.textContent="—";return;}
  airwayAge.value=a; airwayWeight.value=(w!==null&&w>0)?w.toFixed(1):"";
@@ -143,6 +203,7 @@ function calculate(){
  calculateDose(w);
  calculateFluids(w);
  calculateAirway(a,w);
+ calculateSummary(a,w,h,bmi,bsa);
  saveData();
 }
 function loadData(){
