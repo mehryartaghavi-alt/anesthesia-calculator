@@ -5,154 +5,191 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Emergency & Resuscitation Calculator — Stage 4</title>
+<title>Emergency & Resuscitation Calculator — Stage 5</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 body{
-    margin:0;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-    background:#f4f7fb;
-    color:#182b3a;
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  background:#eef7f4;
+  color:#18332f;
 }
 
 .container{
-    max-width:760px;
-    margin:auto;
-    padding:18px;
+  max-width:760px;
+  margin:auto;
+  padding:18px 14px 40px;
 }
 
 h1{
-    margin:4px 0 6px;
-    font-size:25px;
+  margin:0;
+  font-size:24px;
+  text-align:center;
+  color:#174d42;
 }
 
 .subtitle{
-    color:#5d7180;
-    margin-bottom:18px;
+  text-align:center;
+  margin:6px 0 20px;
+  color:#54706a;
+  font-size:14px;
 }
 
 .card{
-    background:#fff;
-    border-radius:16px;
-    padding:18px;
-    margin-bottom:16px;
-    box-shadow:0 4px 14px rgba(25,55,80,.08);
+  background:white;
+  border-radius:16px;
+  padding:17px;
+  margin-bottom:15px;
+  box-shadow:0 3px 12px rgba(0,0,0,.06);
 }
 
 .card h2{
-    margin:0 0 14px;
-    font-size:19px;
+  margin:0 0 14px;
+  font-size:18px;
+  color:#17634f;
 }
 
 .grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
 }
 
-.field label{
-    display:block;
-    font-size:14px;
-    margin-bottom:6px;
-    color:#4d6472;
+.field{
+  display:flex;
+  flex-direction:column;
 }
 
-input,select{
-    width:100%;
-    padding:12px;
-    border:1px solid #cbd7df;
-    border-radius:10px;
-    font-size:16px;
-    background:#fff;
-    color:#182b3a;
+.field.full{
+  grid-column:1/-1;
 }
 
-.results{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
+label{
+  font-size:13px;
+  margin-bottom:5px;
+  color:#49655f;
+}
+
+input,
+select{
+  width:100%;
+  padding:11px;
+  border:1px solid #cbdcd7;
+  border-radius:10px;
+  font-size:16px;
+  background:#fbfefd;
+  color:#18332f;
+}
+
+input:focus,
+select:focus{
+  outline:none;
+  border-color:#3c9277;
 }
 
 .result{
-    background:#f5f8fa;
-    border-radius:12px;
-    padding:13px;
+  background:#eef8f4;
+  border-radius:12px;
+  padding:13px;
+  margin-top:10px;
 }
 
-.result .label{
-    font-size:13px;
-    color:#607582;
+.result strong{
+  color:#17634f;
 }
 
-.result .value{
-    margin-top:5px;
-    font-size:18px;
-    font-weight:600;
+.big{
+  font-size:24px;
+  font-weight:700;
+  color:#17634f;
+  margin-top:4px;
 }
 
-.highlight{
-    background:#edf7f2;
-    border-left:4px solid #4d9270;
+.info{
+  background:#f2f6f5;
+  border-left:4px solid #5b9d87;
+  padding:11px 12px;
+  border-radius:8px;
+  margin-top:10px;
+  font-size:13px;
+  line-height:1.55;
 }
 
 .warning{
-    background:#fff8e8;
-    border-left:4px solid #d39a27;
-    padding:12px;
-    border-radius:8px;
-    font-size:13px;
-    line-height:1.55;
+  background:#fff7e8;
+  border-left:4px solid #d69b28;
+  padding:11px 12px;
+  border-radius:8px;
+  margin-top:10px;
+  font-size:13px;
+  line-height:1.55;
 }
 
-.note{
-    font-size:13px;
-    line-height:1.55;
-    color:#5b707d;
+.safe{
+  background:#edf8ef;
+  border-left:4px solid #55a36b;
+  padding:11px 12px;
+  border-radius:8px;
+  margin-top:10px;
+  font-size:13px;
+  line-height:1.55;
 }
 
-.status{
-    background:#f5f8fa;
-    border-radius:12px;
-    padding:14px;
-    font-size:14px;
-    line-height:1.6;
+.error{
+  background:#fff0f0;
+  border-left:4px solid #c95b5b;
+  padding:11px 12px;
+  border-radius:8px;
+  margin-top:10px;
+  font-size:13px;
 }
 
-.mode-card{
-    border:1px solid #dbe4e9;
-    border-radius:13px;
-    padding:14px;
-    margin-top:12px;
+button{
+  width:100%;
+  border:none;
+  border-radius:12px;
+  padding:13px;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  margin-top:8px;
 }
 
-.mode-title{
-    font-size:17px;
-    font-weight:700;
-    margin-bottom:8px;
+.primary{
+  background:#2f8068;
+  color:white;
+}
+
+.secondary{
+  background:#e8f1ee;
+  color:#205a4d;
 }
 
 .small{
-    font-size:12px;
-    color:#6c7e88;
-    margin-top:7px;
+  font-size:12px;
+  color:#657a75;
+  margin-top:5px;
 }
 
-.alert{
-    color:#a33a32;
-    font-weight:600;
+.status{
+  text-align:center;
+  font-size:13px;
+  margin-top:8px;
+  color:#3d675d;
 }
 
-.ok{
-    color:#28734a;
-    font-weight:600;
-}
+@media(max-width:560px){
+  .grid{
+    grid-template-columns:1fr;
+  }
 
-@media(max-width:520px){
-    .grid,.results{
-        grid-template-columns:1fr;
-    }
+  .field.full{
+    grid-column:auto;
+  }
 }
 </style>
 </head>
@@ -161,1215 +198,1019 @@ input,select{
 
 <div class="container">
 
-<h1>🚑 Emergency & Resuscitation Calculator</h1>
+  <h1>Emergency & Resuscitation Calculator</h1>
+  <div class="subtitle">
+    Stage 5 — Airway & Ventilation
+  </div>
 
-<div class="subtitle">
-Stage 4 — Defibrillation / Cardioversion
-</div>
 
+  <!-- PATIENT SUMMARY -->
+  <div class="card">
 
-<!-- =========================
-     PATIENT SUMMARY
-========================= -->
+    <h2>Patient Summary</h2>
 
-<div class="card">
+    <div class="grid">
 
-<h2>Patient Summary</h2>
+      <div class="field">
+        <label>Age</label>
+        <input id="age" readonly>
+      </div>
 
-<div class="results">
+      <div class="field">
+        <label>Sex</label>
+        <input id="sex" readonly>
+      </div>
 
-<div class="result">
-<div class="label">Age</div>
-<div class="value" id="ageDisplay">—</div>
-</div>
+      <div class="field">
+        <label>Measured Weight (kg)</label>
+        <input id="weight" readonly>
+      </div>
 
-<div class="result">
-<div class="label">Sex</div>
-<div class="value" id="sexDisplay">—</div>
-</div>
+      <div class="field">
+        <label>Resuscitation Weight (kg)</label>
+        <input id="emergencyWeight" readonly>
+      </div>
 
-<div class="result">
-<div class="label">Measured Weight</div>
-<div class="value" id="weightDisplay">—</div>
-</div>
+    </div>
 
-<div class="result highlight">
-<div class="label">Resuscitation Weight</div>
-<div class="value" id="resusWeightDisplay">—</div>
-</div>
+    <div id="patientWarning"></div>
 
-</div>
+  </div>
 
-<div class="note" style="margin-top:12px">
-All energy calculations in this stage use the
-<strong>Resuscitation Weight</strong> from Stage 1.
-</div>
 
-</div>
+  <!-- AIRWAY -->
+  <div class="card">
 
+    <h2>1. Airway</h2>
 
-<!-- =========================
-     MODE
-========================= -->
+    <div class="grid">
 
-<div class="card">
+      <div class="field">
+        <label>Airway Strategy</label>
 
-<h2>Electrical Therapy</h2>
+        <select id="airwayStrategy">
+          <option value="BVM">Bag-Mask Ventilation (BVM)</option>
+          <option value="SGA">Supraglottic Airway (SGA)</option>
+          <option value="ETT">Endotracheal Tube (ETT)</option>
+        </select>
+      </div>
 
-<div class="field">
+      <div class="field">
+        <label>Airway Confirmation</label>
 
-<label for="mode">
-Select mode
-</label>
+        <select id="confirmation">
+          <option value="none">Not yet confirmed</option>
+          <option value="clinical">Clinical assessment</option>
+          <option value="capnography">Waveform capnography</option>
+        </select>
+      </div>
 
-<select id="mode">
+    </div>
 
-<option value="">
-Select
-</option>
+    <div id="airwayOutput" class="result"></div>
 
-<option value="defibrillation">
-Defibrillation — VF / pulseless VT
-</option>
+    <div class="info">
+      In cardiac arrest, bag-mask ventilation with oxygen is an initial airway option.
+      If an advanced airway is placed, ventilation should be coordinated with continuous chest compressions.
+    </div>
 
-<option value="cardioversion">
-Synchronized Cardioversion — Tachyarrhythmia with pulse
-</option>
+  </div>
 
-</select>
 
-</div>
+  <!-- OXYGEN -->
+  <div class="card">
 
-</div>
+    <h2>2. Oxygenation</h2>
 
+    <div class="grid">
 
-<!-- =========================
-     DEFIBRILLATION
-========================= -->
+      <div class="field">
+        <label>Oxygen Source</label>
 
-<div class="card" id="defibCard">
+        <select id="oxygenSource">
+          <option value="100">100% Oxygen</option>
+          <option value="21">Room Air</option>
+          <option value="custom">Custom FiO₂</option>
+        </select>
+      </div>
 
-<h2>Defibrillation</h2>
+      <div class="field">
+        <label>FiO₂ (%)</label>
 
-<div class="grid">
+        <input
+          id="fio2"
+          type="number"
+          min="21"
+          max="100"
+          step="1"
+          value="100"
+        >
+      </div>
 
-<div class="field">
+    </div>
 
-<label for="defibShock">
-Shock Number
-</label>
+    <div id="oxygenOutput" class="result"></div>
 
-<select id="defibShock">
+  </div>
 
-<option value="1">
-First Shock
-</option>
 
-<option value="2">
-Second Shock
-</option>
+  <!-- VENTILATION -->
+  <div class="card">
 
-<option value="3">
-Subsequent Shock
-</option>
+    <h2>3. Ventilation</h2>
 
-</select>
+    <div class="grid">
 
-</div>
+      <div class="field">
+        <label>Ventilation Situation</label>
 
+        <select id="ventSituation">
+          <option value="pulse">Pulse present / inadequate breathing</option>
+          <option value="cpr">CPR without advanced airway</option>
+          <option value="advanced">CPR with advanced airway</option>
+        </select>
+      </div>
 
-<div class="field">
+      <div class="field">
+        <label>Target Respiratory Rate (breaths/min)</label>
 
-<label for="defibEnergyPerKg">
-Energy
-</label>
+        <select id="rr">
+          <option value="20">20</option>
+          <option value="25">25</option>
+          <option value="30" selected>30</option>
+        </select>
+      </div>
 
-<select id="defibEnergyPerKg">
+      <div class="field">
+        <label>Target Tidal Volume (mL/kg)</label>
 
-<option value="2">
-2 J/kg
-</option>
+        <input
+          id="vtPerKg"
+          type="number"
+          min="4"
+          max="10"
+          step="0.5"
+          value="6"
+        >
+      </div>
 
-<option value="4">
-4 J/kg
-</option>
+      <div class="field">
+        <label>Manual Ventilation Mode</label>
 
-<option value="5">
-5 J/kg
-</option>
+        <select id="manualMode">
+          <option value="gentle">Gentle ventilation</option>
+          <option value="controlled">Controlled ventilation</option>
+        </select>
+      </div>
 
-<option value="6">
-6 J/kg
-</option>
+    </div>
 
-<option value="8">
-8 J/kg
-</option>
+    <div class="result">
 
-<option value="10">
-10 J/kg
-</option>
+      <div>
+        <strong>Calculated Tidal Volume</strong>
+      </div>
 
-</select>
+      <div id="vtResult" class="big">
+        —
+      </div>
 
-</div>
+      <div class="small">
+        Based on resuscitation weight × selected mL/kg
+      </div>
 
-</div>
+    </div>
 
-<div class="note" style="margin-top:12px">
-2025 PALS: first shock 2 J/kg; second shock 4 J/kg;
-subsequent shocks ≥4 J/kg, not exceeding 10 J/kg or the
-adult maximum dose.
-</div>
 
-</div>
+    <div class="result">
 
+      <div>
+        <strong>Estimated Minute Ventilation</strong>
+      </div>
 
-<!-- =========================
-     CARDIOVERSION
-========================= -->
+      <div id="mvResult" class="big">
+        —
+      </div>
 
-<div class="card" id="cardioversionCard">
+      <div class="small">
+        Minute ventilation = tidal volume × respiratory rate
+      </div>
 
-<h2>Synchronized Cardioversion</h2>
+    </div>
 
-<div class="grid">
 
-<div class="field">
+    <div class="warning">
+      Avoid excessive ventilation. Pediatric resuscitation guidance emphasizes
+      adequate ventilation while avoiding hyperventilation.
+    </div>
 
-<label for="cvStep">
-Cardioversion Step
-</label>
+  </div>
 
-<select id="cvStep">
 
-<option value="0.5">
-Initial — 0.5 J/kg
-</option>
+  <!-- CAPNOGRAPHY -->
+  <div class="card">
 
-<option value="1">
-Initial — 1 J/kg
-</option>
+    <h2>4. Capnography / ETCO₂</h2>
 
-<option value="2">
-Escalated — 2 J/kg
-</option>
+    <div class="grid">
 
-</select>
+      <div class="field">
+        <label>ETCO₂ (mmHg)</label>
 
-</div>
+        <input
+          id="etco2"
+          type="number"
+          min="0"
+          max="150"
+          step="1"
+          placeholder="Enter value"
+        >
+      </div>
 
-<div class="field">
+      <div class="field">
+        <label>Waveform</label>
 
-<label for="syncCheck">
-Synchronization
-</label>
+        <select id="waveform">
+          <option value="present">Present / interpretable</option>
+          <option value="absent">Absent</option>
+          <option value="poor">Poor / unreliable</option>
+        </select>
+      </div>
 
-<select id="syncCheck">
+    </div>
 
-<option value="yes">
-SYNC — Confirmed
-</option>
+    <div id="capnoOutput" class="result">
+      Enter ETCO₂ if available.
+    </div>
 
-<option value="no">
-Not Confirmed
-</option>
+    <div class="info">
+      During cardiac arrest, waveform capnography can help confirm and monitor an
+      advanced airway and can provide information about ventilation and changes during CPR.
+    </div>
 
-</select>
+  </div>
 
-</div>
 
-</div>
+  <!-- ETT CALCULATOR -->
+  <div class="card">
 
-<div class="note" style="margin-top:12px">
-Begin with 0.5–1 J/kg. If ineffective, increase to 2 J/kg.
-Sedation may be considered when appropriate but should not
-delay cardioversion when urgently indicated.
-</div>
+    <h2>5. Endotracheal Tube Estimation</h2>
 
-</div>
+    <div class="grid">
 
+      <div class="field">
+        <label>Tube Type</label>
 
-<!-- =========================
-     CALCULATION
-========================= -->
+        <select id="tubeType">
+          <option value="cuffed">Cuffed ETT</option>
+          <option value="uncuffed">Uncuffed ETT</option>
+        </select>
+      </div>
 
-<div class="card">
+      <div class="field">
+        <label>Age Used for Formula</label>
 
-<h2>Calculated Energy</h2>
+        <input id="tubeAge" type="number" readonly>
+      </div>
 
-<div class="results">
+    </div>
 
-<div class="result">
-<div class="label">Resuscitation Weight</div>
-<div class="value" id="calcWeight">—</div>
-</div>
+    <div class="result">
 
-<div class="result">
-<div class="label">Energy Dose</div>
-<div class="value" id="energyPerKg">—</div>
-</div>
+      <div>
+        <strong>Estimated Internal Diameter</strong>
+      </div>
 
-<div class="result highlight">
-<div class="label">Calculated Energy</div>
-<div class="value" id="calculatedEnergy">—</div>
-</div>
+      <div id="tubeSize" class="big">
+        —
+      </div>
 
-<div class="result">
-<div class="label">Energy Limit</div>
-<div class="value" id="energyLimit">—</div>
-</div>
+      <div class="small">
+        Conventional age-based estimate; verify clinically and have alternative sizes available.
+      </div>
 
-</div>
+    </div>
 
-</div>
+    <div class="result">
 
+      <div>
+        <strong>Estimated Oral Depth</strong>
+      </div>
 
-<!-- =========================
-     SHOCK PLAN
-========================= -->
+      <div id="tubeDepth" class="big">
+        —
+      </div>
 
-<div class="card">
+      <div class="small">
+        Approximate age-based estimate only. Confirm position clinically and with capnography.
+      </div>
 
-<h2>Suggested Energy Sequence</h2>
+    </div>
 
-<div class="results">
+    <div class="warning">
+      Tube size and depth are estimates, not substitutes for clinical assessment.
+      Final placement should be confirmed using appropriate clinical methods and waveform capnography when available.
+    </div>
 
-<div class="result">
-<div class="label">Defibrillation #1</div>
-<div class="value" id="shock1">—</div>
-</div>
+  </div>
 
-<div class="result">
-<div class="label">Defibrillation #2</div>
-<div class="value" id="shock2">—</div>
-</div>
 
-<div class="result">
-<div class="label">Subsequent</div>
-<div class="value" id="shock3">—</div>
-</div>
+  <!-- SAFETY CHECK -->
+  <div class="card">
 
-<div class="result">
-<div class="label">Cardioversion Initial</div>
-<div class="value" id="cvInitial">—</div>
-</div>
+    <h2>6. Airway Safety Check</h2>
 
-</div>
+    <div id="safetyOutput"></div>
 
-<div class="small">
-These are weight-based calculated energy settings, not a substitute
-for the actual resuscitation algorithm or device-specific limits.
-</div>
+  </div>
 
-</div>
 
+  <!-- SAVE -->
+  <div class="card">
 
-<!-- =========================
-     SAFETY
-========================= -->
+    <button class="primary" onclick="saveData()">
+      Save Stage 5
+    </button>
 
-<div class="card">
+    <button class="secondary" onclick="goBack()">
+      ← Back
+    </button>
 
-<h2>Safety Check</h2>
+    <div id="saveStatus" class="status"></div>
 
-<div class="status" id="safetyStatus">
-Select an electrical therapy mode.
-</div>
-
-</div>
-
-
-<!-- =========================
-     DATA TRANSFER
-========================= -->
-
-<div class="card">
-
-<h2>Data Transfer</h2>
-
-<div class="note" id="transferStatus">
-Electrical therapy calculations will be available
-to the Final Resuscitation Summary.
-</div>
-
-</div>
-
-
-<!-- =========================
-     WARNING
-========================= -->
-
-<div class="card">
-
-<div class="warning">
-
-<strong>Important:</strong><br><br>
-
-This calculator is a clinical calculation aid only.
-
-Before delivering a shock, verify the rhythm, patient weight,
-energy setting, defibrillator mode, pad placement, synchronization
-status when applicable, and device-specific maximum energy.
-
-For synchronized cardioversion, confirm that the defibrillator
-is actually synchronized to the QRS complex before shock delivery.
-
-Do not delay life-saving treatment while entering data into this calculator.
-
-</div>
-
-</div>
+  </div>
 
 </div>
 
 
 <script>
 
-(function(){
+/* =========================================================
+   LOAD PATIENT DATA
+========================================================= */
 
-/* =========================
-   ELEMENTS
-========================= */
+let patientData = null;
 
-const mode =
-document.getElementById("mode");
+function getStoredData(){
 
-const defibShock =
-document.getElementById("defibShock");
+  const keys = [
+    "emergencyPatientData",
+    "emergencyDrugData",
+    "emergencyElectricalData",
+    "emergencyCPRData",
+    "patientData",
+    "pediatricPatientData"
+  ];
 
-const defibEnergyPerKg =
-document.getElementById("defibEnergyPerKg");
-
-const cvStep =
-document.getElementById("cvStep");
-
-const syncCheck =
-document.getElementById("syncCheck");
-
-const defibCard =
-document.getElementById("defibCard");
-
-const cardioversionCard =
-document.getElementById("cardioversionCard");
-
-const calcWeight =
-document.getElementById("calcWeight");
-
-const energyPerKg =
-document.getElementById("energyPerKg");
-
-const calculatedEnergy =
-document.getElementById("calculatedEnergy");
-
-const energyLimit =
-document.getElementById("energyLimit");
-
-const shock1 =
-document.getElementById("shock1");
-
-const shock2 =
-document.getElementById("shock2");
-
-const shock3 =
-document.getElementById("shock3");
-
-const cvInitial =
-document.getElementById("cvInitial");
-
-const safetyStatus =
-document.getElementById("safetyStatus");
-
-const transferStatus =
-document.getElementById("transferStatus");
-
-
-/* =========================
-   PATIENT SUMMARY
-========================= */
-
-const ageDisplay =
-document.getElementById("ageDisplay");
-
-const sexDisplay =
-document.getElementById("sexDisplay");
-
-const weightDisplay =
-document.getElementById("weightDisplay");
-
-const resusWeightDisplay =
-document.getElementById("resusWeightDisplay");
-
-
-/* =========================
-   HELPERS
-========================= */
-
-function num(value){
-
-    const x =
-    parseFloat(value);
-
-    return Number.isFinite(x)
-    ? x
-    : null;
-
-}
-
-
-/* =========================
-   PATIENT DATA
-========================= */
-
-function getPatientData(){
-
-    let data = null;
-
-
-    /* URL */
+  for(const key of keys){
 
     try{
 
-        const params =
-        new URLSearchParams(
-            location.search
-        );
+      const session = sessionStorage.getItem(key);
 
-        if(params.get("data")){
+      if(session){
 
-            data =
-            JSON.parse(
-                decodeURIComponent(
-                    params.get("data")
-                )
-            );
+        const obj = JSON.parse(session);
 
+        if(obj && typeof obj === "object"){
+          return obj;
         }
+      }
 
     }catch(e){}
 
+    try{
 
-    const keys = [
+      const local = localStorage.getItem(key);
 
-        "emergencyPatientData",
-        "emergencyCPRData",
-        "emergencyDrugData",
-        "patientData",
-        "pediatricPatientData"
+      if(local){
 
-    ];
+        const obj = JSON.parse(local);
 
-
-    /* SESSION */
-
-    for(const key of keys){
-
-        if(!data){
-
-            try{
-
-                const stored =
-                sessionStorage.getItem(key);
-
-                if(stored){
-
-                    data =
-                    JSON.parse(stored);
-
-                }
-
-            }catch(e){}
-
+        if(obj && typeof obj === "object"){
+          return obj;
         }
+      }
 
-    }
+    }catch(e){}
+  }
 
-
-    /* LOCAL */
-
-    for(const key of keys){
-
-        if(!data){
-
-            try{
-
-                const stored =
-                localStorage.getItem(key);
-
-                if(stored){
-
-                    data =
-                    JSON.parse(stored);
-
-                }
-
-            }catch(e){}
-
-        }
-
-    }
+  return null;
+}
 
 
-    /*
-     * If emergencyDrugData or emergencyCPRData
-     * is loaded, patient information may be nested.
-     */
+function extractPatient(obj){
 
-    if(
-        data &&
-        data.patient &&
-        !data.emergencyWeight
-    ){
+  if(!obj) return null;
 
-        data =
-        data.patient;
+  /*
+    Stage 4 and Stage 3 save patient information
+    inside a patient property.
+  */
 
-    }
+  if(obj.patient && typeof obj.patient === "object"){
+    return obj.patient;
+  }
+
+  return obj;
+}
 
 
-    return data;
+patientData = extractPatient(getStoredData());
+
+
+/* =========================================================
+   URL DATA SUPPORT
+========================================================= */
+
+try{
+
+  const params = new URLSearchParams(window.location.search);
+
+  const encoded = params.get("data");
+
+  if(encoded){
+
+    const decoded = decodeURIComponent(encoded);
+    const urlObj = JSON.parse(decoded);
+
+    patientData = extractPatient(urlObj);
+  }
+
+}catch(e){}
+
+
+/* =========================================================
+   PATIENT VALUES
+========================================================= */
+
+let age = Number(patientData?.age);
+let sex = patientData?.sex || "—";
+
+let measuredWeight = Number(
+  patientData?.weight ??
+  patientData?.measuredWeight
+);
+
+let emergencyWeight = Number(
+  patientData?.emergencyWeight ??
+  patientData?.resuscitationWeight ??
+  patientData?.weight
+);
+
+if(!Number.isFinite(age)){
+  age = 0;
+}
+
+if(!Number.isFinite(measuredWeight)){
+  measuredWeight = 0;
+}
+
+if(!Number.isFinite(emergencyWeight) || emergencyWeight <= 0){
+  emergencyWeight = measuredWeight;
+}
+
+
+/* =========================================================
+   DISPLAY PATIENT
+========================================================= */
+
+document.getElementById("age").value =
+  age > 0 ? age : "Not available";
+
+document.getElementById("sex").value =
+  sex || "Not available";
+
+document.getElementById("weight").value =
+  measuredWeight > 0
+    ? measuredWeight.toFixed(1)
+    : "Not available";
+
+document.getElementById("emergencyWeight").value =
+  emergencyWeight > 0
+    ? emergencyWeight.toFixed(1)
+    : "Not available";
+
+document.getElementById("tubeAge").value =
+  age > 0 ? age : "";
+
+
+if(!emergencyWeight){
+
+  document.getElementById("patientWarning").innerHTML = `
+    <div class="error">
+      Resuscitation weight is not available.
+      Please return to Stage 1 and enter or estimate the patient's weight.
+    </div>
+  `;
+
+}else{
+
+  document.getElementById("patientWarning").innerHTML = `
+    <div class="safe">
+      Calculations in this stage use the resuscitation weight:
+      <strong>${emergencyWeight.toFixed(1)} kg</strong>
+    </div>
+  `;
+}
+
+
+/* =========================================================
+   AIRWAY
+========================================================= */
+
+const airwayStrategy =
+  document.getElementById("airwayStrategy");
+
+const confirmation =
+  document.getElementById("confirmation");
+
+function updateAirway(){
+
+  const strategy = airwayStrategy.value;
+
+  let text = "";
+
+  if(strategy === "BVM"){
+
+    text = `
+      <strong>BVM selected</strong><br>
+      Provide effective ventilation with an appropriately sized mask,
+      maintaining airway patency and avoiding excessive ventilation.
+    `;
+
+  }else if(strategy === "SGA"){
+
+    text = `
+      <strong>SGA selected</strong><br>
+      Confirm effective ventilation and monitor continuously.
+      Waveform capnography is preferred when available.
+    `;
+
+  }else{
+
+    text = `
+      <strong>ETT selected</strong><br>
+      Confirm tube position clinically and with waveform capnography
+      when available.
+    `;
+  }
+
+  document.getElementById("airwayOutput").innerHTML = text;
+
+  updateSafety();
+}
+
+airwayStrategy.addEventListener("change",updateAirway);
+confirmation.addEventListener("change",updateSafety);
+
+updateAirway();
+
+
+/* =========================================================
+   OXYGEN
+========================================================= */
+
+const oxygenSource =
+  document.getElementById("oxygenSource");
+
+const fio2 =
+  document.getElementById("fio2");
+
+
+function updateOxygen(){
+
+  if(oxygenSource.value === "100"){
+
+    fio2.value = 100;
+    fio2.disabled = true;
+
+    document.getElementById("oxygenOutput").innerHTML = `
+      <strong>FiO₂ selected:</strong> 100%
+      <br>
+      High-concentration oxygen selected for resuscitation.
+    `;
+
+  }else if(oxygenSource.value === "21"){
+
+    fio2.value = 21;
+    fio2.disabled = true;
+
+    document.getElementById("oxygenOutput").innerHTML = `
+      <strong>FiO₂ selected:</strong> 21%
+      <br>
+      Room air.
+    `;
+
+  }else{
+
+    fio2.disabled = false;
+
+    document.getElementById("oxygenOutput").innerHTML = `
+      <strong>Custom FiO₂:</strong> ${fio2.value || "—"}%
+    `;
+  }
+
+}
+
+oxygenSource.addEventListener("change",updateOxygen);
+fio2.addEventListener("input",updateOxygen);
+
+updateOxygen();
+
+
+/* =========================================================
+   VENTILATION
+========================================================= */
+
+const ventSituation =
+  document.getElementById("ventSituation");
+
+const rr =
+  document.getElementById("rr");
+
+const vtPerKg =
+  document.getElementById("vtPerKg");
+
+
+function updateVentilation(){
+
+  const vtKg = Number(vtPerKg.value) || 0;
+  const rate = Number(rr.value) || 0;
+
+  if(emergencyWeight > 0 && vtKg > 0){
+
+    const vt = emergencyWeight * vtKg;
+    const mv = vt * rate;
+
+    document.getElementById("vtResult").textContent =
+      vt.toFixed(0) + " mL";
+
+    document.getElementById("mvResult").textContent =
+      (mv / 1000).toFixed(2) + " L/min";
+
+  }else{
+
+    document.getElementById("vtResult").textContent = "—";
+    document.getElementById("mvResult").textContent = "—";
+  }
+
+  updateVentSituation();
+}
+
+
+function updateVentSituation(){
+
+  const situation = ventSituation.value;
+
+  if(situation === "advanced"){
+
+    rr.value = 30;
+
+  }
+
+  const text = document.querySelector(
+    ".warning"
+  );
 
 }
 
 
-/* =========================
-   DISPLAY PATIENT
-========================= */
+ventSituation.addEventListener("change",updateVentilation);
+rr.addEventListener("change",updateVentilation);
+vtPerKg.addEventListener("input",updateVentilation);
 
-function displayPatient(data){
-
-    if(!data){
-
-        return;
-
-    }
+updateVentilation();
 
 
-    if(data.age != null){
+/* =========================================================
+   ETCO2
+========================================================= */
 
-        ageDisplay.textContent =
-        data.age + " years";
+const etco2 =
+  document.getElementById("etco2");
 
-    }
-
-
-    if(data.sex){
-
-        sexDisplay.textContent =
-        data.sex === "male"
-        ? "Male"
-        : data.sex === "female"
-        ? "Female"
-        : data.sex;
-
-    }
+const waveform =
+  document.getElementById("waveform");
 
 
-    if(data.weight != null){
+function updateCapnography(){
 
-        weightDisplay.textContent =
-        Number(data.weight).toFixed(1)
-        + " kg";
+  const value = Number(etco2.value);
+  const wave = waveform.value;
 
-    }
+  if(wave === "absent"){
+
+    document.getElementById("capnoOutput").innerHTML = `
+      <strong>Waveform absent</strong><br>
+      Check airway position, circuit, ventilation and equipment.
+    `;
+
+    return;
+  }
+
+  if(wave === "poor"){
+
+    document.getElementById("capnoOutput").innerHTML = `
+      <strong>Waveform unreliable</strong><br>
+      Reassess sensor placement, airway/circuit connection and signal quality.
+    `;
+
+    return;
+  }
+
+  if(!Number.isFinite(value) || value <= 0){
+
+    document.getElementById("capnoOutput").innerHTML =
+      "Enter ETCO₂ if available.";
+
+    return;
+  }
+
+  let interpretation = "";
+
+  if(value < 20){
+
+    interpretation =
+      "Low ETCO₂ — interpret in the clinical context, including CPR quality, perfusion and ventilation.";
+
+  }else if(value <= 40){
+
+    interpretation =
+      "ETCO₂ within a commonly used clinical range; interpret with the overall clinical picture.";
+
+  }else{
+
+    interpretation =
+      "Elevated ETCO₂ — consider hypoventilation or increased CO₂ production and reassess ventilation.";
+  }
+
+  document.getElementById("capnoOutput").innerHTML = `
+    <strong>ETCO₂:</strong> ${value} mmHg
+    <br><br>
+    ${interpretation}
+  `;
+
+}
 
 
-    const rw =
-    num(data.emergencyWeight);
+etco2.addEventListener("input",updateCapnography);
+waveform.addEventListener("change",updateCapnography);
+
+updateCapnography();
 
 
-    if(rw !== null && rw > 0){
+/* =========================================================
+   ETT CALCULATOR
+========================================================= */
 
-        resusWeightDisplay.textContent =
-        rw.toFixed(1) + " kg";
+const tubeType =
+  document.getElementById("tubeType");
+
+function updateTube(){
+
+  if(age <= 0){
+
+    document.getElementById("tubeSize").textContent = "—";
+    document.getElementById("tubeDepth").textContent = "—";
+
+    return;
+  }
+
+  let size;
+
+  if(tubeType.value === "cuffed"){
+
+    size = 3.5 + (age / 4);
+
+  }else{
+
+    size = 4 + (age / 4);
+
+  }
+
+  /*
+    Conventional approximate oral depth formula.
+  */
+
+  const depth = 12 + (age / 2);
+
+  document.getElementById("tubeSize").textContent =
+    size.toFixed(1) + " mm ID";
+
+  document.getElementById("tubeDepth").textContent =
+    depth.toFixed(1) + " cm";
+
+}
+
+tubeType.addEventListener("change",updateTube);
+
+updateTube();
+
+
+/* =========================================================
+   SAFETY CHECK
+========================================================= */
+
+function updateSafety(){
+
+  const strategy = airwayStrategy.value;
+  const confirm = confirmation.value;
+
+  let html = "";
+
+  if(!emergencyWeight){
+
+    html += `
+      <div class="error">
+        Resuscitation weight unavailable.
+      </div>
+    `;
+
+  }else{
+
+    html += `
+      <div class="safe">
+        ✓ Resuscitation weight available:
+        <strong>${emergencyWeight.toFixed(1)} kg</strong>
+      </div>
+    `;
+  }
+
+
+  if(strategy === "ETT" || strategy === "SGA"){
+
+    if(confirm === "capnography"){
+
+      html += `
+        <div class="safe">
+          ✓ Waveform capnography selected for airway confirmation/monitoring.
+        </div>
+      `;
 
     }else{
 
-        resusWeightDisplay.textContent =
-        "Not available";
-
+      html += `
+        <div class="warning">
+          Advanced airway selected.
+          Confirm airway position with appropriate clinical assessment
+          and waveform capnography when available.
+        </div>
+      `;
     }
 
+  }else{
+
+    html += `
+      <div class="info">
+        BVM selected. Ensure effective chest rise, airway patency
+        and appropriate ventilation without excessive ventilation.
+      </div>
+    `;
+  }
+
+
+  document.getElementById("safetyOutput").innerHTML = html;
 }
 
+updateSafety();
 
-/* =========================
-   SHOW / HIDE MODE CARDS
-========================= */
 
-function updateMode(){
-
-    if(mode.value === "defibrillation"){
-
-        defibCard.style.display =
-        "block";
-
-        cardioversionCard.style.display =
-        "none";
-
-    }
-
-    else if(mode.value === "cardioversion"){
-
-        defibCard.style.display =
-        "none";
-
-        cardioversionCard.style.display =
-        "block";
-
-    }
-
-    else{
-
-        defibCard.style.display =
-        "none";
-
-        cardioversionCard.style.display =
-        "none";
-
-    }
-
-    calculate();
-
-}
-
-
-/* =========================
-   ENERGY SEQUENCE
-========================= */
-
-function calculateSequence(weight){
-
-    if(
-        weight === null ||
-        weight <= 0
-    ){
-
-        shock1.textContent = "—";
-        shock2.textContent = "—";
-        shock3.textContent = "—";
-        cvInitial.textContent = "—";
-
-        return;
-
-    }
-
-
-    /*
-     * PALS 2025:
-     * First shock = 2 J/kg
-     * Second shock = 4 J/kg
-     * Subsequent = >=4 J/kg
-     * Maximum = 10 J/kg
-     */
-
-    shock1.textContent =
-    Math.min(
-        weight * 2,
-        weight * 10
-    ).toFixed(1) + " J";
-
-
-    shock2.textContent =
-    Math.min(
-        weight * 4,
-        weight * 10
-    ).toFixed(1) + " J";
-
-
-    shock3.textContent =
-    "≥ " +
-    (weight * 4).toFixed(1) +
-    " J";
-
-
-    /*
-     * Initial synchronized cardioversion:
-     * 0.5–1 J/kg
-     */
-
-    cvInitial.textContent =
-    (weight * 0.5).toFixed(1) +
-    "–" +
-    (weight * 1).toFixed(1) +
-    " J";
-
-}
-
-
-/* =========================
-   MAIN CALCULATION
-========================= */
-
-function calculate(){
-
-    const data =
-    getPatientData();
-
-
-    const weight =
-    data
-    ? num(data.emergencyWeight)
-    : null;
-
-
-    calcWeight.textContent =
-    weight !== null && weight > 0
-    ? weight.toFixed(1) + " kg"
-    : "Not available";
-
-
-    calculateSequence(weight);
-
-
-    /* No mode selected */
-
-    if(!mode.value){
-
-        energyPerKg.textContent =
-        "—";
-
-        calculatedEnergy.textContent =
-        "—";
-
-        energyLimit.textContent =
-        "—";
-
-        safetyStatus.textContent =
-        "Select an electrical therapy mode.";
-
-        return;
-
-    }
-
-
-    /* Weight missing */
-
-    if(
-        weight === null ||
-        weight <= 0
-    ){
-
-        energyPerKg.textContent =
-        "Weight required";
-
-        calculatedEnergy.textContent =
-        "—";
-
-        energyLimit.textContent =
-        "—";
-
-        safetyStatus.innerHTML =
-        "<span class='alert'>" +
-        "Resuscitation weight is unavailable. " +
-        "Confirm patient weight before calculating energy." +
-        "</span>";
-
-        return;
-
-    }
-
-
-    /* =========================
-       DEFIBRILLATION
-    ========================= */
-
-    if(
-        mode.value === "defibrillation"
-    ){
-
-        const jkg =
-        num(defibEnergyPerKg.value);
-
-
-        let energy =
-        weight * jkg;
-
-
-        /*
-         * Maximum weight-based PALS energy:
-         * 10 J/kg.
-         */
-
-        const maximum =
-        weight * 10;
-
-
-        if(energy > maximum){
-
-            energy =
-            maximum;
-
-        }
-
-
-        energyPerKg.textContent =
-        jkg + " J/kg";
-
-
-        calculatedEnergy.textContent =
-        energy.toFixed(1) + " J";
-
-
-        energyLimit.textContent =
-        maximum.toFixed(1) +
-        " J (10 J/kg)";
-
-
-        let shockText;
-
-
-        if(
-            defibShock.value === "1"
-        ){
-
-            shockText =
-            "First shock: 2 J/kg is the standard initial teaching dose.";
-
-        }
-
-        else if(
-            defibShock.value === "2"
-        ){
-
-            shockText =
-            "Second shock: 4 J/kg.";
-
-        }
-
-        else{
-
-            shockText =
-            "Subsequent shock: ≥4 J/kg; do not exceed 10 J/kg or the adult maximum.";
-
-        }
-
-
-        safetyStatus.innerHTML =
-        "<strong>Defibrillation</strong><br><br>" +
-        shockText +
-        "<br><br>" +
-        "Calculated setting: " +
-        energy.toFixed(1) +
-        " J.";
-
-
-        saveData();
-
-        return;
-
-    }
-
-
-    /* =========================
-       CARDIOVERSION
-    ========================= */
-
-    if(
-        mode.value === "cardioversion"
-    ){
-
-        const jkg =
-        num(cvStep.value);
-
-
-        const energy =
-        weight * jkg;
-
-
-        energyPerKg.textContent =
-        jkg + " J/kg";
-
-
-        calculatedEnergy.textContent =
-        energy.toFixed(1) + " J";
-
-
-        energyLimit.textContent =
-        (weight * 2).toFixed(1) +
-        " J (2 J/kg)" ;
-
-
-        if(
-            syncCheck.value === "no"
-        ){
-
-            safetyStatus.innerHTML =
-            "<span class='alert'>" +
-            "SYNC is not confirmed. Do NOT deliver synchronized cardioversion until synchronization is verified on the defibrillator." +
-            "</span>";
-
-        }else{
-
-            safetyStatus.innerHTML =
-            "<strong>Synchronized Cardioversion</strong><br><br>" +
-
-            "Calculated setting: " +
-            energy.toFixed(1) +
-            " J (" +
-            jkg +
-            " J/kg).<br><br>" +
-
-            "Confirm synchronization with the QRS complex before shock delivery.";
-
-        }
-
-
-        saveData();
-
-    }
-
-}
-
-
-/* =========================
+/* =========================================================
    SAVE DATA
-========================= */
+========================================================= */
 
 function saveData(){
 
-    const patient =
-    getPatientData() || {};
+  const vtKg = Number(vtPerKg.value) || 0;
+  const rate = Number(rr.value) || 0;
+
+  const calculatedVT =
+    emergencyWeight > 0
+      ? emergencyWeight * vtKg
+      : null;
+
+  const calculatedMV =
+    calculatedVT !== null
+      ? calculatedVT * rate
+      : null;
 
 
-    const weight =
-    num(patient.emergencyWeight);
+  const data = {
+
+    patient: {
+      age: age || null,
+      sex: sex || null,
+      weight:
+        measuredWeight > 0
+          ? measuredWeight
+          : null,
+
+      emergencyWeight:
+        emergencyWeight > 0
+          ? emergencyWeight
+          : null
+    },
+
+    airwayVentilation: {
+
+      airway: {
+        strategy: airwayStrategy.value,
+        confirmation: confirmation.value
+      },
+
+      oxygen: {
+        source: oxygenSource.value,
+        fio2: Number(fio2.value) || null
+      },
+
+      ventilation: {
+        situation: ventSituation.value,
+        respiratoryRate: rate,
+        tidalVolumePerKg: vtKg,
+        calculatedTidalVolume: calculatedVT,
+        calculatedMinuteVentilation:
+          calculatedMV
+      },
+
+      capnography: {
+        etco2:
+          Number(etco2.value) > 0
+            ? Number(etco2.value)
+            : null,
+
+        waveform: waveform.value
+      },
+
+      ett: {
+        tubeType: tubeType.value,
+
+        estimatedInternalDiameter:
+          age > 0
+            ? Number(
+                (
+                  tubeType.value === "cuffed"
+                    ? 3.5 + age / 4
+                    : 4 + age / 4
+                ).toFixed(1)
+              )
+            : null,
+
+        estimatedOralDepth:
+          age > 0
+            ? Number((12 + age / 2).toFixed(1))
+            : null
+      }
+
+    }
+
+  };
 
 
-    const result = {
+  try{
 
-        patient:patient,
+    sessionStorage.setItem(
+      "emergencyAirwayData",
+      JSON.stringify(data)
+    );
 
-        electricalTherapy:{
-
-            mode:
-            mode.value || null,
-
-            resuscitationWeight:
-            weight,
-
-            defibrillation:{
-
-                shockNumber:
-                defibShock.value,
-
-                selectedJPerKg:
-                num(defibEnergyPerKg.value),
-
-                calculatedEnergy:
-                mode.value === "defibrillation" &&
-                weight !== null
-                ? weight *
-                  num(defibEnergyPerKg.value)
-                : null
-
-            },
-
-            cardioversion:{
-
-                selectedJPerKg:
-                num(cvStep.value),
-
-                synchronizationConfirmed:
-                syncCheck.value === "yes",
-
-                calculatedEnergy:
-                mode.value === "cardioversion" &&
-                weight !== null
-                ? weight *
-                  num(cvStep.value)
-                : null
-
-            }
-
-        }
-
-    };
+  }catch(e){}
 
 
-    try{
+  try{
 
-        sessionStorage.setItem(
-            "emergencyElectricalData",
-            JSON.stringify(result)
-        );
+    localStorage.setItem(
+      "emergencyAirwayData",
+      JSON.stringify(data)
+    );
 
-        localStorage.setItem(
-            "emergencyElectricalData",
-            JSON.stringify(result)
-        );
+  }catch(e){}
 
 
-        transferStatus.textContent =
-        "Electrical therapy calculations are ready for the Final Resuscitation Summary.";
-
-    }catch(e){}
+  document.getElementById("saveStatus").textContent =
+    "Stage 5 saved successfully ✓";
 
 }
 
 
-/* =========================
-   LOAD PREVIOUS DATA
-========================= */
+/* =========================================================
+   BACK
+========================================================= */
 
-function loadPrevious(){
+function goBack(){
 
-    let data = null;
+  if(document.referrer){
 
+    history.back();
 
-    try{
+  }else{
 
-        const stored =
-        sessionStorage.getItem(
-            "emergencyElectricalData"
-        );
+    window.location.href =
+      "emergency-stage4.html";
 
-        if(stored){
-
-            data =
-            JSON.parse(stored);
-
-        }
-
-    }catch(e){}
-
-
-    if(!data){
-
-        try{
-
-            const stored =
-            localStorage.getItem(
-                "emergencyElectricalData"
-            );
-
-            if(stored){
-
-                data =
-                JSON.parse(stored);
-
-            }
-
-        }catch(e){}
-
-    }
-
-
-    if(
-        !data ||
-        !data.electricalTherapy
-    ){
-
-        return;
-
-    }
-
-
-    const e =
-    data.electricalTherapy;
-
-
-    if(e.mode){
-
-        mode.value =
-        e.mode;
-
-    }
-
-
-    if(
-        e.defibrillation &&
-        e.defibrillation.shockNumber
-    ){
-
-        defibShock.value =
-        e.defibrillation.shockNumber;
-
-    }
-
-
-    if(
-        e.defibrillation &&
-        e.defibrillation.selectedJPerKg
-    ){
-
-        defibEnergyPerKg.value =
-        e.defibrillation.selectedJPerKg;
-
-    }
-
-
-    if(
-        e.cardioversion &&
-        e.cardioversion.selectedJPerKg
-    ){
-
-        cvStep.value =
-        e.cardioversion.selectedJPerKg;
-
-    }
-
-
-    if(
-        e.cardioversion &&
-        e.cardioversion.synchronizationConfirmed
-        !== undefined
-    ){
-
-        syncCheck.value =
-        e.cardioversion.synchronizationConfirmed
-        ? "yes"
-        : "no";
-
-    }
+  }
 
 }
-
-
-/* =========================
-   EVENTS
-========================= */
-
-mode.addEventListener(
-    "change",
-    updateMode
-);
-
-defibShock.addEventListener(
-    "change",
-    calculate
-);
-
-defibEnergyPerKg.addEventListener(
-    "change",
-    calculate
-);
-
-cvStep.addEventListener(
-    "change",
-    calculate
-);
-
-syncCheck.addEventListener(
-    "change",
-    calculate
-);
-
-
-/* =========================
-   INIT
-========================= */
-
-const patientData =
-getPatientData();
-
-displayPatient(patientData);
-
-loadPrevious();
-
-updateMode();
-
-})();
 
 </script>
 
