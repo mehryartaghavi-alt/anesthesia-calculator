@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Emergency & Resuscitation Calculator — Stage 2</title>
+<title>Emergency & Resuscitation Calculator — Stage 3</title>
 
 <style>
 *{box-sizing:border-box}
@@ -97,12 +97,6 @@ input,select{
     border-left:4px solid #4d9270;
 }
 
-.note{
-    font-size:13px;
-    line-height:1.55;
-    color:#5b707d;
-}
-
 .warning{
     background:#fff8e8;
     border-left:4px solid #d39a27;
@@ -112,12 +106,51 @@ input,select{
     line-height:1.55;
 }
 
+.note{
+    font-size:13px;
+    line-height:1.55;
+    color:#5b707d;
+}
+
 .status{
     background:#f5f8fa;
     border-radius:12px;
     padding:14px;
     font-size:14px;
     line-height:1.6;
+}
+
+.drug-card{
+    border:1px solid #dbe4e9;
+    border-radius:13px;
+    padding:14px;
+    margin-top:12px;
+}
+
+.drug-name{
+    font-size:17px;
+    font-weight:700;
+    margin-bottom:8px;
+}
+
+.dose{
+    font-size:14px;
+    color:#536a77;
+    line-height:1.5;
+}
+
+.calculated{
+    margin-top:10px;
+    padding:11px;
+    background:#f0f6f3;
+    border-radius:9px;
+    font-size:15px;
+    line-height:1.55;
+}
+
+.alert{
+    color:#a33a32;
+    font-weight:600;
 }
 
 .small{
@@ -141,7 +174,7 @@ input,select{
 <h1>🚑 Emergency & Resuscitation Calculator</h1>
 
 <div class="subtitle">
-Stage 2 — CPR / Resuscitation
+Stage 3 — Emergency Drugs
 </div>
 
 
@@ -178,326 +211,257 @@ Stage 2 — CPR / Resuscitation
 </div>
 
 <div class="note" style="margin-top:12px">
-All weight-based CPR calculations in this stage use the
-<strong>Resuscitation Weight</strong> transferred from Stage 1.
+All weight-based drug calculations use the
+<strong>Resuscitation Weight</strong> from Stage 1.
 </div>
 
 </div>
 
 
 <!-- =========================
-     CPR SETUP
+     DRUG SELECTION
 ========================= -->
 
 <div class="card">
 
-<h2>CPR Configuration</h2>
+<h2>Emergency Drug</h2>
+
+<div class="field">
+
+<label for="drugSelect">
+Select medication
+</label>
+
+<select id="drugSelect">
+
+<option value="">Select drug</option>
+
+<option value="epinephrine">
+Epinephrine
+</option>
+
+<option value="amiodarone">
+Amiodarone
+</option>
+
+<option value="lidocaine">
+Lidocaine
+</option>
+
+<option value="atropine">
+Atropine
+</option>
+
+<option value="adenosine1">
+Adenosine — First Dose
+</option>
+
+<option value="adenosine2">
+Adenosine — Second Dose
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     CONCENTRATION
+========================= -->
+
+<div class="card">
+
+<h2>Drug Concentration</h2>
 
 <div class="grid">
 
 <div class="field">
 
-<label for="rescuerNumber">
-Number of Rescuers
+<label for="concentration">
+Concentration (mg/mL)
 </label>
 
-<select id="rescuerNumber">
-
-<option value="1">
-1 Rescuer
-</option>
-
-<option value="2">
-2 or More Rescuers
-</option>
-
-</select>
+<input
+id="concentration"
+type="number"
+min="0"
+step="0.001"
+placeholder="e.g. 0.1">
 
 </div>
-
 
 <div class="field">
 
-<label for="maturity">
-Patient Category
+<label>
+Dose Unit
 </label>
 
-<select id="maturity">
+<select id="doseUnit">
 
-<option value="prepuberty">
-Infant / Child — Prepuberty
-</option>
-
-<option value="postpuberty">
-Adolescent — Postpuberty
-</option>
+<option value="mg">mg</option>
 
 </select>
 
-</div>
-
-
-<div class="field">
-
-<label for="advancedAirway">
-Advanced Airway
-</label>
-
-<select id="advancedAirway">
-
-<option value="no">
-No
-</option>
-
-<option value="yes">
-Yes
-</option>
-
-</select>
-
-</div>
-
-
-<div class="field">
-
-<label for="cprDuration">
-CPR Duration / Cycle
-</label>
-
-<select id="cprDuration">
-
-<option value="120">
-2 minutes
-</option>
-
-</select>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- =========================
-     CHEST COMPRESSIONS
-========================= -->
-
-<div class="card">
-
-<h2>Chest Compressions</h2>
-
-<div class="results">
-
-<div class="result">
-<div class="label">Compression Rate</div>
-<div class="value">100–120 /min</div>
-</div>
-
-<div class="result">
-<div class="label">Target Rate</div>
-<div class="value">≈ 110 /min</div>
-</div>
-
-<div class="result">
-<div class="label">Minimum Depth</div>
-<div class="value">≥ 1/3 chest AP diameter</div>
-</div>
-
-<div class="result">
-<div class="label">Infant Approx. Depth</div>
-<div class="value">≈ 4 cm</div>
-</div>
-
-<div class="result">
-<div class="label">Child Approx. Depth</div>
-<div class="value">≈ 5 cm</div>
-</div>
-
-<div class="result">
-<div class="label">Compression Cycle</div>
-<div class="value">2 min</div>
 </div>
 
 </div>
 
 <div class="note" style="margin-top:12px">
-Allow complete chest recoil and minimize interruptions.
-Rhythm assessment should generally occur approximately every
-2 minutes, with pauses kept as short as possible.
+Enter the concentration of the preparation actually available.
+The calculator does not assume that your local ampoule or syringe
+has a particular concentration.
 </div>
 
 </div>
 
 
 <!-- =========================
-     COMPRESSION / VENTILATION
+     CALCULATED DOSE
 ========================= -->
 
 <div class="card">
 
-<h2>Compression : Ventilation</h2>
+<h2>Calculated Dose</h2>
 
 <div class="results">
+
+<div class="result">
+<div class="label">Weight</div>
+<div class="value" id="doseWeight">—</div>
+</div>
+
+<div class="result">
+<div class="label">Recommended Dose</div>
+<div class="value" id="dosePerKg">—</div>
+</div>
 
 <div class="result highlight">
-<div class="label">Current Ratio</div>
-<div class="value" id="ratio">30 : 2</div>
+<div class="label">Calculated Dose</div>
+<div class="value" id="totalDose">—</div>
 </div>
-
-<div class="result">
-<div class="label">Compressions / Cycle</div>
-<div class="value" id="compressionCycle">30</div>
-</div>
-
-<div class="result">
-<div class="label">Ventilations / Cycle</div>
-<div class="value" id="ventilationCycle">2</div>
-</div>
-
-<div class="result">
-<div class="label">Cycles / 2 min*</div>
-<div class="value" id="cyclesTwoMin">—</div>
-</div>
-
-</div>
-
-<div class="small">
-*Approximation based on compression rate and does not replace
-real-time CPR timing.
-</div>
-
-</div>
-
-
-<!-- =========================
-     ADVANCED AIRWAY
-========================= -->
-
-<div class="card">
-
-<h2>Advanced Airway Ventilation</h2>
-
-<div class="results">
-
-<div class="result">
-<div class="label">Compression</div>
-<div class="value" id="airwayCompression">
-Continuous
-</div>
-</div>
-
-<div class="result">
-<div class="label">Breath Frequency</div>
-<div class="value" id="airwayVentilation">
-1 breath / 2–3 sec
-</div>
-</div>
-
-<div class="result">
-<div class="label">Ventilation Rate</div>
-<div class="value">
-20–30 /min
-</div>
-</div>
-
-</div>
-
-<div class="note" style="margin-top:12px">
-With an advanced airway, continue chest compressions without
-pausing for ventilations and provide one breath every 2–3 seconds.
-</div>
-
-</div>
-
-
-<!-- =========================
-     TWO-MINUTE CPR
-========================= -->
-
-<div class="card">
-
-<h2>2-Minute CPR Estimate</h2>
-
-<div class="results">
-
-<div class="result">
-<div class="label">Target Compression Rate</div>
-<div class="value">100–120 /min</div>
-</div>
-
-<div class="result">
-<div class="label">Theoretical Compressions</div>
-<div class="value" id="twoMinCompressions">
-12,000–14,400
-</div>
-</div>
-
-<div class="result">
-<div class="label">Target CPR Duration</div>
-<div class="value">120 sec</div>
-</div>
-
-<div class="result">
-<div class="label">Rhythm Check</div>
-<div class="value">≈ Every 2 min</div>
-</div>
-
-</div>
-
-<div class="small">
-The theoretical compression count represents the mathematical
-maximum if compressions were continuous for the entire interval;
-actual delivered compressions will be lower because of pauses,
-ventilation, rhythm checks and other interventions.
-</div>
-
-</div>
-
-
-<!-- =========================
-     WEIGHT-BASED CPR PARAMETERS
-========================= -->
-
-<div class="card">
-
-<h2>Weight-Based Resuscitation Parameters</h2>
-
-<div class="results">
 
 <div class="result highlight">
-<div class="label">Resuscitation Weight</div>
-<div class="value" id="weightCalc">—</div>
-</div>
-
-<div class="result">
-<div class="label">Weight Data Status</div>
-<div class="value" id="weightStatus">
-Waiting
-</div>
+<div class="label">Maximum Dose</div>
+<div class="value" id="maxDose">—</div>
 </div>
 
 </div>
 
-<div class="note" style="margin-top:12px">
-Drug-specific and defibrillation energy calculations are intentionally
-reserved for Stages 3 and 4. This stage only establishes the
-resuscitation weight used by subsequent modules.
+<div class="calculated" id="volumeResult">
+Volume: —
+</div>
+
+<div class="small" id="doseNote">
+Select a medication.
 </div>
 
 </div>
 
 
 <!-- =========================
-     CPR STATUS
+     QUICK REFERENCE
 ========================= -->
 
 <div class="card">
 
-<h2>CPR Summary</h2>
+<h2>PALS Emergency Drug Reference</h2>
 
-<div class="status" id="cprSummary">
-Enter or transfer patient data from Stage 1.
+
+<div class="drug-card">
+
+<div class="drug-name">
+Epinephrine
+</div>
+
+<div class="dose">
+IV/IO: <strong>0.01 mg/kg</strong><br>
+Concentration referenced by PALS: <strong>0.1 mg/mL</strong><br>
+Maximum dose: <strong>1 mg</strong><br>
+Repeat: every <strong>3–5 min</strong> during cardiac arrest
+</div>
+
+</div>
+
+
+<div class="drug-card">
+
+<div class="drug-name">
+Amiodarone
+</div>
+
+<div class="dose">
+IV/IO: <strong>5 mg/kg</strong> bolus<br>
+Maximum initial dose: <strong>300 mg</strong><br>
+For subsequent doses, maximum: <strong>150 mg</strong>
+</div>
+
+</div>
+
+
+<div class="drug-card">
+
+<div class="drug-name">
+Lidocaine
+</div>
+
+<div class="dose">
+IV/IO: <strong>1 mg/kg</strong>
+</div>
+
+</div>
+
+
+<div class="drug-card">
+
+<div class="drug-name">
+Atropine
+</div>
+
+<div class="dose">
+IV/IO: <strong>0.02 mg/kg</strong><br>
+May repeat once<br>
+Minimum dose: <strong>0.1 mg</strong><br>
+Maximum single dose: <strong>0.5 mg</strong>
+</div>
+
+</div>
+
+
+<div class="drug-card">
+
+<div class="drug-name">
+Adenosine
+</div>
+
+<div class="dose">
+First IV/IO dose:
+<strong>0.1 mg/kg</strong>, maximum <strong>6 mg</strong><br><br>
+
+Second IV/IO dose:
+<strong>0.2 mg/kg</strong>, maximum <strong>12 mg</strong><br><br>
+
+Rapid push followed by IV flush.
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     SAFETY CHECK
+========================= -->
+
+<div class="card">
+
+<h2>Safety Check</h2>
+
+<div class="status" id="safetyStatus">
+
+Waiting for drug selection and patient weight.
+
 </div>
 
 </div>
@@ -512,35 +476,32 @@ Enter or transfer patient data from Stage 1.
 <h2>Data Transfer</h2>
 
 <div class="note" id="transferStatus">
-CPR data will be available to the Emergency Drugs,
-Defibrillation/Cardioversion, Airway & Ventilation,
-and Final Summary stages.
+
+Emergency drug calculation data will be available
+to the final resuscitation summary.
+
 </div>
 
 </div>
 
 
 <!-- =========================
-     SAFETY
+     WARNING
 ========================= -->
 
 <div class="card">
 
 <div class="warning">
 
-<strong>Safety:</strong><br><br>
+<strong>Important:</strong><br><br>
 
-This calculator is a calculation aid and does not replace
-the current PALS/ALS algorithm, clinical assessment,
-monitoring, or local protocol.
+This calculator is intended as a clinical calculation aid.
+Always verify the medication, concentration, route, dose,
+maximum dose, and indication against the current PALS/ALS
+algorithm and local medication protocol before administration.
 
-For pediatric CPR, current 2025 AHA/AAP guidance recommends
-high-quality compressions at 100–120/min, compression depth
-of at least one-third of the anterior-posterior chest diameter,
-complete recoil, and minimization of interruptions.
-
-Do not use this page as a substitute for real-time resuscitation
-decision-making.
+Do not rely on a calculated volume without confirming the
+actual concentration of the preparation in hand.
 
 </div>
 
@@ -557,42 +518,39 @@ decision-making.
    ELEMENTS
 ========================= */
 
-const rescuerNumber =
-document.getElementById("rescuerNumber");
+const drugSelect =
+document.getElementById("drugSelect");
 
-const maturity =
-document.getElementById("maturity");
+const concentration =
+document.getElementById("concentration");
 
-const advancedAirway =
-document.getElementById("advancedAirway");
+const doseWeight =
+document.getElementById("doseWeight");
 
-const ratioEl =
-document.getElementById("ratio");
+const dosePerKg =
+document.getElementById("dosePerKg");
 
-const compressionCycleEl =
-document.getElementById("compressionCycle");
+const totalDose =
+document.getElementById("totalDose");
 
-const ventilationCycleEl =
-document.getElementById("ventilationCycle");
+const maxDose =
+document.getElementById("maxDose");
 
-const cyclesTwoMinEl =
-document.getElementById("cyclesTwoMin");
+const volumeResult =
+document.getElementById("volumeResult");
 
-const weightCalc =
-document.getElementById("weightCalc");
+const doseNote =
+document.getElementById("doseNote");
 
-const weightStatus =
-document.getElementById("weightStatus");
-
-const cprSummary =
-document.getElementById("cprSummary");
+const safetyStatus =
+document.getElementById("safetyStatus");
 
 const transferStatus =
 document.getElementById("transferStatus");
 
 
 /* =========================
-   SUMMARY ELEMENTS
+   SUMMARY
 ========================= */
 
 const ageDisplay =
@@ -609,32 +567,144 @@ document.getElementById("resusWeightDisplay");
 
 
 /* =========================
-   HELPERS
+   DRUG DATABASE
 ========================= */
 
-function number(value){
+const drugs = {
 
-    const x = parseFloat(value);
+    epinephrine: {
 
-    return Number.isFinite(x) ? x : null;
+        name:"Epinephrine",
+
+        dose:0.01,
+
+        unit:"mg/kg",
+
+        max:1,
+
+        note:
+        "IV/IO cardiac arrest dose. PALS reference concentration: 0.1 mg/mL. Repeat every 3–5 minutes during cardiac arrest."
+
+    },
+
+
+    amiodarone: {
+
+        name:"Amiodarone",
+
+        dose:5,
+
+        unit:"mg/kg",
+
+        max:300,
+
+        note:
+        "IV/IO dose for shock-refractory VF/pVT. Subsequent doses have a maximum of 150 mg."
+
+    },
+
+
+    lidocaine: {
+
+        name:"Lidocaine",
+
+        dose:1,
+
+        unit:"mg/kg",
+
+        max:null,
+
+        note:
+        "IV/IO antiarrhythmic option for shock-refractory VF/pVT."
+
+    },
+
+
+    atropine: {
+
+        name:"Atropine",
+
+        dose:0.02,
+
+        unit:"mg/kg",
+
+        min:0.1,
+
+        max:0.5,
+
+        note:
+        "IV/IO dose for bradycardia associated with increased vagal tone or primary AV block. May repeat once."
+
+    },
+
+
+    adenosine1: {
+
+        name:"Adenosine — First Dose",
+
+        dose:0.1,
+
+        unit:"mg/kg",
+
+        max:6,
+
+        note:
+        "Rapid IV/IO push followed immediately by IV flush."
+
+    },
+
+
+    adenosine2: {
+
+        name:"Adenosine — Second Dose",
+
+        dose:0.2,
+
+        unit:"mg/kg",
+
+        max:12,
+
+        note:
+        "Consider repeat rapid IV/IO push followed immediately by IV flush."
+
+    }
+
+};
+
+
+/* =========================
+   NUMBER HELPER
+========================= */
+
+function num(value){
+
+    const x =
+    parseFloat(value);
+
+    return Number.isFinite(x)
+    ? x
+    : null;
 
 }
 
 
 /* =========================
-   LOAD PATIENT DATA
+   GET PATIENT DATA
 ========================= */
 
 function getPatientData(){
 
     let data = null;
 
-    /* URL DATA */
+
+    /* URL */
 
     try{
 
         const params =
-        new URLSearchParams(location.search);
+        new URLSearchParams(
+            location.search
+        );
 
         if(params.get("data")){
 
@@ -651,9 +721,15 @@ function getPatientData(){
 
 
     const keys = [
+
         "emergencyPatientData",
+
+        "emergencyCPRData",
+
         "patientData",
+
         "pediatricPatientData"
+
     ];
 
 
@@ -669,7 +745,10 @@ function getPatientData(){
                 sessionStorage.getItem(key);
 
                 if(stored){
-                    data = JSON.parse(stored);
+
+                    data =
+                    JSON.parse(stored);
+
                 }
 
             }catch(e){}
@@ -691,7 +770,10 @@ function getPatientData(){
                 localStorage.getItem(key);
 
                 if(stored){
-                    data = JSON.parse(stored);
+
+                    data =
+                    JSON.parse(stored);
+
                 }
 
             }catch(e){}
@@ -699,6 +781,7 @@ function getPatientData(){
         }
 
     }
+
 
     return data;
 
@@ -748,7 +831,7 @@ function displayPatient(data){
 
 
     const rw =
-    number(data.emergencyWeight);
+    num(data.emergencyWeight);
 
 
     if(rw !== null && rw > 0){
@@ -756,22 +839,10 @@ function displayPatient(data){
         resusWeightDisplay.textContent =
         rw.toFixed(1) + " kg";
 
-        weightCalc.textContent =
-        rw.toFixed(1) + " kg";
-
-        weightStatus.textContent =
-        "Available";
-
     }else{
 
         resusWeightDisplay.textContent =
         "Not available";
-
-        weightCalc.textContent =
-        "—";
-
-        weightStatus.textContent =
-        "Required";
 
     }
 
@@ -779,123 +850,208 @@ function displayPatient(data){
 
 
 /* =========================
-   CPR CALCULATION
+   CALCULATE
 ========================= */
 
-function calculateCPR(){
+function calculate(){
 
-    const rescuers =
-    rescuerNumber.value;
+    const selected =
+    drugSelect.value;
 
-    const maturityGroup =
-    maturity.value;
+    const drug =
+    drugs[selected];
 
-    const airway =
-    advancedAirway.value;
+    const data =
+    getPatientData();
 
 
-    /* ADVANCED AIRWAY */
+    let weight = null;
 
-    if(airway === "yes"){
 
-        ratioEl.textContent =
-        "Continuous";
+    if(data){
 
-        compressionCycleEl.textContent =
-        "Continuous";
-
-        ventilationCycleEl.textContent =
-        "1 breath";
-
-        cyclesTwoMinEl.textContent =
-        "N/A";
-
-        document.getElementById(
-            "airwayCompression"
-        ).textContent =
-        "Continuous";
-
-        document.getElementById(
-            "airwayVentilation"
-        ).textContent =
-        "1 breath / 2–3 sec";
+        weight =
+        num(data.emergencyWeight);
 
     }
 
 
-    /* NO ADVANCED AIRWAY */
-
-    else{
-
-        let ratio = "30 : 2";
-
-        let compressions = 30;
-
-        let ventilations = 2;
+    doseWeight.textContent =
+    weight !== null
+    ? weight.toFixed(1) + " kg"
+    : "—";
 
 
-        if(
-            rescuers === "2" &&
-            maturityGroup === "prepuberty"
-        ){
+    if(!drug){
 
-            ratio = "15 : 2";
+        dosePerKg.textContent =
+        "—";
 
-            compressions = 15;
+        totalDose.textContent =
+        "—";
 
-            ventilations = 2;
+        maxDose.textContent =
+        "—";
 
-        }
+        volumeResult.textContent =
+        "Volume: —";
 
+        doseNote.textContent =
+        "Select a medication.";
 
-        ratioEl.textContent =
-        ratio;
+        safetyStatus.textContent =
+        "Waiting for drug selection and patient weight.";
 
-        compressionCycleEl.textContent =
-        compressions;
-
-        ventilationCycleEl.textContent =
-        ventilations;
-
-        document.getElementById(
-            "airwayCompression"
-        ).textContent =
-        "Not applicable";
-
-        document.getElementById(
-            "airwayVentilation"
-        ).textContent =
-        "Not applicable";
-
-
-        /*
-         Approximate cycle count.
-
-         A complete cycle is estimated using
-         a target rate of 110 compressions/min.
-        */
-
-        const compressionTime =
-        compressions / 110;
-
-        const ventilationTime =
-        ventilations * 2;
-
-        const cycleTime =
-        compressionTime +
-        ventilationTime;
-
-        const estimatedCycles =
-        Math.floor(120 / cycleTime);
-
-
-        cyclesTwoMinEl.textContent =
-        estimatedCycles;
+        return;
 
     }
 
 
-    updateSummary();
+    dosePerKg.textContent =
+    drug.dose +
+    " " +
+    drug.unit;
+
+
+    if(drug.max !== null){
+
+        maxDose.textContent =
+        drug.max + " mg";
+
+    }else{
+
+        maxDose.textContent =
+        "No PALS maximum specified";
+
+    }
+
+
+    if(weight === null || weight <= 0){
+
+        totalDose.textContent =
+        "Weight required";
+
+        volumeResult.textContent =
+        "Volume: —";
+
+        safetyStatus.innerHTML =
+        "<span class='alert'>" +
+        "Resuscitation weight is unavailable. " +
+        "Do not calculate a weight-based dose until weight is confirmed." +
+        "</span>";
+
+        return;
+
+    }
+
+
+    let calculatedDose =
+    weight * drug.dose;
+
+
+    let doseAfterMax =
+    calculatedDose;
+
+
+    let maxApplied = false;
+
+
+    if(
+        drug.max !== null &&
+        calculatedDose > drug.max
+    ){
+
+        doseAfterMax =
+        drug.max;
+
+        maxApplied = true;
+
+    }
+
+
+    if(
+        drug.min !== undefined &&
+        doseAfterMax < drug.min
+    ){
+
+        doseAfterMax =
+        drug.min;
+
+    }
+
+
+    totalDose.textContent =
+    doseAfterMax.toFixed(3) +
+    " mg";
+
+
+    /* VOLUME */
+
+    const conc =
+    num(concentration.value);
+
+
+    if(conc !== null && conc > 0){
+
+        const volume =
+        doseAfterMax / conc;
+
+
+        volumeResult.innerHTML =
+        "<strong>Volume:</strong> " +
+        volume.toFixed(2) +
+        " mL";
+
+    }else{
+
+        volumeResult.innerHTML =
+        "<strong>Volume:</strong> Enter actual concentration";
+
+    }
+
+
+    let note =
+    drug.note;
+
+
+    if(maxApplied){
+
+        note +=
+        " The calculated weight-based dose exceeded the PALS maximum, so the maximum dose was applied.";
+
+    }
+
+
+    if(
+        drug.min !== undefined &&
+        calculatedDose < drug.min
+    ){
+
+        note +=
+        " The calculated dose was below the specified minimum, so the minimum dose was applied.";
+
+    }
+
+
+    doseNote.textContent =
+    note;
+
+
+    safetyStatus.innerHTML =
+    "<strong>" +
+    drug.name +
+    "</strong><br>" +
+
+    "Weight: " +
+    weight.toFixed(1) +
+    " kg<br>" +
+
+    "Calculated dose: " +
+    doseAfterMax.toFixed(3) +
+    " mg<br>" +
+
+    "Verify indication, route, concentration and maximum dose before administration.";
+
 
     saveData();
 
@@ -903,142 +1059,116 @@ function calculateCPR(){
 
 
 /* =========================
-   SUMMARY
+   SAVE DATA
 ========================= */
 
-function updateSummary(){
+function saveData(){
+
+    const selected =
+    drugSelect.value;
+
+    const drug =
+    drugs[selected];
 
     const data =
-    getPatientData();
-
-    const rw =
-    data
-    ? number(data.emergencyWeight)
-    : null;
+    getPatientData() || {};
 
 
-    let text =
-    "<strong>High-quality CPR:</strong> " +
-    "100–120 compressions/min, " +
-    "complete recoil, and minimal interruptions.";
+    if(!drug){
+
+        return;
+
+    }
+
+
+    const weight =
+    num(data.emergencyWeight);
+
+
+    let calculatedDose =
+    null;
 
 
     if(
-        advancedAirway.value === "yes"
+        weight !== null &&
+        weight > 0
     ){
 
-        text +=
-        "<br><br>" +
-        "<strong>Advanced airway:</strong> " +
-        "continuous compressions with " +
-        "1 breath every 2–3 seconds.";
+        calculatedDose =
+        weight * drug.dose;
 
-    }else{
 
         if(
-            rescuerNumber.value === "2" &&
-            maturity.value === "prepuberty"
+            drug.max !== null &&
+            calculatedDose > drug.max
         ){
 
-            text +=
-            "<br><br>" +
-            "<strong>Compression : ventilation:</strong> " +
-            "15 : 2.";
+            calculatedDose =
+            drug.max;
 
-        }else{
+        }
 
-            text +=
-            "<br><br>" +
-            "<strong>Compression : ventilation:</strong> " +
-            "30 : 2.";
+
+        if(
+            drug.min !== undefined &&
+            calculatedDose < drug.min
+        ){
+
+            calculatedDose =
+            drug.min;
 
         }
 
     }
 
 
-    if(rw !== null && rw > 0){
+    const conc =
+    num(concentration.value);
 
-        text +=
-        "<br><br>" +
-        "<strong>Resuscitation weight:</strong> " +
-        rw.toFixed(1) +
-        " kg.";
 
-    }else{
+    let volume = null;
 
-        text +=
-        "<br><br>" +
-        "<strong>Warning:</strong> " +
-        "Resuscitation weight is not available.";
+
+    if(
+        calculatedDose !== null &&
+        conc !== null &&
+        conc > 0
+    ){
+
+        volume =
+        calculatedDose / conc;
 
     }
 
 
-    cprSummary.innerHTML =
-    text;
+    const emergencyDrugData = {
 
-}
+        patient: data,
 
+        drug: {
 
-/* =========================
-   SAVE
-========================= */
+            id:selected,
 
-function saveData(){
+            name:drug.name,
 
-    const patient =
-    getPatientData() || {};
+            dosePerKg:drug.dose,
 
+            doseUnit:drug.unit,
 
-    const data = {
+            maximumDose:drug.max,
 
-        ...patient,
+            minimumDose:
+            drug.min !== undefined
+            ? drug.min
+            : null,
 
-        cpr: {
+            concentration:conc,
 
-            rescuers:
-            rescuerNumber.value,
+            calculatedDose:
+            calculatedDose,
 
-            patientCategory:
-            maturity.value,
-
-            advancedAirway:
-            advancedAirway.value,
-
-            compressionRate:
-            "100–120/min",
-
-            compressionDepth:
-            "≥ 1/3 AP chest diameter",
-
-            compressionVentilationRatio:
-            advancedAirway.value === "yes"
-            ? "Continuous + 1 breath every 2–3 sec"
-            : (
-                rescuerNumber.value === "2" &&
-                maturity.value === "prepuberty"
-                ? "15:2"
-                : "30:2"
-            ),
-
-            compressionCycle:
-            advancedAirway.value === "yes"
-            ? "Continuous"
-            : (
-                rescuerNumber.value === "2" &&
-                maturity.value === "prepuberty"
-                ? 15
-                : 30
-            ),
-
-            ventilationCycle:
-            advancedAirway.value === "yes"
-            ? "1 breath every 2–3 sec"
-            : 2,
-
-            rhythmCheck:
-            "Approximately every 2 min"
+            calculatedVolume:
+            volume
 
         }
 
@@ -1048,17 +1178,22 @@ function saveData(){
     try{
 
         sessionStorage.setItem(
-            "emergencyCPRData",
-            JSON.stringify(data)
+            "emergencyDrugData",
+            JSON.stringify(
+                emergencyDrugData
+            )
         );
 
         localStorage.setItem(
-            "emergencyCPRData",
-            JSON.stringify(data)
+            "emergencyDrugData",
+            JSON.stringify(
+                emergencyDrugData
+            )
         );
 
+
         transferStatus.textContent =
-        "CPR data is ready for the next emergency/resuscitation stages.";
+        "Emergency drug calculation is ready for the Final Resuscitation Summary.";
 
     }catch(e){}
 
@@ -1066,10 +1201,10 @@ function saveData(){
 
 
 /* =========================
-   LOAD PREVIOUS CPR DATA
+   LOAD PREVIOUS
 ========================= */
 
-function loadPreviousCPR(){
+function loadPrevious(){
 
     let data = null;
 
@@ -1078,11 +1213,14 @@ function loadPreviousCPR(){
 
         const stored =
         sessionStorage.getItem(
-            "emergencyCPRData"
+            "emergencyDrugData"
         );
 
         if(stored){
-            data = JSON.parse(stored);
+
+            data =
+            JSON.parse(stored);
+
         }
 
     }catch(e){}
@@ -1094,11 +1232,14 @@ function loadPreviousCPR(){
 
             const stored =
             localStorage.getItem(
-                "emergencyCPRData"
+                "emergencyDrugData"
             );
 
             if(stored){
-                data = JSON.parse(stored);
+
+                data =
+                JSON.parse(stored);
+
             }
 
         }catch(e){}
@@ -1106,37 +1247,30 @@ function loadPreviousCPR(){
     }
 
 
-    if(!data || !data.cpr){
+    if(
+        !data ||
+        !data.drug
+    ){
 
         return;
 
     }
 
 
-    const cpr =
-    data.cpr;
+    if(data.drug.id){
 
-
-    if(cpr.rescuers){
-
-        rescuerNumber.value =
-        cpr.rescuers;
+        drugSelect.value =
+        data.drug.id;
 
     }
 
 
-    if(cpr.patientCategory){
+    if(
+        data.drug.concentration != null
+    ){
 
-        maturity.value =
-        cpr.patientCategory;
-
-    }
-
-
-    if(cpr.advancedAirway){
-
-        advancedAirway.value =
-        cpr.advancedAirway;
+        concentration.value =
+        data.drug.concentration;
 
     }
 
@@ -1147,23 +1281,19 @@ function loadPreviousCPR(){
    EVENTS
 ========================= */
 
-[
-    rescuerNumber,
-    maturity,
-    advancedAirway
+drugSelect.addEventListener(
+    "change",
+    calculate
+);
 
-].forEach(el => {
-
-    el.addEventListener(
-        "change",
-        calculateCPR
-    );
-
-});
+concentration.addEventListener(
+    "input",
+    calculate
+);
 
 
 /* =========================
-   INIT
+   INITIALIZE
 ========================= */
 
 const patientData =
@@ -1171,9 +1301,9 @@ getPatientData();
 
 displayPatient(patientData);
 
-loadPreviousCPR();
+loadPrevious();
 
-calculateCPR();
+calculate();
 
 })();
 
