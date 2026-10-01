@@ -1,8 +1,10 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Emergency & Resuscitation Calculator — Stage 2</title>
 
 <style>
@@ -90,12 +92,9 @@ input,select{
     font-weight:600;
 }
 
-.status{
-    padding:13px;
-    border-radius:10px;
-    background:#f5f8fa;
-    font-size:14px;
-    line-height:1.55;
+.highlight{
+    background:#edf7f2;
+    border-left:4px solid #4d9270;
 }
 
 .note{
@@ -113,19 +112,18 @@ input,select{
     line-height:1.55;
 }
 
-.normal{
-    color:#28734a;
-}
-
-.alert{
-    color:#a33a32;
-    font-weight:600;
+.status{
+    background:#f5f8fa;
+    border-radius:12px;
+    padding:14px;
+    font-size:14px;
+    line-height:1.6;
 }
 
 .small{
     font-size:12px;
     color:#6c7e88;
-    margin-top:5px;
+    margin-top:7px;
 }
 
 @media(max-width:520px){
@@ -141,10 +139,16 @@ input,select{
 <div class="container">
 
 <h1>🚑 Emergency & Resuscitation Calculator</h1>
-<div class="subtitle">Stage 2 — Initial Assessment & Vital Signs</div>
+
+<div class="subtitle">
+Stage 2 — CPR / Resuscitation
+</div>
 
 
-<!-- PATIENT SUMMARY -->
+<!-- =========================
+     PATIENT SUMMARY
+========================= -->
+
 <div class="card">
 
 <h2>Patient Summary</h2>
@@ -153,122 +157,121 @@ input,select{
 
 <div class="result">
 <div class="label">Age</div>
-<div class="value" id="summaryAge">—</div>
+<div class="value" id="ageDisplay">—</div>
 </div>
 
 <div class="result">
 <div class="label">Sex</div>
-<div class="value" id="summarySex">—</div>
+<div class="value" id="sexDisplay">—</div>
 </div>
 
 <div class="result">
-<div class="label">Weight</div>
-<div class="value" id="summaryWeight">—</div>
+<div class="label">Measured Weight</div>
+<div class="value" id="weightDisplay">—</div>
 </div>
 
-<div class="result">
-<div class="label">Emergency Weight</div>
-<div class="value" id="summaryEmergencyWeight">—</div>
+<div class="result highlight">
+<div class="label">Resuscitation Weight</div>
+<div class="value" id="resusWeightDisplay">—</div>
 </div>
 
 </div>
 
+<div class="note" style="margin-top:12px">
+All weight-based CPR calculations in this stage use the
+<strong>Resuscitation Weight</strong> transferred from Stage 1.
+</div>
+
 </div>
 
 
-<!-- VITAL SIGNS -->
+<!-- =========================
+     CPR SETUP
+========================= -->
+
 <div class="card">
 
-<h2>Initial Vital Signs</h2>
+<h2>CPR Configuration</h2>
 
 <div class="grid">
 
 <div class="field">
-<label for="heartRate">Heart Rate (bpm)</label>
-<input
-    id="heartRate"
-    type="number"
-    min="0"
-    max="400"
-    step="1"
-    placeholder="e.g. 145">
+
+<label for="rescuerNumber">
+Number of Rescuers
+</label>
+
+<select id="rescuerNumber">
+
+<option value="1">
+1 Rescuer
+</option>
+
+<option value="2">
+2 or More Rescuers
+</option>
+
+</select>
+
 </div>
+
 
 <div class="field">
-<label for="respRate">Respiratory Rate (/min)</label>
-<input
-    id="respRate"
-    type="number"
-    min="0"
-    max="150"
-    step="1"
-    placeholder="e.g. 32">
+
+<label for="maturity">
+Patient Category
+</label>
+
+<select id="maturity">
+
+<option value="prepuberty">
+Infant / Child — Prepuberty
+</option>
+
+<option value="postpuberty">
+Adolescent — Postpuberty
+</option>
+
+</select>
+
 </div>
+
 
 <div class="field">
-<label for="systolic">Systolic BP (mmHg)</label>
-<input
-    id="systolic"
-    type="number"
-    min="0"
-    max="300"
-    step="1"
-    placeholder="e.g. 90">
+
+<label for="advancedAirway">
+Advanced Airway
+</label>
+
+<select id="advancedAirway">
+
+<option value="no">
+No
+</option>
+
+<option value="yes">
+Yes
+</option>
+
+</select>
+
 </div>
+
 
 <div class="field">
-<label for="diastolic">Diastolic BP (mmHg)</label>
-<input
-    id="diastolic"
-    type="number"
-    min="0"
-    max="250"
-    step="1"
-    placeholder="e.g. 55">
-</div>
 
-<div class="field">
-<label for="spo2">SpO₂ (%)</label>
-<input
-    id="spo2"
-    type="number"
-    min="0"
-    max="100"
-    step="1"
-    placeholder="e.g. 96">
-</div>
+<label for="cprDuration">
+CPR Duration / Cycle
+</label>
 
-<div class="field">
-<label for="temperature">Temperature (°C)</label>
-<input
-    id="temperature"
-    type="number"
-    min="20"
-    max="45"
-    step="0.1"
-    placeholder="e.g. 37.2">
-</div>
+<select id="cprDuration">
 
-<div class="field">
-<label for="etco2">EtCO₂ (mmHg)</label>
-<input
-    id="etco2"
-    type="number"
-    min="0"
-    max="150"
-    step="1"
-    placeholder="Optional">
-</div>
+<option value="120">
+2 minutes
+</option>
 
-<div class="field">
-<label for="glucose">Blood Glucose (mg/dL)</label>
-<input
-    id="glucose"
-    type="number"
-    min="0"
-    max="1000"
-    step="1"
-    placeholder="Optional">
+</select>
+
 </div>
 
 </div>
@@ -276,161 +279,268 @@ input,select{
 </div>
 
 
-<!-- NEUROLOGIC -->
+<!-- =========================
+     CHEST COMPRESSIONS
+========================= -->
+
 <div class="card">
 
-<h2>Neurologic / Clinical Status</h2>
-
-<div class="grid">
-
-<div class="field">
-<label for="gcs">GCS</label>
-<select id="gcs">
-
-<option value="">Select</option>
-
-<option value="15">15 — Normal</option>
-<option value="14">14</option>
-<option value="13">13</option>
-<option value="12">12</option>
-<option value="11">11</option>
-<option value="10">10</option>
-<option value="9">9</option>
-<option value="8">8</option>
-<option value="7">7</option>
-<option value="6">6</option>
-<option value="5">5</option>
-<option value="4">4</option>
-<option value="3">3 — Minimum</option>
-
-</select>
-</div>
-
-
-<div class="field">
-<label for="mentalStatus">Mental Status</label>
-
-<select id="mentalStatus">
-
-<option value="">Select</option>
-<option value="alert">Alert</option>
-<option value="confused">Confused</option>
-<option value="lethargic">Lethargic</option>
-<option value="obtunded">Obtunded</option>
-<option value="unresponsive">Unresponsive</option>
-
-</select>
-
-</div>
-
-
-<div class="field">
-<label for="pulseQuality">Peripheral Pulse</label>
-
-<select id="pulseQuality">
-
-<option value="">Select</option>
-<option value="normal">Normal</option>
-<option value="weak">Weak</option>
-<option value="thready">Thready</option>
-<option value="bounding">Bounding</option>
-<option value="absent">Absent</option>
-
-</select>
-
-</div>
-
-
-<div class="field">
-<label for="capillaryRefill">Capillary Refill</label>
-
-<select id="capillaryRefill">
-
-<option value="">Select</option>
-<option value="normal">≤ 2 sec</option>
-<option value="prolonged">> 2 sec</option>
-
-</select>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- CALCULATED HEMODYNAMICS -->
-<div class="card">
-
-<h2>Calculated Parameters</h2>
+<h2>Chest Compressions</h2>
 
 <div class="results">
 
 <div class="result">
-<div class="label">MAP</div>
-<div class="value" id="map">—</div>
+<div class="label">Compression Rate</div>
+<div class="value">100–120 /min</div>
 </div>
 
 <div class="result">
-<div class="label">Pulse Pressure</div>
-<div class="value" id="pulsePressure">—</div>
+<div class="label">Target Rate</div>
+<div class="value">≈ 110 /min</div>
 </div>
 
 <div class="result">
-<div class="label">Shock Index</div>
-<div class="value" id="shockIndex">—</div>
+<div class="label">Minimum Depth</div>
+<div class="value">≥ 1/3 chest AP diameter</div>
 </div>
 
 <div class="result">
-<div class="label">Modified Shock Index</div>
-<div class="value" id="modifiedShockIndex">—</div>
+<div class="label">Infant Approx. Depth</div>
+<div class="value">≈ 4 cm</div>
+</div>
+
+<div class="result">
+<div class="label">Child Approx. Depth</div>
+<div class="value">≈ 5 cm</div>
+</div>
+
+<div class="result">
+<div class="label">Compression Cycle</div>
+<div class="value">2 min</div>
+</div>
+
+</div>
+
+<div class="note" style="margin-top:12px">
+Allow complete chest recoil and minimize interruptions.
+Rhythm assessment should generally occur approximately every
+2 minutes, with pauses kept as short as possible.
+</div>
+
+</div>
+
+
+<!-- =========================
+     COMPRESSION / VENTILATION
+========================= -->
+
+<div class="card">
+
+<h2>Compression : Ventilation</h2>
+
+<div class="results">
+
+<div class="result highlight">
+<div class="label">Current Ratio</div>
+<div class="value" id="ratio">30 : 2</div>
+</div>
+
+<div class="result">
+<div class="label">Compressions / Cycle</div>
+<div class="value" id="compressionCycle">30</div>
+</div>
+
+<div class="result">
+<div class="label">Ventilations / Cycle</div>
+<div class="value" id="ventilationCycle">2</div>
+</div>
+
+<div class="result">
+<div class="label">Cycles / 2 min*</div>
+<div class="value" id="cyclesTwoMin">—</div>
 </div>
 
 </div>
 
 <div class="small">
-MAP = DBP + (SBP − DBP) / 3
+*Approximation based on compression rate and does not replace
+real-time CPR timing.
 </div>
 
 </div>
 
 
-<!-- INITIAL STATUS -->
+<!-- =========================
+     ADVANCED AIRWAY
+========================= -->
+
 <div class="card">
 
-<h2>Initial Clinical Status</h2>
+<h2>Advanced Airway Ventilation</h2>
 
-<div class="status" id="clinicalStatus">
-Enter vital signs and clinical findings.
+<div class="results">
+
+<div class="result">
+<div class="label">Compression</div>
+<div class="value" id="airwayCompression">
+Continuous
+</div>
+</div>
+
+<div class="result">
+<div class="label">Breath Frequency</div>
+<div class="value" id="airwayVentilation">
+1 breath / 2–3 sec
+</div>
+</div>
+
+<div class="result">
+<div class="label">Ventilation Rate</div>
+<div class="value">
+20–30 /min
+</div>
+</div>
+
+</div>
+
+<div class="note" style="margin-top:12px">
+With an advanced airway, continue chest compressions without
+pausing for ventilations and provide one breath every 2–3 seconds.
 </div>
 
 </div>
 
 
-<!-- DATA TRANSFER -->
+<!-- =========================
+     TWO-MINUTE CPR
+========================= -->
+
+<div class="card">
+
+<h2>2-Minute CPR Estimate</h2>
+
+<div class="results">
+
+<div class="result">
+<div class="label">Target Compression Rate</div>
+<div class="value">100–120 /min</div>
+</div>
+
+<div class="result">
+<div class="label">Theoretical Compressions</div>
+<div class="value" id="twoMinCompressions">
+12,000–14,400
+</div>
+</div>
+
+<div class="result">
+<div class="label">Target CPR Duration</div>
+<div class="value">120 sec</div>
+</div>
+
+<div class="result">
+<div class="label">Rhythm Check</div>
+<div class="value">≈ Every 2 min</div>
+</div>
+
+</div>
+
+<div class="small">
+The theoretical compression count represents the mathematical
+maximum if compressions were continuous for the entire interval;
+actual delivered compressions will be lower because of pauses,
+ventilation, rhythm checks and other interventions.
+</div>
+
+</div>
+
+
+<!-- =========================
+     WEIGHT-BASED CPR PARAMETERS
+========================= -->
+
+<div class="card">
+
+<h2>Weight-Based Resuscitation Parameters</h2>
+
+<div class="results">
+
+<div class="result highlight">
+<div class="label">Resuscitation Weight</div>
+<div class="value" id="weightCalc">—</div>
+</div>
+
+<div class="result">
+<div class="label">Weight Data Status</div>
+<div class="value" id="weightStatus">
+Waiting
+</div>
+</div>
+
+</div>
+
+<div class="note" style="margin-top:12px">
+Drug-specific and defibrillation energy calculations are intentionally
+reserved for Stages 3 and 4. This stage only establishes the
+resuscitation weight used by subsequent modules.
+</div>
+
+</div>
+
+
+<!-- =========================
+     CPR STATUS
+========================= -->
+
+<div class="card">
+
+<h2>CPR Summary</h2>
+
+<div class="status" id="cprSummary">
+Enter or transfer patient data from Stage 1.
+</div>
+
+</div>
+
+
+<!-- =========================
+     DATA TRANSFER
+========================= -->
+
 <div class="card">
 
 <h2>Data Transfer</h2>
 
 <div class="note" id="transferStatus">
-Initial assessment data will be available to the next emergency/resuscitation stages.
+CPR data will be available to the Emergency Drugs,
+Defibrillation/Cardioversion, Airway & Ventilation,
+and Final Summary stages.
 </div>
 
 </div>
 
 
-<!-- WARNING -->
+<!-- =========================
+     SAFETY
+========================= -->
+
 <div class="card">
 
 <div class="warning">
 
-This module is intended as a calculation and documentation aid.
-It does not replace the current PALS/ALS algorithm, clinical assessment,
-continuous monitoring, or local protocol.
+<strong>Safety:</strong><br><br>
 
-The 2025 AHA/AAP PALS algorithms use clinical findings such as
-cardiopulmonary compromise, shock, hypotension, mental-status changes,
-and rhythm assessment to guide subsequent management.
+This calculator is a calculation aid and does not replace
+the current PALS/ALS algorithm, clinical assessment,
+monitoring, or local protocol.
+
+For pediatric CPR, current 2025 AHA/AAP guidance recommends
+high-quality compressions at 100–120/min, compression depth
+of at least one-third of the anterior-posterior chest diameter,
+complete recoil, and minimization of interruptions.
+
+Do not use this page as a substitute for real-time resuscitation
+decision-making.
 
 </div>
 
@@ -447,57 +557,35 @@ and rhythm assessment to guide subsequent management.
    ELEMENTS
 ========================= */
 
-const heartRate =
-document.getElementById("heartRate");
+const rescuerNumber =
+document.getElementById("rescuerNumber");
 
-const respRate =
-document.getElementById("respRate");
+const maturity =
+document.getElementById("maturity");
 
-const systolic =
-document.getElementById("systolic");
+const advancedAirway =
+document.getElementById("advancedAirway");
 
-const diastolic =
-document.getElementById("diastolic");
+const ratioEl =
+document.getElementById("ratio");
 
-const spo2 =
-document.getElementById("spo2");
+const compressionCycleEl =
+document.getElementById("compressionCycle");
 
-const temperature =
-document.getElementById("temperature");
+const ventilationCycleEl =
+document.getElementById("ventilationCycle");
 
-const etco2 =
-document.getElementById("etco2");
+const cyclesTwoMinEl =
+document.getElementById("cyclesTwoMin");
 
-const glucose =
-document.getElementById("glucose");
+const weightCalc =
+document.getElementById("weightCalc");
 
-const gcs =
-document.getElementById("gcs");
+const weightStatus =
+document.getElementById("weightStatus");
 
-const mentalStatus =
-document.getElementById("mentalStatus");
-
-const pulseQuality =
-document.getElementById("pulseQuality");
-
-const capillaryRefill =
-document.getElementById("capillaryRefill");
-
-
-const mapEl =
-document.getElementById("map");
-
-const ppEl =
-document.getElementById("pulsePressure");
-
-const siEl =
-document.getElementById("shockIndex");
-
-const msiEl =
-document.getElementById("modifiedShockIndex");
-
-const clinicalStatus =
-document.getElementById("clinicalStatus");
+const cprSummary =
+document.getElementById("cprSummary");
 
 const transferStatus =
 document.getElementById("transferStatus");
@@ -507,24 +595,24 @@ document.getElementById("transferStatus");
    SUMMARY ELEMENTS
 ========================= */
 
-const summaryAge =
-document.getElementById("summaryAge");
+const ageDisplay =
+document.getElementById("ageDisplay");
 
-const summarySex =
-document.getElementById("summarySex");
+const sexDisplay =
+document.getElementById("sexDisplay");
 
-const summaryWeight =
-document.getElementById("summaryWeight");
+const weightDisplay =
+document.getElementById("weightDisplay");
 
-const summaryEmergencyWeight =
-document.getElementById("summaryEmergencyWeight");
+const resusWeightDisplay =
+document.getElementById("resusWeightDisplay");
 
 
 /* =========================
    HELPERS
 ========================= */
 
-function num(value){
+function number(value){
 
     const x = parseFloat(value);
 
@@ -533,26 +621,15 @@ function num(value){
 }
 
 
-function format(value, decimals=1){
-
-    if(value === null || !Number.isFinite(value)){
-        return "—";
-    }
-
-    return value.toFixed(decimals);
-
-}
-
-
 /* =========================
-   PATIENT DATA
+   LOAD PATIENT DATA
 ========================= */
 
 function getPatientData(){
 
     let data = null;
 
-    /* URL */
+    /* URL DATA */
 
     try{
 
@@ -573,13 +650,14 @@ function getPatientData(){
     }catch(e){}
 
 
-    /* SESSION STORAGE */
-
     const keys = [
         "emergencyPatientData",
-        "pediatricPatientData",
-        "patientData"
+        "patientData",
+        "pediatricPatientData"
     ];
+
+
+    /* SESSION */
 
     for(const key of keys){
 
@@ -601,7 +679,7 @@ function getPatientData(){
     }
 
 
-    /* LOCAL STORAGE */
+    /* LOCAL */
 
     for(const key of keys){
 
@@ -628,19 +706,21 @@ function getPatientData(){
 
 
 /* =========================
-   SUMMARY
+   DISPLAY PATIENT
 ========================= */
 
-function updateSummary(data){
+function displayPatient(data){
 
     if(!data){
+
         return;
+
     }
 
 
     if(data.age != null){
 
-        summaryAge.textContent =
+        ageDisplay.textContent =
         data.age + " years";
 
     }
@@ -648,7 +728,7 @@ function updateSummary(data){
 
     if(data.sex){
 
-        summarySex.textContent =
+        sexDisplay.textContent =
         data.sex === "male"
         ? "Male"
         : data.sex === "female"
@@ -660,16 +740,38 @@ function updateSummary(data){
 
     if(data.weight != null){
 
-        summaryWeight.textContent =
-        Number(data.weight).toFixed(1) + " kg";
+        weightDisplay.textContent =
+        Number(data.weight).toFixed(1) +
+        " kg";
 
     }
 
 
-    if(data.emergencyWeight != null){
+    const rw =
+    number(data.emergencyWeight);
 
-        summaryEmergencyWeight.textContent =
-        Number(data.emergencyWeight).toFixed(1) + " kg";
+
+    if(rw !== null && rw > 0){
+
+        resusWeightDisplay.textContent =
+        rw.toFixed(1) + " kg";
+
+        weightCalc.textContent =
+        rw.toFixed(1) + " kg";
+
+        weightStatus.textContent =
+        "Available";
+
+    }else{
+
+        resusWeightDisplay.textContent =
+        "Not available";
+
+        weightCalc.textContent =
+        "—";
+
+        weightStatus.textContent =
+        "Required";
 
     }
 
@@ -677,104 +779,123 @@ function updateSummary(data){
 
 
 /* =========================
-   CALCULATIONS
+   CPR CALCULATION
 ========================= */
 
-function calculate(){
+function calculateCPR(){
 
-    const hr = num(heartRate.value);
+    const rescuers =
+    rescuerNumber.value;
 
-    const sbp = num(systolic.value);
+    const maturityGroup =
+    maturity.value;
 
-    const dbp = num(diastolic.value);
-
-
-    /* MAP */
-
-    let map = null;
-
-    if(
-        sbp !== null &&
-        dbp !== null &&
-        sbp >= dbp
-    ){
-
-        map =
-        dbp + ((sbp - dbp) / 3);
-
-    }
+    const airway =
+    advancedAirway.value;
 
 
-    /* Pulse Pressure */
+    /* ADVANCED AIRWAY */
 
-    let pp = null;
+    if(airway === "yes"){
 
-    if(
-        sbp !== null &&
-        dbp !== null &&
-        sbp >= dbp
-    ){
+        ratioEl.textContent =
+        "Continuous";
 
-        pp = sbp - dbp;
+        compressionCycleEl.textContent =
+        "Continuous";
 
-    }
+        ventilationCycleEl.textContent =
+        "1 breath";
 
+        cyclesTwoMinEl.textContent =
+        "N/A";
 
-    /* Shock Index */
+        document.getElementById(
+            "airwayCompression"
+        ).textContent =
+        "Continuous";
 
-    let si = null;
-
-    if(
-        hr !== null &&
-        sbp !== null &&
-        sbp > 0
-    ){
-
-        si = hr / sbp;
+        document.getElementById(
+            "airwayVentilation"
+        ).textContent =
+        "1 breath / 2–3 sec";
 
     }
 
 
-    /* Modified Shock Index */
+    /* NO ADVANCED AIRWAY */
 
-    let msi = null;
+    else{
 
-    if(
-        hr !== null &&
-        map !== null &&
-        map > 0
-    ){
+        let ratio = "30 : 2";
 
-        msi = hr / map;
+        let compressions = 30;
+
+        let ventilations = 2;
+
+
+        if(
+            rescuers === "2" &&
+            maturityGroup === "prepuberty"
+        ){
+
+            ratio = "15 : 2";
+
+            compressions = 15;
+
+            ventilations = 2;
+
+        }
+
+
+        ratioEl.textContent =
+        ratio;
+
+        compressionCycleEl.textContent =
+        compressions;
+
+        ventilationCycleEl.textContent =
+        ventilations;
+
+        document.getElementById(
+            "airwayCompression"
+        ).textContent =
+        "Not applicable";
+
+        document.getElementById(
+            "airwayVentilation"
+        ).textContent =
+        "Not applicable";
+
+
+        /*
+         Approximate cycle count.
+
+         A complete cycle is estimated using
+         a target rate of 110 compressions/min.
+        */
+
+        const compressionTime =
+        compressions / 110;
+
+        const ventilationTime =
+        ventilations * 2;
+
+        const cycleTime =
+        compressionTime +
+        ventilationTime;
+
+        const estimatedCycles =
+        Math.floor(120 / cycleTime);
+
+
+        cyclesTwoMinEl.textContent =
+        estimatedCycles;
 
     }
 
 
-    mapEl.textContent =
-    map !== null
-    ? format(map,1) + " mmHg"
-    : "—";
-
-
-    ppEl.textContent =
-    pp !== null
-    ? format(pp,1) + " mmHg"
-    : "—";
-
-
-    siEl.textContent =
-    si !== null
-    ? format(si,2)
-    : "—";
-
-
-    msiEl.textContent =
-    msi !== null
-    ? format(msi,2)
-    : "—";
-
-
-    updateClinicalStatus();
+    updateSummary();
 
     saveData();
 
@@ -782,215 +903,142 @@ function calculate(){
 
 
 /* =========================
-   CLINICAL STATUS
+   SUMMARY
 ========================= */
 
-function updateClinicalStatus(){
+function updateSummary(){
 
-    const findings = [];
+    const data =
+    getPatientData();
 
-    const hr = num(heartRate.value);
-    const rr = num(respRate.value);
-    const sbp = num(systolic.value);
-    const spo = num(spo2.value);
-    const g = num(gcs.value);
-
-
-    if(hr !== null){
-        findings.push(
-            "HR " + hr + " bpm"
-        );
-    }
+    const rw =
+    data
+    ? number(data.emergencyWeight)
+    : null;
 
 
-    if(rr !== null){
-        findings.push(
-            "RR " + rr + "/min"
-        );
-    }
-
-
-    if(sbp !== null){
-        findings.push(
-            "SBP " + sbp + " mmHg"
-        );
-    }
-
-
-    if(spo !== null){
-        findings.push(
-            "SpO₂ " + spo + "%"
-        );
-    }
-
-
-    if(g !== null){
-
-        findings.push(
-            "GCS " + g
-        );
-
-    }
-
-
-    if(findings.length === 0){
-
-        clinicalStatus.textContent =
-        "Enter vital signs and clinical findings.";
-
-        clinicalStatus.className =
-        "status";
-
-        return;
-
-    }
-
-
-    clinicalStatus.textContent =
-    "Recorded: " + findings.join(" • ");
-
-    clinicalStatus.className =
-    "status";
-
-
-    /* Clinical alerts */
-
-    const alerts = [];
+    let text =
+    "<strong>High-quality CPR:</strong> " +
+    "100–120 compressions/min, " +
+    "complete recoil, and minimal interruptions.";
 
 
     if(
-        mentalStatus.value === "unresponsive"
+        advancedAirway.value === "yes"
     ){
 
-        alerts.push(
-            "Unresponsive patient"
-        );
+        text +=
+        "<br><br>" +
+        "<strong>Advanced airway:</strong> " +
+        "continuous compressions with " +
+        "1 breath every 2–3 seconds.";
+
+    }else{
+
+        if(
+            rescuerNumber.value === "2" &&
+            maturity.value === "prepuberty"
+        ){
+
+            text +=
+            "<br><br>" +
+            "<strong>Compression : ventilation:</strong> " +
+            "15 : 2.";
+
+        }else{
+
+            text +=
+            "<br><br>" +
+            "<strong>Compression : ventilation:</strong> " +
+            "30 : 2.";
+
+        }
 
     }
 
 
-    if(
-        pulseQuality.value === "absent"
-    ){
+    if(rw !== null && rw > 0){
 
-        alerts.push(
-            "Absent peripheral pulse"
-        );
+        text +=
+        "<br><br>" +
+        "<strong>Resuscitation weight:</strong> " +
+        rw.toFixed(1) +
+        " kg.";
 
-    }
+    }else{
 
-
-    if(
-        capillaryRefill.value === "prolonged"
-    ){
-
-        alerts.push(
-            "Prolonged capillary refill"
-        );
+        text +=
+        "<br><br>" +
+        "<strong>Warning:</strong> " +
+        "Resuscitation weight is not available.";
 
     }
 
 
-    if(
-        spo !== null &&
-        spo < 90
-    ){
-
-        alerts.push(
-            "Low SpO₂"
-        );
-
-    }
-
-
-    if(
-        alerts.length > 0
-    ){
-
-        clinicalStatus.innerHTML +=
-        "<br><br><span class='alert'>" +
-        alerts.join(" • ") +
-        "</span>";
-
-    }
+    cprSummary.innerHTML =
+    text;
 
 }
 
 
 /* =========================
-   SAVE DATA
+   SAVE
 ========================= */
 
 function saveData(){
 
-    let patient = getPatientData() || {};
+    const patient =
+    getPatientData() || {};
 
 
     const data = {
 
         ...patient,
 
-        vitalSigns: {
+        cpr: {
 
-            heartRate:
-            num(heartRate.value),
+            rescuers:
+            rescuerNumber.value,
 
-            respiratoryRate:
-            num(respRate.value),
+            patientCategory:
+            maturity.value,
 
-            systolicBP:
-            num(systolic.value),
+            advancedAirway:
+            advancedAirway.value,
 
-            diastolicBP:
-            num(diastolic.value),
+            compressionRate:
+            "100–120/min",
 
-            SpO2:
-            num(spo2.value),
+            compressionDepth:
+            "≥ 1/3 AP chest diameter",
 
-            temperature:
-            num(temperature.value),
+            compressionVentilationRatio:
+            advancedAirway.value === "yes"
+            ? "Continuous + 1 breath every 2–3 sec"
+            : (
+                rescuerNumber.value === "2" &&
+                maturity.value === "prepuberty"
+                ? "15:2"
+                : "30:2"
+            ),
 
-            EtCO2:
-            num(etco2.value),
+            compressionCycle:
+            advancedAirway.value === "yes"
+            ? "Continuous"
+            : (
+                rescuerNumber.value === "2" &&
+                maturity.value === "prepuberty"
+                ? 15
+                : 30
+            ),
 
-            glucose:
-            num(glucose.value)
+            ventilationCycle:
+            advancedAirway.value === "yes"
+            ? "1 breath every 2–3 sec"
+            : 2,
 
-        },
-
-        neurologic: {
-
-            GCS:
-            num(gcs.value),
-
-            mentalStatus:
-            mentalStatus.value || null
-
-        },
-
-        perfusion: {
-
-            pulseQuality:
-            pulseQuality.value || null,
-
-            capillaryRefill:
-            capillaryRefill.value || null
-
-        },
-
-        calculated: {
-
-            MAP:
-            num(mapEl.textContent),
-
-            pulsePressure:
-            num(ppEl.textContent),
-
-            shockIndex:
-            num(siEl.textContent),
-
-            modifiedShockIndex:
-            num(msiEl.textContent)
+            rhythmCheck:
+            "Approximately every 2 min"
 
         }
 
@@ -1000,17 +1048,17 @@ function saveData(){
     try{
 
         sessionStorage.setItem(
-            "emergencyAssessmentData",
+            "emergencyCPRData",
             JSON.stringify(data)
         );
 
         localStorage.setItem(
-            "emergencyAssessmentData",
+            "emergencyCPRData",
             JSON.stringify(data)
         );
 
         transferStatus.textContent =
-        "Initial assessment data is ready for the next emergency/resuscitation stages.";
+        "CPR data is ready for the next emergency/resuscitation stages.";
 
     }catch(e){}
 
@@ -1018,10 +1066,10 @@ function saveData(){
 
 
 /* =========================
-   LOAD PREVIOUS ASSESSMENT
+   LOAD PREVIOUS CPR DATA
 ========================= */
 
-function loadAssessment(){
+function loadPreviousCPR(){
 
     let data = null;
 
@@ -1030,7 +1078,7 @@ function loadAssessment(){
 
         const stored =
         sessionStorage.getItem(
-            "emergencyAssessmentData"
+            "emergencyCPRData"
         );
 
         if(stored){
@@ -1046,7 +1094,7 @@ function loadAssessment(){
 
             const stored =
             localStorage.getItem(
-                "emergencyAssessmentData"
+                "emergencyCPRData"
             );
 
             if(stored){
@@ -1058,61 +1106,39 @@ function loadAssessment(){
     }
 
 
-    if(!data){
+    if(!data || !data.cpr){
+
         return;
+
     }
 
 
-    const v =
-    data.vitalSigns || {};
+    const cpr =
+    data.cpr;
 
 
-    if(v.heartRate != null)
-        heartRate.value = v.heartRate;
+    if(cpr.rescuers){
 
-    if(v.respiratoryRate != null)
-        respRate.value = v.respiratoryRate;
+        rescuerNumber.value =
+        cpr.rescuers;
 
-    if(v.systolicBP != null)
-        systolic.value = v.systolicBP;
-
-    if(v.diastolicBP != null)
-        diastolic.value = v.diastolicBP;
-
-    if(v.SpO2 != null)
-        spo2.value = v.SpO2;
-
-    if(v.temperature != null)
-        temperature.value = v.temperature;
-
-    if(v.EtCO2 != null)
-        etco2.value = v.EtCO2;
-
-    if(v.glucose != null)
-        glucose.value = v.glucose;
+    }
 
 
-    const n =
-    data.neurologic || {};
+    if(cpr.patientCategory){
+
+        maturity.value =
+        cpr.patientCategory;
+
+    }
 
 
-    if(n.GCS != null)
-        gcs.value = n.GCS;
+    if(cpr.advancedAirway){
 
-    if(n.mentalStatus)
-        mentalStatus.value = n.mentalStatus;
+        advancedAirway.value =
+        cpr.advancedAirway;
 
-
-    const p =
-    data.perfusion || {};
-
-
-    if(p.pulseQuality)
-        pulseQuality.value = p.pulseQuality;
-
-    if(p.capillaryRefill)
-        capillaryRefill.value =
-        p.capillaryRefill;
+    }
 
 }
 
@@ -1122,46 +1148,32 @@ function loadAssessment(){
 ========================= */
 
 [
-    heartRate,
-    respRate,
-    systolic,
-    diastolic,
-    spo2,
-    temperature,
-    etco2,
-    glucose,
-    gcs,
-    mentalStatus,
-    pulseQuality,
-    capillaryRefill
+    rescuerNumber,
+    maturity,
+    advancedAirway
 
 ].forEach(el => {
 
     el.addEventListener(
-        "input",
-        calculate
-    );
-
-    el.addEventListener(
         "change",
-        calculate
+        calculateCPR
     );
 
 });
 
 
 /* =========================
-   INITIALIZE
+   INIT
 ========================= */
 
 const patientData =
 getPatientData();
 
-updateSummary(patientData);
+displayPatient(patientData);
 
-loadAssessment();
+loadPreviousCPR();
 
-calculate();
+calculateCPR();
 
 })();
 
@@ -1169,3 +1181,4 @@ calculate();
 
 </body>
 </html>
+```
