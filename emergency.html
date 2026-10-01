@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Emergency & Resuscitation Calculator — Stage 3</title>
+<title>Emergency & Resuscitation Calculator — Stage 4</title>
 
 <style>
 *{box-sizing:border-box}
@@ -120,32 +120,23 @@ input,select{
     line-height:1.6;
 }
 
-.drug-card{
+.mode-card{
     border:1px solid #dbe4e9;
     border-radius:13px;
     padding:14px;
     margin-top:12px;
 }
 
-.drug-name{
+.mode-title{
     font-size:17px;
     font-weight:700;
     margin-bottom:8px;
 }
 
-.dose{
-    font-size:14px;
-    color:#536a77;
-    line-height:1.5;
-}
-
-.calculated{
-    margin-top:10px;
-    padding:11px;
-    background:#f0f6f3;
-    border-radius:9px;
-    font-size:15px;
-    line-height:1.55;
+.small{
+    font-size:12px;
+    color:#6c7e88;
+    margin-top:7px;
 }
 
 .alert{
@@ -153,10 +144,9 @@ input,select{
     font-weight:600;
 }
 
-.small{
-    font-size:12px;
-    color:#6c7e88;
-    margin-top:7px;
+.ok{
+    color:#28734a;
+    font-weight:600;
 }
 
 @media(max-width:520px){
@@ -174,7 +164,7 @@ input,select{
 <h1>🚑 Emergency & Resuscitation Calculator</h1>
 
 <div class="subtitle">
-Stage 3 — Emergency Drugs
+Stage 4 — Defibrillation / Cardioversion
 </div>
 
 
@@ -211,7 +201,7 @@ Stage 3 — Emergency Drugs
 </div>
 
 <div class="note" style="margin-top:12px">
-All weight-based drug calculations use the
+All energy calculations in this stage use the
 <strong>Resuscitation Weight</strong> from Stage 1.
 </div>
 
@@ -219,45 +209,31 @@ All weight-based drug calculations use the
 
 
 <!-- =========================
-     DRUG SELECTION
+     MODE
 ========================= -->
 
 <div class="card">
 
-<h2>Emergency Drug</h2>
+<h2>Electrical Therapy</h2>
 
 <div class="field">
 
-<label for="drugSelect">
-Select medication
+<label for="mode">
+Select mode
 </label>
 
-<select id="drugSelect">
+<select id="mode">
 
-<option value="">Select drug</option>
-
-<option value="epinephrine">
-Epinephrine
+<option value="">
+Select
 </option>
 
-<option value="amiodarone">
-Amiodarone
+<option value="defibrillation">
+Defibrillation — VF / pulseless VT
 </option>
 
-<option value="lidocaine">
-Lidocaine
-</option>
-
-<option value="atropine">
-Atropine
-</option>
-
-<option value="adenosine1">
-Adenosine — First Dose
-</option>
-
-<option value="adenosine2">
-Adenosine — Second Dose
+<option value="cardioversion">
+Synchronized Cardioversion — Tachyarrhythmia with pulse
 </option>
 
 </select>
@@ -268,39 +244,71 @@ Adenosine — Second Dose
 
 
 <!-- =========================
-     CONCENTRATION
+     DEFIBRILLATION
 ========================= -->
 
-<div class="card">
+<div class="card" id="defibCard">
 
-<h2>Drug Concentration</h2>
+<h2>Defibrillation</h2>
 
 <div class="grid">
 
 <div class="field">
 
-<label for="concentration">
-Concentration (mg/mL)
+<label for="defibShock">
+Shock Number
 </label>
 
-<input
-id="concentration"
-type="number"
-min="0"
-step="0.001"
-placeholder="e.g. 0.1">
+<select id="defibShock">
+
+<option value="1">
+First Shock
+</option>
+
+<option value="2">
+Second Shock
+</option>
+
+<option value="3">
+Subsequent Shock
+</option>
+
+</select>
 
 </div>
 
+
 <div class="field">
 
-<label>
-Dose Unit
+<label for="defibEnergyPerKg">
+Energy
 </label>
 
-<select id="doseUnit">
+<select id="defibEnergyPerKg">
 
-<option value="mg">mg</option>
+<option value="2">
+2 J/kg
+</option>
+
+<option value="4">
+4 J/kg
+</option>
+
+<option value="5">
+5 J/kg
+</option>
+
+<option value="6">
+6 J/kg
+</option>
+
+<option value="8">
+8 J/kg
+</option>
+
+<option value="10">
+10 J/kg
+</option>
 
 </select>
 
@@ -309,149 +317,156 @@ Dose Unit
 </div>
 
 <div class="note" style="margin-top:12px">
-Enter the concentration of the preparation actually available.
-The calculator does not assume that your local ampoule or syringe
-has a particular concentration.
+2025 PALS: first shock 2 J/kg; second shock 4 J/kg;
+subsequent shocks ≥4 J/kg, not exceeding 10 J/kg or the
+adult maximum dose.
 </div>
 
 </div>
 
 
 <!-- =========================
-     CALCULATED DOSE
+     CARDIOVERSION
+========================= -->
+
+<div class="card" id="cardioversionCard">
+
+<h2>Synchronized Cardioversion</h2>
+
+<div class="grid">
+
+<div class="field">
+
+<label for="cvStep">
+Cardioversion Step
+</label>
+
+<select id="cvStep">
+
+<option value="0.5">
+Initial — 0.5 J/kg
+</option>
+
+<option value="1">
+Initial — 1 J/kg
+</option>
+
+<option value="2">
+Escalated — 2 J/kg
+</option>
+
+</select>
+
+</div>
+
+<div class="field">
+
+<label for="syncCheck">
+Synchronization
+</label>
+
+<select id="syncCheck">
+
+<option value="yes">
+SYNC — Confirmed
+</option>
+
+<option value="no">
+Not Confirmed
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+<div class="note" style="margin-top:12px">
+Begin with 0.5–1 J/kg. If ineffective, increase to 2 J/kg.
+Sedation may be considered when appropriate but should not
+delay cardioversion when urgently indicated.
+</div>
+
+</div>
+
+
+<!-- =========================
+     CALCULATION
 ========================= -->
 
 <div class="card">
 
-<h2>Calculated Dose</h2>
+<h2>Calculated Energy</h2>
 
 <div class="results">
 
 <div class="result">
-<div class="label">Weight</div>
-<div class="value" id="doseWeight">—</div>
+<div class="label">Resuscitation Weight</div>
+<div class="value" id="calcWeight">—</div>
 </div>
 
 <div class="result">
-<div class="label">Recommended Dose</div>
-<div class="value" id="dosePerKg">—</div>
+<div class="label">Energy Dose</div>
+<div class="value" id="energyPerKg">—</div>
 </div>
 
 <div class="result highlight">
-<div class="label">Calculated Dose</div>
-<div class="value" id="totalDose">—</div>
+<div class="label">Calculated Energy</div>
+<div class="value" id="calculatedEnergy">—</div>
 </div>
 
-<div class="result highlight">
-<div class="label">Maximum Dose</div>
-<div class="value" id="maxDose">—</div>
+<div class="result">
+<div class="label">Energy Limit</div>
+<div class="value" id="energyLimit">—</div>
 </div>
 
-</div>
-
-<div class="calculated" id="volumeResult">
-Volume: —
-</div>
-
-<div class="small" id="doseNote">
-Select a medication.
 </div>
 
 </div>
 
 
 <!-- =========================
-     QUICK REFERENCE
+     SHOCK PLAN
 ========================= -->
 
 <div class="card">
 
-<h2>PALS Emergency Drug Reference</h2>
+<h2>Suggested Energy Sequence</h2>
 
+<div class="results">
 
-<div class="drug-card">
-
-<div class="drug-name">
-Epinephrine
+<div class="result">
+<div class="label">Defibrillation #1</div>
+<div class="value" id="shock1">—</div>
 </div>
 
-<div class="dose">
-IV/IO: <strong>0.01 mg/kg</strong><br>
-Concentration referenced by PALS: <strong>0.1 mg/mL</strong><br>
-Maximum dose: <strong>1 mg</strong><br>
-Repeat: every <strong>3–5 min</strong> during cardiac arrest
+<div class="result">
+<div class="label">Defibrillation #2</div>
+<div class="value" id="shock2">—</div>
 </div>
 
+<div class="result">
+<div class="label">Subsequent</div>
+<div class="value" id="shock3">—</div>
 </div>
 
-
-<div class="drug-card">
-
-<div class="drug-name">
-Amiodarone
-</div>
-
-<div class="dose">
-IV/IO: <strong>5 mg/kg</strong> bolus<br>
-Maximum initial dose: <strong>300 mg</strong><br>
-For subsequent doses, maximum: <strong>150 mg</strong>
+<div class="result">
+<div class="label">Cardioversion Initial</div>
+<div class="value" id="cvInitial">—</div>
 </div>
 
 </div>
 
-
-<div class="drug-card">
-
-<div class="drug-name">
-Lidocaine
-</div>
-
-<div class="dose">
-IV/IO: <strong>1 mg/kg</strong>
-</div>
-
-</div>
-
-
-<div class="drug-card">
-
-<div class="drug-name">
-Atropine
-</div>
-
-<div class="dose">
-IV/IO: <strong>0.02 mg/kg</strong><br>
-May repeat once<br>
-Minimum dose: <strong>0.1 mg</strong><br>
-Maximum single dose: <strong>0.5 mg</strong>
-</div>
-
-</div>
-
-
-<div class="drug-card">
-
-<div class="drug-name">
-Adenosine
-</div>
-
-<div class="dose">
-First IV/IO dose:
-<strong>0.1 mg/kg</strong>, maximum <strong>6 mg</strong><br><br>
-
-Second IV/IO dose:
-<strong>0.2 mg/kg</strong>, maximum <strong>12 mg</strong><br><br>
-
-Rapid push followed by IV flush.
-</div>
-
+<div class="small">
+These are weight-based calculated energy settings, not a substitute
+for the actual resuscitation algorithm or device-specific limits.
 </div>
 
 </div>
 
 
 <!-- =========================
-     SAFETY CHECK
+     SAFETY
 ========================= -->
 
 <div class="card">
@@ -459,9 +474,7 @@ Rapid push followed by IV flush.
 <h2>Safety Check</h2>
 
 <div class="status" id="safetyStatus">
-
-Waiting for drug selection and patient weight.
-
+Select an electrical therapy mode.
 </div>
 
 </div>
@@ -476,10 +489,8 @@ Waiting for drug selection and patient weight.
 <h2>Data Transfer</h2>
 
 <div class="note" id="transferStatus">
-
-Emergency drug calculation data will be available
-to the final resuscitation summary.
-
+Electrical therapy calculations will be available
+to the Final Resuscitation Summary.
 </div>
 
 </div>
@@ -495,13 +506,16 @@ to the final resuscitation summary.
 
 <strong>Important:</strong><br><br>
 
-This calculator is intended as a clinical calculation aid.
-Always verify the medication, concentration, route, dose,
-maximum dose, and indication against the current PALS/ALS
-algorithm and local medication protocol before administration.
+This calculator is a clinical calculation aid only.
 
-Do not rely on a calculated volume without confirming the
-actual concentration of the preparation in hand.
+Before delivering a shock, verify the rhythm, patient weight,
+energy setting, defibrillator mode, pad placement, synchronization
+status when applicable, and device-specific maximum energy.
+
+For synchronized cardioversion, confirm that the defibrillator
+is actually synchronized to the QRS complex before shock delivery.
+
+Do not delay life-saving treatment while entering data into this calculator.
 
 </div>
 
@@ -518,29 +532,50 @@ actual concentration of the preparation in hand.
    ELEMENTS
 ========================= */
 
-const drugSelect =
-document.getElementById("drugSelect");
+const mode =
+document.getElementById("mode");
 
-const concentration =
-document.getElementById("concentration");
+const defibShock =
+document.getElementById("defibShock");
 
-const doseWeight =
-document.getElementById("doseWeight");
+const defibEnergyPerKg =
+document.getElementById("defibEnergyPerKg");
 
-const dosePerKg =
-document.getElementById("dosePerKg");
+const cvStep =
+document.getElementById("cvStep");
 
-const totalDose =
-document.getElementById("totalDose");
+const syncCheck =
+document.getElementById("syncCheck");
 
-const maxDose =
-document.getElementById("maxDose");
+const defibCard =
+document.getElementById("defibCard");
 
-const volumeResult =
-document.getElementById("volumeResult");
+const cardioversionCard =
+document.getElementById("cardioversionCard");
 
-const doseNote =
-document.getElementById("doseNote");
+const calcWeight =
+document.getElementById("calcWeight");
+
+const energyPerKg =
+document.getElementById("energyPerKg");
+
+const calculatedEnergy =
+document.getElementById("calculatedEnergy");
+
+const energyLimit =
+document.getElementById("energyLimit");
+
+const shock1 =
+document.getElementById("shock1");
+
+const shock2 =
+document.getElementById("shock2");
+
+const shock3 =
+document.getElementById("shock3");
+
+const cvInitial =
+document.getElementById("cvInitial");
 
 const safetyStatus =
 document.getElementById("safetyStatus");
@@ -550,7 +585,7 @@ document.getElementById("transferStatus");
 
 
 /* =========================
-   SUMMARY
+   PATIENT SUMMARY
 ========================= */
 
 const ageDisplay =
@@ -567,113 +602,7 @@ document.getElementById("resusWeightDisplay");
 
 
 /* =========================
-   DRUG DATABASE
-========================= */
-
-const drugs = {
-
-    epinephrine: {
-
-        name:"Epinephrine",
-
-        dose:0.01,
-
-        unit:"mg/kg",
-
-        max:1,
-
-        note:
-        "IV/IO cardiac arrest dose. PALS reference concentration: 0.1 mg/mL. Repeat every 3–5 minutes during cardiac arrest."
-
-    },
-
-
-    amiodarone: {
-
-        name:"Amiodarone",
-
-        dose:5,
-
-        unit:"mg/kg",
-
-        max:300,
-
-        note:
-        "IV/IO dose for shock-refractory VF/pVT. Subsequent doses have a maximum of 150 mg."
-
-    },
-
-
-    lidocaine: {
-
-        name:"Lidocaine",
-
-        dose:1,
-
-        unit:"mg/kg",
-
-        max:null,
-
-        note:
-        "IV/IO antiarrhythmic option for shock-refractory VF/pVT."
-
-    },
-
-
-    atropine: {
-
-        name:"Atropine",
-
-        dose:0.02,
-
-        unit:"mg/kg",
-
-        min:0.1,
-
-        max:0.5,
-
-        note:
-        "IV/IO dose for bradycardia associated with increased vagal tone or primary AV block. May repeat once."
-
-    },
-
-
-    adenosine1: {
-
-        name:"Adenosine — First Dose",
-
-        dose:0.1,
-
-        unit:"mg/kg",
-
-        max:6,
-
-        note:
-        "Rapid IV/IO push followed immediately by IV flush."
-
-    },
-
-
-    adenosine2: {
-
-        name:"Adenosine — Second Dose",
-
-        dose:0.2,
-
-        unit:"mg/kg",
-
-        max:12,
-
-        note:
-        "Consider repeat rapid IV/IO push followed immediately by IV flush."
-
-    }
-
-};
-
-
-/* =========================
-   NUMBER HELPER
+   HELPERS
 ========================= */
 
 function num(value){
@@ -689,7 +618,7 @@ function num(value){
 
 
 /* =========================
-   GET PATIENT DATA
+   PATIENT DATA
 ========================= */
 
 function getPatientData(){
@@ -723,11 +652,9 @@ function getPatientData(){
     const keys = [
 
         "emergencyPatientData",
-
         "emergencyCPRData",
-
+        "emergencyDrugData",
         "patientData",
-
         "pediatricPatientData"
 
     ];
@@ -783,6 +710,23 @@ function getPatientData(){
     }
 
 
+    /*
+     * If emergencyDrugData or emergencyCPRData
+     * is loaded, patient information may be nested.
+     */
+
+    if(
+        data &&
+        data.patient &&
+        !data.emergencyWeight
+    ){
+
+        data =
+        data.patient;
+
+    }
+
+
     return data;
 
 }
@@ -824,8 +768,8 @@ function displayPatient(data){
     if(data.weight != null){
 
         weightDisplay.textContent =
-        Number(data.weight).toFixed(1) +
-        " kg";
+        Number(data.weight).toFixed(1)
+        + " kg";
 
     }
 
@@ -850,94 +794,175 @@ function displayPatient(data){
 
 
 /* =========================
-   CALCULATE
+   SHOW / HIDE MODE CARDS
 ========================= */
 
-function calculate(){
+function updateMode(){
 
-    const selected =
-    drugSelect.value;
+    if(mode.value === "defibrillation"){
 
-    const drug =
-    drugs[selected];
+        defibCard.style.display =
+        "block";
 
-    const data =
-    getPatientData();
-
-
-    let weight = null;
-
-
-    if(data){
-
-        weight =
-        num(data.emergencyWeight);
+        cardioversionCard.style.display =
+        "none";
 
     }
 
+    else if(mode.value === "cardioversion"){
 
-    doseWeight.textContent =
-    weight !== null
-    ? weight.toFixed(1) + " kg"
-    : "—";
+        defibCard.style.display =
+        "none";
+
+        cardioversionCard.style.display =
+        "block";
+
+    }
+
+    else{
+
+        defibCard.style.display =
+        "none";
+
+        cardioversionCard.style.display =
+        "none";
+
+    }
+
+    calculate();
+
+}
 
 
-    if(!drug){
+/* =========================
+   ENERGY SEQUENCE
+========================= */
 
-        dosePerKg.textContent =
-        "—";
+function calculateSequence(weight){
 
-        totalDose.textContent =
-        "—";
+    if(
+        weight === null ||
+        weight <= 0
+    ){
 
-        maxDose.textContent =
-        "—";
-
-        volumeResult.textContent =
-        "Volume: —";
-
-        doseNote.textContent =
-        "Select a medication.";
-
-        safetyStatus.textContent =
-        "Waiting for drug selection and patient weight.";
+        shock1.textContent = "—";
+        shock2.textContent = "—";
+        shock3.textContent = "—";
+        cvInitial.textContent = "—";
 
         return;
 
     }
 
 
-    dosePerKg.textContent =
-    drug.dose +
-    " " +
-    drug.unit;
+    /*
+     * PALS 2025:
+     * First shock = 2 J/kg
+     * Second shock = 4 J/kg
+     * Subsequent = >=4 J/kg
+     * Maximum = 10 J/kg
+     */
+
+    shock1.textContent =
+    Math.min(
+        weight * 2,
+        weight * 10
+    ).toFixed(1) + " J";
 
 
-    if(drug.max !== null){
+    shock2.textContent =
+    Math.min(
+        weight * 4,
+        weight * 10
+    ).toFixed(1) + " J";
 
-        maxDose.textContent =
-        drug.max + " mg";
 
-    }else{
+    shock3.textContent =
+    "≥ " +
+    (weight * 4).toFixed(1) +
+    " J";
 
-        maxDose.textContent =
-        "No PALS maximum specified";
+
+    /*
+     * Initial synchronized cardioversion:
+     * 0.5–1 J/kg
+     */
+
+    cvInitial.textContent =
+    (weight * 0.5).toFixed(1) +
+    "–" +
+    (weight * 1).toFixed(1) +
+    " J";
+
+}
+
+
+/* =========================
+   MAIN CALCULATION
+========================= */
+
+function calculate(){
+
+    const data =
+    getPatientData();
+
+
+    const weight =
+    data
+    ? num(data.emergencyWeight)
+    : null;
+
+
+    calcWeight.textContent =
+    weight !== null && weight > 0
+    ? weight.toFixed(1) + " kg"
+    : "Not available";
+
+
+    calculateSequence(weight);
+
+
+    /* No mode selected */
+
+    if(!mode.value){
+
+        energyPerKg.textContent =
+        "—";
+
+        calculatedEnergy.textContent =
+        "—";
+
+        energyLimit.textContent =
+        "—";
+
+        safetyStatus.textContent =
+        "Select an electrical therapy mode.";
+
+        return;
 
     }
 
 
-    if(weight === null || weight <= 0){
+    /* Weight missing */
 
-        totalDose.textContent =
+    if(
+        weight === null ||
+        weight <= 0
+    ){
+
+        energyPerKg.textContent =
         "Weight required";
 
-        volumeResult.textContent =
-        "Volume: —";
+        calculatedEnergy.textContent =
+        "—";
+
+        energyLimit.textContent =
+        "—";
 
         safetyStatus.innerHTML =
         "<span class='alert'>" +
         "Resuscitation weight is unavailable. " +
-        "Do not calculate a weight-based dose until weight is confirmed." +
+        "Confirm patient weight before calculating energy." +
         "</span>";
 
         return;
@@ -945,115 +970,154 @@ function calculate(){
     }
 
 
-    let calculatedDose =
-    weight * drug.dose;
-
-
-    let doseAfterMax =
-    calculatedDose;
-
-
-    let maxApplied = false;
-
+    /* =========================
+       DEFIBRILLATION
+    ========================= */
 
     if(
-        drug.max !== null &&
-        calculatedDose > drug.max
+        mode.value === "defibrillation"
     ){
 
-        doseAfterMax =
-        drug.max;
+        const jkg =
+        num(defibEnergyPerKg.value);
 
-        maxApplied = true;
+
+        let energy =
+        weight * jkg;
+
+
+        /*
+         * Maximum weight-based PALS energy:
+         * 10 J/kg.
+         */
+
+        const maximum =
+        weight * 10;
+
+
+        if(energy > maximum){
+
+            energy =
+            maximum;
+
+        }
+
+
+        energyPerKg.textContent =
+        jkg + " J/kg";
+
+
+        calculatedEnergy.textContent =
+        energy.toFixed(1) + " J";
+
+
+        energyLimit.textContent =
+        maximum.toFixed(1) +
+        " J (10 J/kg)";
+
+
+        let shockText;
+
+
+        if(
+            defibShock.value === "1"
+        ){
+
+            shockText =
+            "First shock: 2 J/kg is the standard initial teaching dose.";
+
+        }
+
+        else if(
+            defibShock.value === "2"
+        ){
+
+            shockText =
+            "Second shock: 4 J/kg.";
+
+        }
+
+        else{
+
+            shockText =
+            "Subsequent shock: ≥4 J/kg; do not exceed 10 J/kg or the adult maximum.";
+
+        }
+
+
+        safetyStatus.innerHTML =
+        "<strong>Defibrillation</strong><br><br>" +
+        shockText +
+        "<br><br>" +
+        "Calculated setting: " +
+        energy.toFixed(1) +
+        " J.";
+
+
+        saveData();
+
+        return;
 
     }
 
+
+    /* =========================
+       CARDIOVERSION
+    ========================= */
 
     if(
-        drug.min !== undefined &&
-        doseAfterMax < drug.min
+        mode.value === "cardioversion"
     ){
 
-        doseAfterMax =
-        drug.min;
+        const jkg =
+        num(cvStep.value);
+
+
+        const energy =
+        weight * jkg;
+
+
+        energyPerKg.textContent =
+        jkg + " J/kg";
+
+
+        calculatedEnergy.textContent =
+        energy.toFixed(1) + " J";
+
+
+        energyLimit.textContent =
+        (weight * 2).toFixed(1) +
+        " J (2 J/kg)" ;
+
+
+        if(
+            syncCheck.value === "no"
+        ){
+
+            safetyStatus.innerHTML =
+            "<span class='alert'>" +
+            "SYNC is not confirmed. Do NOT deliver synchronized cardioversion until synchronization is verified on the defibrillator." +
+            "</span>";
+
+        }else{
+
+            safetyStatus.innerHTML =
+            "<strong>Synchronized Cardioversion</strong><br><br>" +
+
+            "Calculated setting: " +
+            energy.toFixed(1) +
+            " J (" +
+            jkg +
+            " J/kg).<br><br>" +
+
+            "Confirm synchronization with the QRS complex before shock delivery.";
+
+        }
+
+
+        saveData();
 
     }
-
-
-    totalDose.textContent =
-    doseAfterMax.toFixed(3) +
-    " mg";
-
-
-    /* VOLUME */
-
-    const conc =
-    num(concentration.value);
-
-
-    if(conc !== null && conc > 0){
-
-        const volume =
-        doseAfterMax / conc;
-
-
-        volumeResult.innerHTML =
-        "<strong>Volume:</strong> " +
-        volume.toFixed(2) +
-        " mL";
-
-    }else{
-
-        volumeResult.innerHTML =
-        "<strong>Volume:</strong> Enter actual concentration";
-
-    }
-
-
-    let note =
-    drug.note;
-
-
-    if(maxApplied){
-
-        note +=
-        " The calculated weight-based dose exceeded the PALS maximum, so the maximum dose was applied.";
-
-    }
-
-
-    if(
-        drug.min !== undefined &&
-        calculatedDose < drug.min
-    ){
-
-        note +=
-        " The calculated dose was below the specified minimum, so the minimum dose was applied.";
-
-    }
-
-
-    doseNote.textContent =
-    note;
-
-
-    safetyStatus.innerHTML =
-    "<strong>" +
-    drug.name +
-    "</strong><br>" +
-
-    "Weight: " +
-    weight.toFixed(1) +
-    " kg<br>" +
-
-    "Calculated dose: " +
-    doseAfterMax.toFixed(3) +
-    " mg<br>" +
-
-    "Verify indication, route, concentration and maximum dose before administration.";
-
-
-    saveData();
 
 }
 
@@ -1064,111 +1128,59 @@ function calculate(){
 
 function saveData(){
 
-    const selected =
-    drugSelect.value;
-
-    const drug =
-    drugs[selected];
-
-    const data =
+    const patient =
     getPatientData() || {};
 
 
-    if(!drug){
-
-        return;
-
-    }
-
-
     const weight =
-    num(data.emergencyWeight);
+    num(patient.emergencyWeight);
 
 
-    let calculatedDose =
-    null;
+    const result = {
 
+        patient:patient,
 
-    if(
-        weight !== null &&
-        weight > 0
-    ){
+        electricalTherapy:{
 
-        calculatedDose =
-        weight * drug.dose;
+            mode:
+            mode.value || null,
 
+            resuscitationWeight:
+            weight,
 
-        if(
-            drug.max !== null &&
-            calculatedDose > drug.max
-        ){
+            defibrillation:{
 
-            calculatedDose =
-            drug.max;
+                shockNumber:
+                defibShock.value,
 
-        }
+                selectedJPerKg:
+                num(defibEnergyPerKg.value),
 
+                calculatedEnergy:
+                mode.value === "defibrillation" &&
+                weight !== null
+                ? weight *
+                  num(defibEnergyPerKg.value)
+                : null
 
-        if(
-            drug.min !== undefined &&
-            calculatedDose < drug.min
-        ){
+            },
 
-            calculatedDose =
-            drug.min;
+            cardioversion:{
 
-        }
+                selectedJPerKg:
+                num(cvStep.value),
 
-    }
+                synchronizationConfirmed:
+                syncCheck.value === "yes",
 
+                calculatedEnergy:
+                mode.value === "cardioversion" &&
+                weight !== null
+                ? weight *
+                  num(cvStep.value)
+                : null
 
-    const conc =
-    num(concentration.value);
-
-
-    let volume = null;
-
-
-    if(
-        calculatedDose !== null &&
-        conc !== null &&
-        conc > 0
-    ){
-
-        volume =
-        calculatedDose / conc;
-
-    }
-
-
-    const emergencyDrugData = {
-
-        patient: data,
-
-        drug: {
-
-            id:selected,
-
-            name:drug.name,
-
-            dosePerKg:drug.dose,
-
-            doseUnit:drug.unit,
-
-            maximumDose:drug.max,
-
-            minimumDose:
-            drug.min !== undefined
-            ? drug.min
-            : null,
-
-            concentration:conc,
-
-            calculatedDose:
-            calculatedDose,
-
-            calculatedVolume:
-            volume
+            }
 
         }
 
@@ -1178,22 +1190,18 @@ function saveData(){
     try{
 
         sessionStorage.setItem(
-            "emergencyDrugData",
-            JSON.stringify(
-                emergencyDrugData
-            )
+            "emergencyElectricalData",
+            JSON.stringify(result)
         );
 
         localStorage.setItem(
-            "emergencyDrugData",
-            JSON.stringify(
-                emergencyDrugData
-            )
+            "emergencyElectricalData",
+            JSON.stringify(result)
         );
 
 
         transferStatus.textContent =
-        "Emergency drug calculation is ready for the Final Resuscitation Summary.";
+        "Electrical therapy calculations are ready for the Final Resuscitation Summary.";
 
     }catch(e){}
 
@@ -1201,7 +1209,7 @@ function saveData(){
 
 
 /* =========================
-   LOAD PREVIOUS
+   LOAD PREVIOUS DATA
 ========================= */
 
 function loadPrevious(){
@@ -1213,7 +1221,7 @@ function loadPrevious(){
 
         const stored =
         sessionStorage.getItem(
-            "emergencyDrugData"
+            "emergencyElectricalData"
         );
 
         if(stored){
@@ -1232,7 +1240,7 @@ function loadPrevious(){
 
             const stored =
             localStorage.getItem(
-                "emergencyDrugData"
+                "emergencyElectricalData"
             );
 
             if(stored){
@@ -1249,7 +1257,7 @@ function loadPrevious(){
 
     if(
         !data ||
-        !data.drug
+        !data.electricalTherapy
     ){
 
         return;
@@ -1257,20 +1265,61 @@ function loadPrevious(){
     }
 
 
-    if(data.drug.id){
+    const e =
+    data.electricalTherapy;
 
-        drugSelect.value =
-        data.drug.id;
+
+    if(e.mode){
+
+        mode.value =
+        e.mode;
 
     }
 
 
     if(
-        data.drug.concentration != null
+        e.defibrillation &&
+        e.defibrillation.shockNumber
     ){
 
-        concentration.value =
-        data.drug.concentration;
+        defibShock.value =
+        e.defibrillation.shockNumber;
+
+    }
+
+
+    if(
+        e.defibrillation &&
+        e.defibrillation.selectedJPerKg
+    ){
+
+        defibEnergyPerKg.value =
+        e.defibrillation.selectedJPerKg;
+
+    }
+
+
+    if(
+        e.cardioversion &&
+        e.cardioversion.selectedJPerKg
+    ){
+
+        cvStep.value =
+        e.cardioversion.selectedJPerKg;
+
+    }
+
+
+    if(
+        e.cardioversion &&
+        e.cardioversion.synchronizationConfirmed
+        !== undefined
+    ){
+
+        syncCheck.value =
+        e.cardioversion.synchronizationConfirmed
+        ? "yes"
+        : "no";
 
     }
 
@@ -1281,19 +1330,34 @@ function loadPrevious(){
    EVENTS
 ========================= */
 
-drugSelect.addEventListener(
+mode.addEventListener(
+    "change",
+    updateMode
+);
+
+defibShock.addEventListener(
     "change",
     calculate
 );
 
-concentration.addEventListener(
-    "input",
+defibEnergyPerKg.addEventListener(
+    "change",
+    calculate
+);
+
+cvStep.addEventListener(
+    "change",
+    calculate
+);
+
+syncCheck.addEventListener(
+    "change",
     calculate
 );
 
 
 /* =========================
-   INITIALIZE
+   INIT
 ========================= */
 
 const patientData =
@@ -1303,7 +1367,7 @@ displayPatient(patientData);
 
 loadPrevious();
 
-calculate();
+updateMode();
 
 })();
 
