@@ -164,16 +164,16 @@ thiopental: {
         route: ["IV", "IM"],
 
         bolus: {
-            doseMin: 0.5,
-            doseMax: 2,
-            unit: "mcg/kg",
+            doseMin: 4,
+            doseMax: 20,
+            unit: "µg/kg",
             weightBasis: "TBW"
         },
 
         infusion: {
-            doseMin: null,
-            doseMax: null,
-            unit: "mcg/kg/hr",
+            doseMin: 2,
+            doseMax: 10,
+            unit: "µg/kg/hr",
             weightBasis: "TBW"
         },
 
@@ -202,13 +202,18 @@ sufentanil: {
     route: ["IV"],
 
     bolus: {
-        doseMin: 0.3,
-        doseMax: 1,
+        doseMin: 0.25,
+        doseMax: 2,
         unit: "µg/kg",
         weightBasis: "TBW"
     },
 
-    infusion: null,
+     infusion: {
+            doseMin: 0.5,
+            doseMax: 1.5,
+            unit: "µg/kg/hr",
+            weightBasis: "TBW"
+        },
 
     indications: [
         "Analgesia",
@@ -260,19 +265,62 @@ sufentanil: {
             "Use caution in renal impairment because active metabolites may accumulate."
     },
 
+alfentanil: {
+        id: "alfentanil",
+        name: "alfentanil",
+        category: "Opioids",
+        route: ["IV"],
 
+        bolus: {
+            doseMin: 25,
+            doseMax: 100,
+            unit: "µg/kg",
+            weightBasis: "TBW"
+        },
+
+        infusion: {
+            doseMin: 0.5,
+            doseMax: 2,
+            unit: "µg/kg/min",
+            weightBasis: "TBW"
+        },
+
+        indications: [
+            "Intraoperative analgesia",
+            "Adjunct to general anesthesia"
+        ],
+
+        cautions: [
+            "Bradycardia",
+            "Hypotension",
+            "Respiratory depression"
+           "chest regidity"
+        ],
+
+        renalAdjustment: false,
+        hepaticAdjustment: false,
+
+        notes:
+            "Continuous monitoring and titration are required."
+    },
+   
     remifentanil: {
         id: "remifentanil",
         name: "Remifentanil",
         category: "Opioids",
         route: ["IV"],
 
-        bolus: null,
+        bolus: {
+            doseMin: 1,
+            doseMax: 2,
+            unit: "µg/kg",
+            weightBasis: "TBW"
+        },
 
         infusion: {
-            doseMin: 0.025,
-            doseMax: 2,
-            unit: "mcg/kg/min",
+            doseMin: 0.1,
+            doseMax: 1,
+            unit: "µg/kg/min",
             weightBasis: "TBW"
         },
 
