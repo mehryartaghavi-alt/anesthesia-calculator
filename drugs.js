@@ -88,7 +88,7 @@ thiopental: {
 
         bolus: {
             doseMin: 0.2,
-            doseMax: 0.3,
+            doseMax: 0.6,
             unit: "mg/kg",
             weightBasis: "TBW"
         },
@@ -127,9 +127,9 @@ thiopental: {
         },
 
         infusion: {
-            doseMin: null,
-            doseMax: null,
-            unit: "mcg/kg/min",
+            doseMin: 0.015,
+            doseMax: 0.09,
+            unit: "mg/kg/min",
             weightBasis: "TBW"
         },
 
