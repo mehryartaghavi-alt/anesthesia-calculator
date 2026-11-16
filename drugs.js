@@ -29,7 +29,14 @@ const DRUG_DATABASE = {
             unit: "mcg/kg/min",
             weightBasis: "TBW"
         },
-
+       
+    sedation: {
+            doseMin: 30,
+            doseMax: 50,
+            unit: "mcg/kg/min",
+            weightBasis: "TBW"
+        },
+       
         indications: [
             "Induction of general anesthesia",
             "Maintenance of anesthesia",
