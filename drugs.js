@@ -17,16 +17,16 @@ const DRUG_DATABASE = {
         route: ["IV"],
 
         bolus: {
-            doseMin: 2,
+            doseMin: 1.5,
             doseMax: 2.5,
             unit: "mg/kg",
             weightBasis: "TBW"
         },
 
         infusion: {
-            doseMin: 70,
-            doseMax: 200,
-            unit: "mcg/kg/min",
+            doseMin: 0.05,
+            doseMax: 0.15,
+            unit: "mg/kg/min",
             weightBasis: "TBW"
         },
        
@@ -62,12 +62,18 @@ thiopental: {
     category: "Induction Agents",
     route: ["IV"],
     bolus: {
-        doseMin: 4,
-        doseMax: 6,
+        doseMin: 3,
+        doseMax: 5,
         unit: "mg/kg",
         weightBasis: "TBW"
     },
-    infusion: null,
+   
+   infusion: {
+            doseMin: 50,
+            doseMax: 100,
+            unit: "mg/q10min",
+                            },
+   
     indications: ["Induction of general anesthesia"],
     cautions: ["Hypotension", "Respiratory depression", "Porphyria"],
     renalAdjustment: false,
