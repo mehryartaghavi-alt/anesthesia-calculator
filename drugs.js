@@ -267,7 +267,7 @@ sufentanil: {
 
 alfentanil: {
         id: "alfentanil",
-        name: "alfentanil",
+        name: "Alfentanil",
         category: "Opioids",
         route: ["IV"],
 
@@ -293,8 +293,8 @@ alfentanil: {
         cautions: [
             "Bradycardia",
             "Hypotension",
-            "Respiratory depression"
-           "chest regidity"
+            "Respiratory depression",
+           "chest rigidity"
         ],
 
         renalAdjustment: false,
