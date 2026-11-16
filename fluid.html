@@ -139,8 +139,8 @@ function fluidHourValues(hour,w,maint,deficit,third,cve){
  const normalBase = {minimal:4,mild:6,moderate:8,severe:10}[document.getElementById("surgeryType").value] * w;
  let r,n,l;
  if(hour===1){
-   r=restrictiveBase+2*w;
-   n=normalBase+3*w;
+   r=restrictiveBase;
+   n=normalBase;
    l=cve+maint+(deficit/2)+third;
  }else if(hour===2||hour===3){
    r=restrictiveBase;
