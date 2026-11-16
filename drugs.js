@@ -360,7 +360,12 @@ alfentanil: {
         weightBasis: "TBW"
     },
 
-    infusion: null,
+     infusion: {
+            doseMin: 4,
+            doseMax: 12,
+            unit: "µg/kg/min",
+            weightBasis: "TBW"
+        },
 
     indications: [
         "Neuromuscular blockade during general anesthesia"
@@ -385,15 +390,15 @@ alfentanil: {
 
         bolus: {
             doseMin: 0.6,
-            doseMax: 1.2,
+            doseMax: 1,
             unit: "mg/kg",
             weightBasis: "TBW"
         },
 
         infusion: {
-            doseMin: null,
-            doseMax: null,
-            unit: "mcg/kg/min",
+            doseMin: 9,
+            doseMax: 12,
+            unit: "µg/kg/min",
             weightBasis: "TBW"
         },
 
@@ -423,13 +428,18 @@ alfentanil: {
         route: ["IV"],
 
         bolus: {
-            doseMin: 0.08,
-            doseMax: 0.1,
+            doseMin: 0.1,
+            doseMax: 0.2,
             unit: "mg/kg",
             weightBasis: "TBW"
         },
 
-        infusion: null,
+         infusion: {
+            doseMin: 0.8,
+            doseMax: 1,
+            unit: "µg/kg/min",
+            weightBasis: "TBW"
+        },
 
         indications: [
             "Tracheal intubation",
@@ -456,16 +466,16 @@ alfentanil: {
         route: ["IV"],
 
         bolus: {
-            doseMin: 0.1,
+            doseMin: 0.15,
             doseMax: 0.2,
             unit: "mg/kg",
             weightBasis: "TBW"
         },
 
         infusion: {
-            doseMin: null,
-            doseMax: null,
-            unit: "mcg/kg/min",
+            doseMin: 1,
+            doseMax: 2,
+            unit: "µg/kg/min",
             weightBasis: "TBW"
         },
 
@@ -486,6 +496,74 @@ alfentanil: {
             "Organ-independent elimination is an important clinical feature."
     },
 
+   mivacurium: {
+        id: "miacurium",
+        name: "Mivacurium",
+        category: "Muscle Relaxants",
+        route: ["IV"],
+
+        bolus: {
+            doseMin: 0.2,
+            doseMax: 0.25,
+            unit: "mg/kg",
+            weightBasis: "TBW"
+        },
+
+        infusion: {
+            doseMin: 3,
+            doseMax: 15,
+            unit: "µg/kg/min",
+            weightBasis: "TBW"
+        },
+
+        indications: [
+            "Tracheal intubation",
+            "Muscle relaxation"
+        ],
+
+        cautions: [
+            "Anaphylaxis",
+            "Prolonged blockade if not monitored"
+        ],
+
+        renalAdjustment: false,
+        hepaticAdjustment: false,
+
+        notes:
+            "Organ-independent elimination is an important clinical feature."
+    },
+
+   pancuronium: {
+        id: "pancuronium",
+        name: "Pancuronium",
+        category: "Muscle Relaxants",
+        route: ["IV"],
+
+        bolus: {
+            doseMin: 0.08,
+            doseMax: 0.12,
+            unit: "mg/kg",
+            weightBasis: "TBW"
+        },
+
+         infusion: null,
+
+        indications: [
+            "Tracheal intubation",
+            "Muscle relaxation"
+        ],
+
+        cautions: [
+            "Anaphylaxis",
+            "Prolonged blockade if not monitored"
+        ],
+
+        renalAdjustment: false,
+        hepaticAdjustment: false,
+
+        notes:
+            "Organ-independent elimination is an important clinical feature."
+    },
 
     succinylcholine: {
         id: "succinylcholine",
