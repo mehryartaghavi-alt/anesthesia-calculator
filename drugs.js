@@ -24,8 +24,8 @@ const DRUG_DATABASE = {
         },
 
         infusion: {
-            doseMin: null,
-            doseMax: null,
+            doseMin: 70,
+            doseMax: 200,
             unit: "mcg/kg/min",
             weightBasis: "TBW"
         },
