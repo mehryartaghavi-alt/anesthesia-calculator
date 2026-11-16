@@ -714,12 +714,17 @@ alfentanil: {
         category: "Sedation",
         route: ["IV"],
 
-        bolus: null,
+        bolus: {
+            doseMin: 0.08,
+            doseMax: 0.1,
+            unit: "µg/kg/10min",
+            weightBasis: "TBW"
+        },
 
         infusion: {
             doseMin: 0.2,
             doseMax: 0.7,
-            unit: "mcg/kg/hr",
+            unit: "µg/kg/hr",
             weightBasis: "TBW"
         },
 
