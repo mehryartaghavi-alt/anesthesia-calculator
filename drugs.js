@@ -603,20 +603,20 @@ alfentanil: {
        SEDATION
     ===================================================== */
 
-    midazolam: {
-        id: "midazolam",
-        name: "Midazolam",
+   diazepam: {
+        id: "diazepam",
+        name: "Diazepam",
         category: "Sedation",
         route: ["IV", "IM"],
 
         bolus: {
-            doseMin: 0.01,
-            doseMax: 0.05,
+            doseMin: 0.3,
+            doseMax: 0.5,
             unit: "mg/kg",
             weightBasis: "TBW"
         },
 
-        infusion: null,
+         infusion: null,
 
         indications: [
             "Procedural sedation",
@@ -636,6 +636,77 @@ alfentanil: {
             "Use lower doses in elderly or frail patients."
     },
 
+ 
+   midazolam: {
+        id: "midazolam",
+        name: "Midazolam",
+        category: "Sedation",
+        route: ["IV", "IM"],
+
+        bolus: {
+            doseMin: 0.05,
+            doseMax: 0.15,
+            unit: "mg/kg",
+            weightBasis: "TBW"
+        },
+
+         infusion: {
+            doseMin: 0.5,
+            doseMax: 1,
+            unit: "µg/kg/min",
+            weightBasis: "TBW"
+        },
+
+        indications: [
+            "Procedural sedation",
+            "Anxiolysis",
+            "Premedication"
+        ],
+
+        cautions: [
+            "Respiratory depression",
+            "Synergistic effects with opioids"
+        ],
+
+        renalAdjustment: "clinical",
+        hepaticAdjustment: "clinical",
+
+        notes:
+            "Use lower doses in elderly or frail patients."
+    },
+
+   lorazepam: {
+        id: "lorazepam",
+        name: "Lorazepam",
+        category: "Sedation",
+        route: ["IV", "IM"],
+
+        bolus: {
+            doseMin: 0.08,
+            doseMax: 0.1,
+            unit: "mg/kg",
+            weightBasis: "TBW"
+        },
+
+         infusion: null,
+
+        indications: [
+            "Procedural sedation",
+            "Anxiolysis",
+            "Premedication"
+        ],
+
+        cautions: [
+            "Respiratory depression",
+            "Synergistic effects with opioids"
+        ],
+
+        renalAdjustment: "clinical",
+        hepaticAdjustment: "clinical",
+
+        notes:
+            "Use lower doses in elderly or frail patients."
+    },
 
     dexmedetomidine: {
         id: "dexmedetomidine",
